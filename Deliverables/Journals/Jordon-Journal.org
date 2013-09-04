@@ -1,9 +1,8 @@
 * Jordon Biondo Time Journal
-  | Date       | Start Time | End Time | Total Time | Task Description                                           |
-  |------------+------------+----------+------------+------------------------------------------------------------|
-  | 09/04/2013 | 01:05 PM   | 01:30 PM | 25 min     | Wrote Icebreaker, created Journal, started journal helpers |
-  |------------+------------+----------+------------+------------------------------------------------------------|
-  
+  | Date       | Start Time | End Time | Total Time (minutes) | Task Description                                                                                         |
+  |------------+------------+----------+----------------------+----------------------------------------------------------------------------------------------------------|
+  | 09/04/2013 | 01:05 PM   | 02:40 PM |                   95 | Wrote Icebreaker, created Journal, started journal helpers. Worked with team getting the web page set up |
+  |------------+------------+----------+----------------------+----------------------------------------------------------------------------------------------------------|
 ** Helpers
     #+BEGIN_SRC emacs-lisp
        (defun journal/new-entry()
