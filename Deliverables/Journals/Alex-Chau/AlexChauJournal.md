@@ -13,8 +13,8 @@
 		<tr>
 			<td>9/4/13</td>
 			<td>1:00 PM</td>
-			<td></td>
-			<td></td>
+			<td>3:00 PM</td>
+			<td>2 Hours</td>
 			<td>Worked on Icebreaker, Journal, and Website</td>
 		</tr>
 	</tbody>
