@@ -1,0 +1,19 @@
+* Ice-breaker
+** Jordon Biondo
+*** Contact Information   
+    - email: biondoj@mail.gvsu.edu
+    - phone: (269) 903-9241
+*** Technical Strengths
+    - Programming Tools
+    - Lisps
+    - Graphics
+    - Most things that aren't web related
+    - Emacs
+*** Technical Weaknesses
+    - Web development
+*** Personal Interests
+    - Food
+    - Beverages
+    - Video Games
+    
+
