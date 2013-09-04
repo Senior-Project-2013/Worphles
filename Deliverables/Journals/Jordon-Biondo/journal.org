@@ -1,0 +1,5 @@
+* Jordon Biondo Time Journal
+  | Date       | Start Time | End Time | Total Time | Task Description                                           |
+  |------------+------------+----------+------------+------------------------------------------------------------|
+  | 09/04/2013 | 01:05 PM   | 01:30 PM | 25 min     | Wrote Icebreaker, created Journal, started journal helpers |
+  |------------+------------+----------+------------+------------------------------------------------------------|
