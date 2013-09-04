@@ -1,4 +1,5 @@
 (defun journal/new-entry()
+  "Insert a new row in the journal table and fill in the date and start time fields."
   (interactive)
   (org-table-goto-line 1337)
   (org-table-goto-column 1)
@@ -11,3 +12,4 @@
   (org-table-next-field)
   (org-table-next-field)
   (org-table-next-field))
+
