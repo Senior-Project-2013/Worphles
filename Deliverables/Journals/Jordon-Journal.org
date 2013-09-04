@@ -1,0 +1,23 @@
+* Jordon Biondo Time Journal
+  | Date       | Start Time | End Time | Total Time | Task Description                                           |
+  |------------+------------+----------+------------+------------------------------------------------------------|
+  | 09/04/2013 | 01:05 PM   | 01:30 PM | 25 min     | Wrote Icebreaker, created Journal, started journal helpers |
+  |------------+------------+----------+------------+------------------------------------------------------------|
+  
+** Helpers
+    #+BEGIN_SRC emacs-lisp
+       (defun journal/new-entry()
+         "Insert a new row in the journal table and fill in the date and start time fields."
+         (interactive)
+         (org-table-goto-line 1337)
+         (org-table-goto-column 1)
+         (org-table-insert-row t)
+         (org-table-insert-hline t)
+         (insert (format-time-string "%m/%d/%Y"))
+         (org-table-align)
+         (org-table-next-field)
+         (insert (format-time-string "%I:%M %p"))
+         (org-table-next-field)
+         (org-table-next-field)
+         (org-table-next-field))
+     #+END_SRC
