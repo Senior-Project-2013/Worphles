@@ -3,6 +3,7 @@ My name is Erik Kremer.
 Contact Info
 =============
 Email: erik.kremer101@gmail.com
+
 Cell(Call or Text): 616-856-6035
 
 Technical Strengths
