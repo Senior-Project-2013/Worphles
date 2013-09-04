@@ -2,11 +2,11 @@ Hello, my name is Alexander Chau.  It is a pleasure to meet all of you.  I am a 
 
 Contact Info
 =============
-Full Name: Alexander Ben Chau
-Birth Date: 10/20/1992
-Email: chaua@mail.gvsu.edu
-Cell: 616.405.4450
-Mailing Address: 10745 48th Ave. Unit B202
++ Full Name: Alexander Ben Chau
++ Birth Date: 10/20/1992
++ Email: chaua@mail.gvsu.edu
++ Cell: 616.405.4450
++ Mailing Address: 10745 48th Ave. Unit B202
 		 Allendale, MI 49401
 
 Technical Strengths
