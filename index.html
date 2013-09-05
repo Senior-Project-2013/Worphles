@@ -1,99 +1,91 @@
 <html>
 <head>
-	<title>Word Bike 3D</title>
-	<style>
-		body {
-			font-family: arial;
-			text-align: center;
-		}		
+  <title>Word Bike 3D</title>
 
-		ul {
-			list-style: none;
-			margin-left: 0px;
-			padding-left: 0px;
-		}
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
 
-		.headerArea {
-			position: fixed;
-			width: 100%;
-		}
+  <!-- Latest minified jQuery -->
+  <script src="http://codeorigin.jquery.com/jquery-2.0.3.min.js"></script>
 
-		.headerArea > .headerTitle {
-			font-size: 46px;
-		}
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 
-		.headerArea > .headerAbout {
-			font-size: 24px;
-		}
-
-		#content {
-			margin-top: 240px;
-			background-color: white;
-		}
-
-		#faq > ul li .question {
-			font-size: 24px;
-		}
-
-		#faq > ul li .answer {
-			font-size: 18px;
-		}
-	</style>
+  <style>
+    body {
+      padding-top: 70px;
+    }
+  </style>
 </head>
 <body>
-	<div class="headerArea">
-		<div class="headerTitle">Word Bike 3D</div>
-		<div class="headerAbout">A Word Stringing Experience</div>
-		<hr/>
-		<div class="links">
-			<h2>Links</h2>
-			<ul>
-				<li><a href="https://docs.google.com/document/d/1kOi00TShYl7kQSrI0ergYyHi0ynZxH7WN7bXcGfLruM/edit?usp=sharing" target="blank">Prospetus</a></li>
-				<li><a href="#faq">FAQ</a></li>
-				<li><a href="#icebreakers">Team Icebreakers</a></li>
-				<li><a href="#journals">Team Journals</a></li>
-			</ul>
-		</div>
-	</div>
-	<hr/>
-	<div id="content">
-		<hr/>
-		<div id="faq">
-			<h2>FAQ</h2>
-			<ul>
-				<li>
-					<div class="question">So, what is Word Bike 3D?</div>
-					<div class="answer">Word Bike 3D is a word game...no, a word stringing EXPERIENCE unlike no other. Players are challenged 					to think outside their mortal 2D senses, and instead, to EXPERIENCE a challenging and competitive 					3D word stringing environment.  If this doesn't answer your question, play EXPERIENCE it.
-					</div>
-				</li>
-				<li>	
-					<div class="question">Who were the revolutionists that developed this EXPERIENCE?</div>
-					<div class="answer">Five college students at Grand Valley State University.</div>
-				</li>
-			</ul>
-		</div>
-		<hr/>
-		<div id="icebreakers">
-			<h2>Team Icebreakers</h2>
-			<ul>
-				<li><a href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Icebreakers/AlexChauIcebreaker.md">Alexander Chau</a></li>
-				<li><a href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Icebreakers/JordonBiondo.org">Jordon Biondo</a></li>
-				<li><a href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Icebreakers/JeremyDye.org">Jeremy Dye</a></li>
-				<li><a href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Icebreakers/Caleb Gomer.txt">Caleb Gomer</a></li>
-				<li><a href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Icebreakers/Erik Kremer.md">Erik Kremer</a></li>
-			</ul>
-		</div>
-		<hr/>
-		<div id="journals">
-			<h2>Team Journals</h2>
-			<ul>
-				<li><a href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Journals/Alex-Journal.md">Alexander Chau</a></li>
-				<li><a href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Journals/Jordon-Journal.org">Jordon Biondo</a></li>
-				<li><a href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Journals/Jeremy-Journal.md">Jeremy Dye</a></li>
-				<li><a href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Journals/Caleb-Journal.md">Caleb Gomer</a></li>
-				<li><a href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Journals/Erik-Journal.md">Erik Kremer</a></li>
-			</ul>
-		</div>
-	</div>
+  <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <a class="navbar-brand" href="#">Word Bike 3D</a>
+    <p class="navbar-text">it's like a bike for your mind</p>
+  </nav>
+  <div id="prospectus" class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Prospectus</h3>
+    </div>
+    <div class="panel-body">
+      <a href="https://docs.google.com/document/d/1kOi00TShYl7kQSrI0ergYyHi0ynZxH7WN7bXcGfLruM/edit?usp=sharing" target="blank">Google Document</a>
+    </div>
+  </div>
+  <div id="faq" class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">FAQ</h3>
+    </div>
+    <div class="panel-body">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          So, what is Word Bike 3D?
+        </div>
+        <div class="panel-body">
+          Word Bike 3D is a word game...no, a word stringing EXPERIENCE unlike no other. Players are challenged to think outside their mortal 2D senses, and instead, to EXPERIENCE a challenging and competitive 3D word stringing environment. If this doesn't answer your question, play EXPERIENCE it.
+        </div>
+      </div>
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          Who were the revolutionists that developed this EXPERIENCE?
+        </div>
+        <div class="panel-body">
+          Five college students at Grand Valley State University.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="icebreakers">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Icebreakers
+      </div>
+      <div class="panel-body">
+        <div class="nav-justified">
+          <ul class="nav nav-pills nav-justified">
+            <li><a target="_blank" href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Icebreakers/AlexChauIcebreaker.md">Alexander Chau</a></li>
+            <li><a target="_blank" href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Icebreakers/JordonBiondo.org">Jordon Biondo</a></li>
+            <li><a target="_blank" href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Icebreakers/JeremyDye.org">Jeremy Dye</a></li>
+            <li><a target="_blank" href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Icebreakers/Caleb Gomer.txt">Caleb Gomer</a></li>
+            <li><a target="_blank" href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Icebreakers/Erik Kremer.md">Erik Kremer</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="journals">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Journals
+      </div>
+      <div class="panel-body">
+        <ul class="nav nav-pills nav-justified">
+          <li><a target="_blank" href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Journals/Alex-Journal.md">Alexander Chau</a></li>
+          <li><a target="_blank" href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Journals/Jordon-Journal.org">Jordon Biondo</a></li>
+          <li><a target="_blank" href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Journals/Jeremy-Journal.md">Jeremy Dye</a></li>
+          <li><a target="_blank" href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Journals/Caleb-Journal.md">Caleb Gomer</a></li>
+          <li><a target="_blank" href="https://github.com/Senior-Project-2013/Word-Bike-3D/blob/master/Deliverables/Journals/Erik-Journal.md">Erik Kremer</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
