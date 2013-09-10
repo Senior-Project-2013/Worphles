@@ -17,5 +17,12 @@
 			<td>2 Hours</td>
 			<td>Worked on Icebreaker, Journal, and Website</td>
 		</tr>
+		<tr>
+			<td>9/10/13</td>
+			<td>4:00 PM</td>
+			<td></td>
+			<td></td>
+			<td>Tutorials on the full-stack framework we're using, the Meteor framework</td>
+		</tr>
 	</tbody>
 </table>
