@@ -31,5 +31,12 @@
 			<td>1 hour</td>
 			<td>Researched and completed the Onboarding process in the feasability report.</td>
 		</tr>
+		<tr>
+			<td>9/12/13</td>
+			<td>4:00 PM</td>
+			<td>6:30 PM</td>
+			<td>2.5 hour</td>
+			<td>Created the template for the burn down chart feasability report. Discussed naming options. </td>
+		</tr>
 	</tbody>
 </table>

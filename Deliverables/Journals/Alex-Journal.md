@@ -24,5 +24,12 @@
 			<td>1.5 Hours</td>
 			<td>Finished my tile relations, wrote word list filter and used it on Linux Dictionary</td>
 		</tr>
+		<tr>
+			<td>9/12/13</td>
+			<td>4:00 PM</td>
+			<td>6:00 PM</td>
+			<td>2 Hours</td>
+			<td>Switched from Linux dictionary to Scrabble dictionary, loaded dictionary into memory on server, discussed name of game</td>
+		</tr>
 	</tbody>
 </table>
