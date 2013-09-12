@@ -17,5 +17,19 @@
 			<td>.5 hours</td>
 			<td>Worked on Icebreaker, and Journal</td>
 		</tr>
+		<tr>
+			<td>9/10/13</td>
+			<td>3:45 PM</td>
+			<td>6:30 PM</td>
+			<td>2.75 hours</td>
+			<td>Hard codedtile relations for side 3. Discussed algorithm for variable size cubes to generate the tile relations files.  Discussed the feasibility report.  Assigned tasks for completing the technical challenges portion of the report. Engaged in a team build exercise.  </td>
+		</tr>
+		<tr>
+			<td>9/12/13</td>
+			<td>2:00 PM</td>
+			<td>3:00 PM</td>
+			<td>1 hour</td>
+			<td>Researched and completed the Onboarding process in the feasability report.</td>
+		</tr>
 	</tbody>
 </table>
