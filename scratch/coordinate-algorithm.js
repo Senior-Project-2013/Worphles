@@ -1,4 +1,4 @@
-var gm = require('geometry.js');
+var gm = require('./geometry.js');
 
 function nextSpace(side, point, direction) {
   var dirV = directionToVector(direction);
@@ -18,6 +18,7 @@ function directionToVector(n) {
   default: return null;;
   }  
 }
+
 
 function applyTransform(point, rotations, n) {
   rotations = rotations % 4;
