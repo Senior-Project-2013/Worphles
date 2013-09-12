@@ -29,7 +29,7 @@
 			<td>4:00 PM</td>
 			<td>6:00 PM</td>
 			<td>2 Hours</td>
-			<td>Switched from Linux dictionary to Scrabble dictionary, loaded dictionary into memory on server</td>
+			<td>Switched from Linux dictionary to Scrabble dictionary, loaded dictionary into memory on server, discussed name of game</td>
 		</tr>
 	</tbody>
 </table>
