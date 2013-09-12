@@ -32,10 +32,10 @@
 			<td>Researched how to validate words.  Filled in the section in the feasibility report.</td>
 		</tr>
 		<tr>
-			<td>9/11/13</td>
+			<td>9/12/13</td>
 			<td>4:30 PM</td>
 			<td>6:30 PM</td>
-			<td>1</td>
+			<td>2</td>
 			<td>Worked with Alex to build the in memory server side word dictionary.  Discussed naming options.  Wrote feasibility report's work policy.</td>
 		</tr>
 	</tbody>
