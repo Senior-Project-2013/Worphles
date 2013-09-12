@@ -20,9 +20,9 @@
 		<tr>
 			<td>9/10/13</td>
 			<td>4:00 PM</td>
-			<td></td>
-			<td></td>
-			<td>Tutorials on the full-stack framework we're using, the Meteor framework</td>
+			<td>5:30 PM</td>
+			<td>1.5 Hours</td>
+			<td>Finished my tile relations, wrote word list filter and used it on Linux Dictionary</td>
 		</tr>
 	</tbody>
 </table>
