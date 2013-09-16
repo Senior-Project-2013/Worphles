@@ -1,6 +1,6 @@
-var fs = Npm.require("fs");
+var fs = Npm.require('fs');
 
-var text = fs.readFileSync("server/resources/words.txt", "utf8");
+var text = fs.readFileSync(process.cwd() + 'words.txt', 'utf8');
 var wordList = text.split("\n");
 
 var dictionary = {};
