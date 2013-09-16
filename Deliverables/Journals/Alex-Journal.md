@@ -31,5 +31,12 @@
 			<td>2 Hours</td>
 			<td>Switched from Linux dictionary to Scrabble dictionary, loaded dictionary into memory on server, discussed name of game</td>
 		</tr>
+		<tr>
+			<td>9/16/13</td>
+			<td>4:00 PM</td>
+			<td>6:30 PM</td>
+			<td>2.5 Hours</td>
+			<td>Worked on letter distribution research, added frequencies and scores to each letter(taken from wikipedia), restructured app file structure, rewrote some of my old js stuff for simplicity</td>
+		</tr>
 	</tbody>
 </table>

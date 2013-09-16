@@ -1,4 +1,4 @@
-{
+LetterDistribution = {
 	"a": {
 		"frequency": 0.08167,
 		"score": 1
