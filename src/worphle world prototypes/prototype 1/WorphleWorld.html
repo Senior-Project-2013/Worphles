@@ -146,43 +146,21 @@ function init()
 	// GEOMETRY //
 	//////////////
 		
-	// most objects displayed are a "mesh":
-	//  a collection of points ("geometry") and
-	//  a set of surface parameters ("material")	
-	
-	// Cube parameters: width (x), height (y), depth (z), 
-	//        (optional) segments along x, segments along y, segments along z
-	// var cubeGeometry = new THREE.CubeGeometry( 100, 100, 100, 1, 1, 1 );
-	var cubeGeometry = new THREE.CubeGeometry( 80, 80, 80, 4, 4, 4 );
-	for ( var i = 0; i < cubeGeometry.faces.length-1; i+=2 ) 
-	{
-		c = {r:Math.random(), g:Math.random(), b:Math.random()};
-		face  = cubeGeometry.faces[ i ];	
-		face.color.setRGB( c.r,c.g,c.b );
-		face  = cubeGeometry.faces[ i+1 ];	
-		face.color.setRGB( c.r,c.g,c.b );
-	}
+	var cubeGeometry = new THREE.CubeGeometry( 79, 79, 79, 4, 4, 4 );
 
 	var cubeTexture = new THREE.ImageUtils.loadTexture('images/tile.png');
 	cubeTexture.wrapS = cubeTexture.wrapT = THREE.RepeatWrapping;
 	cubeTexture.repeat.set(4,4);
-	// var cubeMaterial = new THREE.MeshBasicMaterial({map:cubeTexture});
-	var cubeMaterial = new THREE.MeshBasicMaterial( 
-	{ color: 0xffffff, vertexColors: THREE.FaceColors } );
+	var cubeMaterial = new THREE.MeshBasicMaterial({map:cubeTexture});
 	var cube = new THREE.Mesh(cubeGeometry.clone(), cubeMaterial);
-
-	// using THREE.MeshFaceMaterial() in the constructor below
-	//   causes the mesh to use the materials stored in the geometry
-	// cube = new THREE.Mesh( cubeGeometry, cubeMaterials );
 	cube.position.set(0, 0, 0);
-	// targetList.push(cube);
-	// scene.add( cube );		
+	scene.add( cube );		
 
 	var floorTexture = new THREE.ImageUtils.loadTexture( 'images/tile.png' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 	floorTexture.repeat.set( 1, 1 );
 	var floorMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } );
-	var floorGeometry = new THREE.PlaneGeometry(20, 20);
+	var floorGeometry = new THREE.PlaneGeometry(10, 10);
 
 	var X_AXIS = new THREE.Vector3(1,0,0);
 	var Y_AXIS = new THREE.Vector3(0,1,0);
@@ -242,23 +220,6 @@ function init()
 		}
 		tileIndex = 80;
 	}
-
-	// var rotation_matrix = new THREE.Matrix4().identity();
-	// if ( keyboard.pressed("A") )
-	// 	MovingCube.rotateOnAxis( new THREE.Vector3(0,1,0), rotateAngle);
-	// if ( keyboard.pressed("D") )
-	// 	MovingCube.rotateOnAxis( new THREE.Vector3(0,1,0), -rotateAngle);
-	// if ( keyboard.pressed("R") )
-	// 	MovingCube.rotateOnAxis( new THREE.Vector3(1,0,0), rotateAngle);
-	// if ( keyboard.pressed("F") )
-	// 	MovingCube.rotateOnAxis( new THREE.Vector3(1,0,0), -rotateAngle);
-
-	// var tile = new THREE.Mesh(floorGeometry, floorMaterial);
-	// tile.position.y = 30;
-	// tile.position.x = -30;
-	// tile.position.z = 40;
-	// // tile.rotation.x = Math.PI / 2;
-	// scene.add(tile);
 
 	// create a set of coordinate axes to help orient user
 	//    specify length in pixels in each direction
