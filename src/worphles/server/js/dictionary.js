@@ -8,3 +8,10 @@ var dictionary = {};
 for(var i = 0; i < wordList.length; i++)
   dictionary[wordList[i]] = true;
 
+exports.isAWord = function (word) {
+  if (word.length > 2) {
+    return dictionary[word] ? true : false;
+  } else {
+    return false
+  }
+}
