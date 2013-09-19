@@ -38,5 +38,12 @@
 			<td>2</td>
 			<td>Worked with Alex to build the in memory server side word dictionary.  Discussed naming options.  Wrote feasibility report's work policy.</td>
 		</tr>
+		<tr>
+			<td>9/19/13</td>
+			<td>4:00 PM</td>
+			<td>6:00 PM</td>
+			<td>2</td>
+			<td>Discussed with the team our real time framework.  Decided to use SocketIO instead.  Removed Meteor, and brough SocketIO in.  Built API for validating words with SocketIO.</td>
+		</tr>
 	</tbody>
 </table>
