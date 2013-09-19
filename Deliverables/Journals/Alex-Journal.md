@@ -38,5 +38,19 @@
 			<td>2.5 Hours</td>
 			<td>Worked on letter distribution research, added frequencies and scores to each letter(taken from wikipedia), restructured app file structure, rewrote some of my old js stuff for simplicity</td>
 		</tr>
+		<tr>
+			<td>9/18/13</td>
+			<td>1:00 PM</td>
+			<td>2:00 PM</td>
+			<td>1 Hours</td>
+			<td>Wrote Worphle storyboard</td>
+		</tr>
+		<tr>
+			<td>9/19/13</td>
+			<td>12:30 PM</td>
+			<td> PM</td>
+			<td> Hours</td>
+			<td>Began UI and integration of Worphle story to website</td>
+		</tr>
 	</tbody>
 </table>
