@@ -48,8 +48,8 @@
 		<tr>
 			<td>9/19/13</td>
 			<td>12:30 PM</td>
-			<td> PM</td>
-			<td> Hours</td>
+			<td>2:30 PM</td>
+			<td>2 Hours</td>
 			<td>Began UI and integration of Worphle story to website</td>
 		</tr>
 	</tbody>
