@@ -38,5 +38,12 @@
 			<td>2.5 hour</td>
 			<td>Created the template for the burn down chart feasability report. Discussed naming options. </td>
 		</tr>
+		<tr>
+			<td>9/19/13</td>
+			<td>4:00 PM</td>
+			<td>6:00 PM</td>
+			<td>2 hour</td>
+			<td>Discussed with the team our real time framework. Decided to switch from meteor to  SocketIO instead. </td>
+		</tr>
 	</tbody>
 </table>
