@@ -55,9 +55,9 @@
 		<tr>
 			<td>9/23/13</td>
 			<td>1:00 PM</td>
-			<td>3:30 PM</td>
-			<td>2.5 Hours</td>
-			<td>Tested different flipbook jQuery plugins, used imFlipBook and integrated Worphle story into main page.</td>
+			<td>5:30 PM</td>
+			<td>4.5 Hours</td>
+			<td>Tested different flipbook jQuery plugins, used imFlipBook and integrated Worphle story into main page. Developed Worphle mouse follower with three.js + particles.</td>
 		</tr>
 	</tbody>
 </table>
