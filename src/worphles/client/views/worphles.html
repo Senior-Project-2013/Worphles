@@ -1,33 +1,87 @@
+<html lang="en">
 <head>
-	<title>Worphles</title>
+	<title>Worphles!</title>
 
-	<script type="text/javascript" src="../lib/jquery-2.0.3.min.js"/>
-	<script type="text/javascript" src="../lib/buttons.js"/>
-	<script type="text/javascript" src="../lib/three.js"/>
+	<script src="../lib/jquery-2.0.3.min.js"></script>
+	<script src="../lib/buttons.js"></script>
+	<script src="../lib/three.min.js"></script>
+	<script src="../lib/jquery.imBookFlip-1.3.js"></script>
+	<script>
+		$(document).ready(function() {
+			var myBook = $("#myBook").imBookFlip({
+				page_class: 'imBookPage'		
+			});	
+			myBook.create();
+			$('#prevPage').click(function() {
+				myBook.flipPage('previous');
+			});
+			$('#nextPage').click(function() {
+				myBook.flipPage('next');
+			});
+		});
+	</script>
 
 	<link rel="stylesheet" href="../css/client.css"/>
 	<link rel="stylesheet" href="../css/buttons.css"/>
+	<link href='http://fonts.googleapis.com/css?family=Josefin+Sans' rel='stylesheet' type='text/css'>
 </head>
-
 <body>
-	<script type="text/javascript" src="../js/starfield-gl.js"/>
+	<script src="../js/particle-field.js"></script>
 	<div class="content">
 		<div class="topButtonGroup">
-			<span class="button-wrap"><a href="#" class="button button-circle button-flat-primary">The Story</a></span>
-			<span class="button-wrap"><a href="#" class="button button-circle button-flat-primary">About</a></span>
-			<span class="button-wrap"><a href="#" class="button button-circle button-flat-primary">Donate!</a></span>
+			<span class="buttonContainer">
+				<a href="#" class="button button-circle button-flat-action">About</a>
+			</span>
+			<span class="buttonContainer">
+				<a href="#" class="button button-circle button-flat-highlight">Donate</a>
+			</span>
 		</div>
-		<div class="centerContent">
-			Worphles! (replace with logo)
+		<div id="centerContent">
+			<div id="myBook">
+				<div class="imBookPage titlePage">
+					<span class="storyText">Worphles</span>
+				</div>
+				<div class="imBookPage">
+					<span class="storyText">Long ago, in a galaxy far, far away, a creature named Wop roamed a cube planet.</span>
+				</div>
+				<div class="imBookPage">
+					<span class="storyText">Wop was all alone :'( It walked around this planet for centuries. Wop soon became bored.</span>
+				</div>
+				<div class="imBookPage">
+					<span class="storyText">In an attempt to relieve some boredom, Wop spent all its free time learning how to spell. It became the greatest speller in all of the universe.</span>
+				</div>
+				<div class="imBookPage">
+					<span class="storyText">One day while brushing its hair, Wop noticed a large tumor growing off the back of its head.</span>
+				</div>
+				<div class="imBookPage">
+					<span class="storyText">It turns out the tumor was actually an exact copy of itself. However, the copy was a terrible speller. Wop was very surprised to learn that it was asexual!</span>
+				</div>
+				<div class="imBookPage">
+					<span class="storyText">Soon the cube was inhabited by a plethora of these creatures, now named "Worphles". All these Worphles claimed to be the original Wop!</span>
+				</div>
+				<div class="imBookPage">
+					<span class="storyText">The Worphles became violent. Everyone wanted to be acknowledged as the first Worphle.</span>
+				</div>
+				<div class="imBookPage">
+					<span class="storyText">The Worphles realized this bloodshed was unnecessary. They could instead use a vital fact about Wop. Wop was a great speller!</span>
+				</div>
+				<div class="imBookPage">
+					<span class="storyText">A spelling contest was organized. The Worphles made their planet into a playing field for this competition.</span>
+				</div>
+				<div class="imBookPage">
+					<span class="storyText">The competition continues even today.  The winner will be crowned Wop, ruler of words and Worphles! ;)</span>
+				</div>
+				<div class="imBookPage finPage">
+					<span class="storyText">FIN.</span>
+				</div>
+			</div>
 		</div>
 		<div class="botButtonGroup">
-			<span class="textDivider">LOGIN</span>
-			<span class="button-wrap"><a href="#" class="button button-circle button-flat-action">With Google</a></span>
-			<span class="textDivider">OR</span>
-			<span class="button-wrap"><a href="#" class="button button-circle button-flat-action">As Guest</a></span>
+			<span class="buttonContainer">
+				<a href="#" id="playButton" class="button button-circle button-flat-primary">Play Worphles!</a>
+			</span>
 		</div>
 	</div>
+	<script src="../js/particle-spread.js"></script>
 </body>
-
-<template name="mainPage">
-</template>
+</html>
