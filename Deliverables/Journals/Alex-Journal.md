@@ -52,5 +52,12 @@
 			<td>2 Hours</td>
 			<td>Began UI and integration of Worphle story to website</td>
 		</tr>
+		<tr>
+			<td>9/23/13</td>
+			<td>1:00 PM</td>
+			<td>3:30 PM</td>
+			<td>2.5 Hours</td>
+			<td>Tested different flipbook jQuery plugins, used imFlipBook and integrated Worphle story into main page.</td>
+		</tr>
 	</tbody>
 </table>
