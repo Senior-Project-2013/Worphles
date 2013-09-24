@@ -1,5 +1,10 @@
+html, a {
+	cursor: url(../resources/cursor.png), auto;
+}
+
 body {
 	font-family: 'arial';
+	font-family: 'Josefin Sans', sans-serif;
 	text-align: center;
 	background-color: black;
 }
@@ -21,19 +26,19 @@ canvas {
 	overflow: hidden;
 	border: solid 3px black;
 	border-style: dashed;
-	background-color: white;
+	background-color: #DDD;
 	font-size: 14px;
 	vertical-align: text-bottom;
 }
 
 .imBookPage:hover {
-	background-color: #EEE;
+	background-color: #CCC;
 	color: #337;
 }
 
 .storyText {
 	display: block;
-	padding: 12px;
+	padding: 10px;
 }
 
 .titlePage, .finPage {
@@ -47,12 +52,20 @@ canvas {
 }
 
 .centerSideBarContent {
-	margin-top: -130px;
+	margin-top: -145px;
 	width: 100%;
 	top: 50%;
 	left: 50%;
 	margin-left: -186px;
 	position: absolute;
+	height: 291px;
+}
+
+.centerSideBarContent > #storyTitle {
+	font-size: 30px;
+	color: white;
+	margin-bottom: 20px;
+	font-family: 'Josefin Sans', sans-serif;
 }
 
 .botSideBarContent {
@@ -86,7 +99,7 @@ canvas {
 #sideBar {
 	position: absolute;
 	height: 100%;
-	background-color: rgba(0, 0, 0, 0.7);
+	background-color: rgba(0, 0, 0, 0.6);
 	width: 400px;
 	left: 0%;
 	top: 0%;
