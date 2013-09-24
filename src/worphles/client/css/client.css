@@ -11,28 +11,18 @@ canvas {
 	height: 100%;
 }
 
-.buttonContainer {
-	margin: 0px 20px 0px 20px;
-}
-
-.content {
-	position: absolute;
-	top: 10%;
-	left: 30%;
-}
-
 .imBookPage {
 	position: absolute;
 	left: 0px;
 	top: 0px;
-	width: 300px;
-	height: 364px;
+	width: 180px;
+	height: 254px;
 	color: black;
 	overflow: hidden;
 	border: solid 3px black;
 	border-style: dashed;
 	background-color: white;
-	font-size: 20px;
+	font-size: 14px;
 	vertical-align: text-bottom;
 }
 
@@ -43,18 +33,34 @@ canvas {
 
 .storyText {
 	display: block;
-	padding: 16px;
+	padding: 12px;
 }
 
 .titlePage, .finPage {
 	font-weight: bold;
-	font-size: 48px;
+	font-size: 36px;
 }
 
-#centerContent {
-	color: white;
-	font-size: 56px;
-	margin: 40px 0px 40px 0px;
+.topSideBarContent {
+	width: 100%;
+	margin: 30px auto 0 auto;
+}
+
+.centerSideBarContent {
+	margin-top: -130px;
+	width: 100%;
+	top: 50%;
+	left: 50%;
+	margin-left: -186px;
+	position: absolute;
+}
+
+.botSideBarContent {
+	width: 100%;
+	margin: 0 auto 30px auto;
+	vertical-align: bottom;
+	position: absolute;
+	bottom: 0;
 }
 
 .textDivider {
@@ -69,11 +75,19 @@ canvas {
 
 #myBook {
 	display: none;
-	position: relative;
-	width: 604px;
-	height: 364px;
-	float: left;		
+	position: absolute;
+	width: 364px;
+	height: 254px;
+	margin: 0 auto 0 auto;
 	background-color: transparent;
-	margin-bottom: 40px;
 	font-family: 'Josefin Sans', sans-serif;
+}
+
+#sideBar {
+	position: absolute;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+	width: 400px;
+	left: 0%;
+	top: 0%;
 }

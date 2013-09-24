@@ -4,8 +4,8 @@ var renderer,
 	particleSystems = [],
 	settings = {
 		systemCount: 3, //the number of particle systems to render, the higher the number the more particles + the more colorful
-		particleCount: 20, //the number of particles used for each line.  This number is multiplied by systemCount.
-		starCount: 80, //the number of background particles
+		particleCount: 10, //the number of particles used for each line.  This number is multiplied by systemCount.
+		starCount: 500, //the number of background particles
 		sizeMultiplier: 3, //size increase for spreading particles
 		averageParticleSpeed: .4, //lower for faster
 		pictureBlur: .02 //higher for more blurry
