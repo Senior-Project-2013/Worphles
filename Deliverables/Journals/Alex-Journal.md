@@ -59,5 +59,12 @@
 			<td>4.5 Hours</td>
 			<td>Tested different flipbook jQuery plugins, used imFlipBook and integrated Worphle story into main page. Developed Worphle mouse follower with three.js + particles.</td>
 		</tr>
+		<tr>
+			<td>9/24/13</td>
+			<td>1:00 PM</td>
+			<td>2:00 PM</td>
+			<td>1 Hours</td>
+			<td>Cleaned up Worphle particle code, added star field behind the Worphle follower to improve visuals.</td>
+		</tr>
 	</tbody>
 </table>
