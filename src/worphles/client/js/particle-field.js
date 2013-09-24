@@ -1,16 +1,19 @@
-var renderer
-var mousePosition
-var camera
-var systemCount = 3
-var particleSystems = []
-var particleCount = 50
-var xRotationTarget = 0, xRotationDiff = 0
-var yRotationTarget = 0, yRotationDiff = 0
+var renderer,
+	mousePosition,
+	camera,
+	particleSystems = [],
+	settings = {
+		systemCount: 3, //the number of particle systems to render, the higher the number the more particles + the more colorful
+		particleCount: 20, //the number of particles used for each line.  This number is multiplied by systemCount.
+		starCount: 80, //the number of background particles
+		sizeMultiplier: 3, //size increase for spreading particles
+		averageParticleSpeed: .4, //lower for faster
+		pictureBlur: .02 //higher for more blurry
+	}
 
 function init() {
 	/* SCENE */
 	scene = new THREE.Scene()
-	//scene.fog = new THREE.Fog(0xffffff, 0.5)
 	renderer = new THREE.WebGLRenderer()
 	renderer.setSize(window.innerWidth, window.innerHeight)
 	document.body.appendChild(renderer.domElement)
@@ -20,11 +23,6 @@ function init() {
 	camera.position.z = 4
 	mousePosition = camera.position
 	scene.add(camera)
-
-	/* LIGHTS */
-	//var directionalLight = new THREE.DirectionalLight(0x999999, 1)
-	//directionalLight.distance = 50
-	//scene.add(directionalLight)
 
 	/* OBJECTS */
 	createParticleSystems()
@@ -57,11 +55,6 @@ function render() {
 		}
 
 		particleSystems[ps].geometry.verticesNeedUpdate = true
-		
-		if(!((particleSystems[ps].rotation.x < xRotationTarget + 0.1) && (particleSystems[ps].rotation.x > xRotationTarget - 0.1)))
-			particleSystems[ps].rotation.x += xRotationDiff / 300
-		if(!((particleSystems[ps].rotation.y < yRotationTarget + 0.1) && (particleSystems[ps].rotation.y > yRotationTarget - 0.1)))
-			particleSystems[ps].rotation.y += yRotationDiff / 300
 	}
 
 	renderer.render(scene, camera)
@@ -92,8 +85,10 @@ function spreadParticles(event) {
 		for(var p = 0; p < particleSystems[ps].geometry.vertices.length; p++) {
 			var particle = particleSystems[ps].geometry.vertices[p]
 
-			particle.originalX *= 8
-			particle.originalY *= 8
+			if(particle.spread) {
+				particle.originalX *= settings.sizeMultiplier
+				particle.originalY *= settings.sizeMultiplier
+			}
 		}
 	}
 }
@@ -103,43 +98,24 @@ function gatherParticles(event) {
 		for(var p = 0; p < particleSystems[ps].geometry.vertices.length; p++) {
 			var particle = particleSystems[ps].geometry.vertices[p]
 
-			particle.originalX *= .125
-			particle.originalY *= .125
+			if(particle.spread) {
+				particle.originalX *= 1 / settings.sizeMultiplier
+				particle.originalY *= 1 / settings.sizeMultiplier
+			}
 		}
 	}
 }
 
-function genParticleCoordinate() {
-	var angle = Math.random() * Math.PI * 2
-	return {
-		x: (Math.cos(angle) * 0.25) * (Math.random() * 1.5),
-		y: (Math.sin(angle) * 0.25) * (Math.random() * 1.5)
-	}
-}
-
 function createParticleSystems() {
-	for(var ps = 0; ps < systemCount; ps++) {
+	/* WORPHLE DRAWING */
+	for(var ps = 0; ps < settings.systemCount; ps++) {
 		var particles = new THREE.Geometry(),
 			pMaterial = new THREE.ParticleBasicMaterial({
 				color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
 				size: 0.02
 			})
 
-		/*for(var p = 0; p < particleCount; p++) {
-			var coordinate = genParticleCoordinate()
-
-			var pX = coordinate.x,
-				pY = coordinate.y,
-				pZ = -Math.random(),
-				particle = new THREE.Vector3(pX, pY, pZ)
-			
-			particle.speed = (Math.random() * 0.7) + .2
-			particle.originalX = pX
-			particle.originalY = pY
-			particles.vertices.push(particle)
-			*/
-
-		/* body */
+		/* Worphle Coordinates */
 		var xStartCoordinates = [-.1825, .1825, .1825, .12, -.1825, -.12, -.1825, .1825, -.13, -.1825, -.13, .1825, .24, .15, .15, .01, .01, .06];
 		var yStartCoordinates = [-.1825, -.1825, .1825, .28, .1825, .28, -.1825, -.1825, -.13, 0, -.02, .02, .01, .16, .145, .16, .145, .06];
 		var xTargetCoordinates = [-.1825, .1825, .12, 0, -.12, 0, -.13, .13, .13, -.13, -.13, .24, .1825, .165, .165, .025, .025, .10];
@@ -153,21 +129,53 @@ function createParticleSystems() {
 		scene.add(particleSystem)
 		particleSystems.push(particleSystem)
 	}
+
+	/* STARS */
+	var particles = new THREE.Geometry,
+		pMaterial = new THREE.ParticleBasicMaterial({
+			color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
+			size: 0.15
+		})
+
+	createStarParticles(particles)
+
+	var starSystem = new THREE.ParticleSystem(particles, pMaterial)
+	starSystem.position.set(0, 0, 0)
+	scene.add(starSystem)
+	particleSystems.push(starSystem)
 }
 
 function createWorphleParticles(xStart, yStart, xTarget, yTarget, particles) {
-	var xIncrement = (xTarget - xStart) / particleCount,
-		yIncrement = (yTarget - yStart) / particleCount
+	var xIncrement = (xTarget - xStart) / settings.particleCount,
+		yIncrement = (yTarget - yStart) / settings.particleCount
 
-	for(var p = 1; p < particleCount; p++) {
-			var pX = xStart + xIncrement * p,
-				pY = yStart + yIncrement * p,
+	for(var p = 1; p < settings.particleCount; p++) {
+			var blurFactor = (Math.random() * settings.pictureBlur) - settings.pictureBlur;
+
+			var pX = xStart + xIncrement * p + blurFactor,
+				pY = yStart + yIncrement * p + blurFactor,
 				pZ = (Math.random() * .02) + .02,
 				particle = new THREE.Vector3(pX, pY, pZ)
 
-		particle.speed = (Math.random() * 1.2) + .02
+		particle.speed = (Math.random() * settings.averageParticleSpeed) + (settings.averageParticleSpeed / 3)
 		particle.originalX = pX
 		particle.originalY = pY
+		particle.spread = true
+		particles.vertices.push(particle)
+	}
+}
+
+function createStarParticles(particles) {
+	for(var s = 0; s < settings.starCount; s++) {
+		var pX = (Math.random() * 40) - 20,
+			pY = (Math.random() * 20) - 10,
+			pZ = (Math.random() * 10) - 24,
+			particle = new THREE.Vector3(pX, pY, pZ)
+
+		particle.speed = (Math.random() * 0.6) + .03
+		particle.originalX = pX
+		particle.originalY = pY
+		particle.spread = false
 		particles.vertices.push(particle)
 	}
 }
