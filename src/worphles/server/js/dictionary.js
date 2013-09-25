@@ -1,6 +1,6 @@
-var fs = Npm.require('fs');
+var fs = require('fs');
 
-var text = fs.readFileSync('localhost:3000/words.txt', "utf-8"); //replace this with relative path
+var text = fs.readFileSync(__dirname+'/../../public/words.txt', "utf-8");
 var wordList = text.split("\n");
 
 var dictionary = {};

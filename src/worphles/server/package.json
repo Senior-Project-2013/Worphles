@@ -1,0 +1,12 @@
+{
+  "name": "worphles",
+  "version": "0.0.001",
+  "private": true,
+  "dependencies": {
+    "socket.io": "0.9.14"
+  },
+  "engines": {
+    "node": "0.8.x",
+    "npm": "1.2.x"
+  }
+}

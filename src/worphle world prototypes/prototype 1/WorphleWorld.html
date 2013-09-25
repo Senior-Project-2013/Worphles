@@ -24,6 +24,7 @@
 <script src="js/info.js"></script>
 
 <div id="ThreeJS" style="z-index: 1; position: absolute; left:0px; top:0px"></div>
+<script src="http://localhost:3000/socket.io/socket.io.js"></script>
 <script>
 /*
 	Three.js "tutorials by example"
@@ -44,7 +45,7 @@ var clock = new THREE.Clock();
 // custom global variables
 var cube;
 var targetList = [];
-var projector, mouse = { x: 0, y: 0 };
+var projector, mouse = { x: 0, y: 0 , clicked: false}, INTERSECTED;
 
 // initialization
 init();
@@ -159,8 +160,8 @@ function init()
 	var floorTexture = new THREE.ImageUtils.loadTexture( 'images/tile.png' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 	floorTexture.repeat.set( 1, 1 );
-	var floorMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } );
-	var floorGeometry = new THREE.PlaneGeometry(10, 10);
+	var tileMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } );
+	var floorGeometry = new THREE.PlaneGeometry(15, 15);
 
 	var X_AXIS = new THREE.Vector3(1,0,0);
 	var Y_AXIS = new THREE.Vector3(0,1,0);
@@ -168,11 +169,13 @@ function init()
 	var NINETY_DEG = 90*Math.PI/180;
 	TILES = new Array(96);
 
-	function Tile(num, letter, color, faces) {
+	function Tile(num, letter, color, geometry, material) {
 		this.num = num;
 		this.letter = letter;
 		this.color = color;
-		this.faces = faces;
+		this.geometry = geometry;
+		this.faces = geometry.faces;
+		this.material = material;
 	}
 
 	var tileIndex = 16;
@@ -181,17 +184,18 @@ function init()
 			for (var y = 30; y >= -30; y -= 20) {
 				var rotation_matrix = new THREE.Matrix4().makeRotationAxis(Y_AXIS, NINETY_DEG*s );
 				var thisGeometry = floorGeometry.clone();
-				var tile = new THREE.Mesh(thisGeometry, floorMaterial);
+				var thisMaterial = tileMaterial.clone();
+				var tile = new THREE.Mesh(thisGeometry, thisMaterial);
 				tile.position.x = x;
 				tile.position.y = y;
 				tile.position.z = 40;
 				tile.position.applyMatrix4(rotation_matrix);
 				tile.rotateOnAxis( Y_AXIS, NINETY_DEG*s );
-				var thisTile = new Tile(tileIndex, 'b','gray', thisGeometry.faces);
+				var thisTile = new Tile(tileIndex, 'b','gray', thisGeometry, thisMaterial);
 				tile.__tile_data = thisTile;
 				targetList.push(tile);
 				scene.add(tile);
-				TILES[tileIndex] = new Tile(tileIndex, 'b','gray', thisGeometry.faces);
+				TILES[tileIndex] = new Tile(tileIndex, 'b','gray', thisGeometry, thisMaterial);
 				tileIndex++;
 			}
 			tileIndex += 16;
@@ -204,17 +208,18 @@ function init()
 			for (var y = 30; y >= -30; y -= 20) {
 				var rotation_matrix = new THREE.Matrix4().makeRotationAxis(X_AXIS, NINETY_DEG*s );
 				var thisGeometry = floorGeometry.clone();
-				var tile = new THREE.Mesh(thisGeometry, floorMaterial);
+				var thisMaterial = tileMaterial.clone();
+				var tile = new THREE.Mesh(thisGeometry, thisMaterial);
 				tile.position.x = x;
 				tile.position.y = y;
 				tile.position.z = 40;
 				tile.position.applyMatrix4(rotation_matrix);
 				tile.rotateOnAxis( X_AXIS, NINETY_DEG*s );
-				var thisTile = new Tile(tileIndex, 'a','blue', thisGeometry.faces);
+				var thisTile = new Tile(tileIndex, 'a','blue', thisGeometry, thisMaterial);
 				tile.__tile_data = thisTile;
 				targetList.push(tile);
 				scene.add(tile);
-				TILES[tileIndex] = new Tile(tileIndex, 'a','blue', thisGeometry.faces);
+				TILES[tileIndex] = new Tile(tileIndex, 'a','blue', thisGeometry, thisMaterial);
 				tileIndex++;
 			}
 		}
@@ -250,14 +255,23 @@ function init()
 	
 	// when the mouse moves, call the given function
 	document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 }
 
-function onDocumentMouseDown( event ) 
-{
+function onDocumentMouseMove( event )  {
+	// update the mouse variable
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
+function onDocumentMouseDown( event )  {
 	if (event.button == 2) return;
 	// the following line would stop any other event handler from firing
 	// (such as the mouse's TrackballControls)
 	// event.preventDefault();
+	mouse.clicked = true;
+	document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+	// return;
 	
 	console.log("Click.");
 	
@@ -279,20 +293,42 @@ function onDocumentMouseDown( event )
 	// if there is one (or more) intersections
 	if ( intersects.length > 0 )
 	{
-		console.log("Hit @ " + toString( intersects[0].point ) );
-		console.log("Hit @ " + intersects[0].object.__tile_data.faces );
-		var faces = intersects[0].object.__tile_data.faces;
-		var color = [[0.8 * Math.random() + 0.2, 0, 0 ],[0, 0.8 * Math.random() + 0.2, 0 ],[0, 0, 0.8 * Math.random() + 0.2 ]];
-		var rgORb = Math.round(Math.random()*2);
-		for (var i in faces) {
-			var face = faces[i];
-			face.color.setRGB(color[rgORb][0],color[rgORb][1],color[rgORb][2]);
-		}
+		intersects[0].object.material.color.setHex( 0xff00ff );
+		// console.log("Hit @ " + toString( intersects[0].point ) );
+		// console.log("Hit @ " + intersects[0].object.__tile_data.faces );
+		// var faces = intersects[0].object.__tile_data.faces;
+		// var color = [[0.8 * Math.random() + 0.2, 0, 0 ],[0, 0.8 * Math.random() + 0.2, 0 ],[0, 0, 0.8 * Math.random() + 0.2 ]];
+		// var rgORb = Math.round(Math.random()*2);
+		// for (var i in faces) {
+		// 	var face = faces[i];
+		// 	face.color.setRGB(color[rgORb][0],color[rgORb][1],color[rgORb][2]);
+		// }
 		// change the color of the closest face.
 		// intersects[ 0 ].face.color.setRGB( 0.8 * Math.random() + 0.2, 0, 0 ); 
 		intersects[ 0 ].object.geometry.colorsNeedUpdate = true;
 	}
 
+}
+
+var socket = io.connect('http://localhost:3000');
+socket.on('moveResponse', function(data) {
+	console.log(data);
+});
+socket.on('partialMove', function(tile) {
+	console.log(tile);
+	var faces = TILES[tile].faces;
+	console.log(TILES[tile]);
+	for (var i in faces) {
+		faces[i].color.setRGB(0,0,0.9);
+	}
+	TILES[tile].geometry.colorsNeedUpdate = true;
+});
+function onDocumentMouseUp( event ) {
+	document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
+	mouse.clicked = false;
+	// alert('You clicked tiles '+wordTiles.join(','));
+	socket.emit('moveComplete',wordTiles);
+	wordTiles = [];
 }
 
 function animate() 
@@ -307,15 +343,53 @@ function update()
 	// delta = change in time since last call (in seconds)
 	var delta = clock.getDelta(); 
 
-	// functionality provided by THREEx.KeyboardState.js
-	if ( keyboard.pressed("1") )
-		document.getElementById('message').innerHTML = ' Have a nice day! - 1';	
-	if ( keyboard.pressed("2") )
-		document.getElementById('message').innerHTML = ' Have a nice day! - 2 ';	
+	var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+	projector.unprojectVector( vector, camera );
+	var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+
+	var intersects = ray.intersectObjects( targetList );
+
+	if ( intersects.length > 0) {
+		var tile = intersects[0].object.__tile_data.num;
+		if (mouse.clicked && tile != lastTile) {
+			intersects[0].object.material.color.setHex( 0xff00ff );
+			wordTiles.push(tile);
+			lastTile = tile;
+			socket.emit('partialMove', tile);
+		}
+		// else
+		// // if the closest object intersected is not the currently stored intersection object
+		// if ( intersects[ 0 ].object != INTERSECTED )  {
+		//     // restore previous intersection object (if it exists) to its original color
+		// 	if ( INTERSECTED ) 
+		// 		INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+		// 	// store reference to closest object as current intersection object
+		// 	INTERSECTED = intersects[ 0 ].object;
+		// 	// store color of closest object (for later restoration)
+		// 	INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+		// 	// set a new color for closest object
+		// 	if (mouse.clicked) {
+		// 		INTERSECTED.material.color.setHex( 0xff00ff );
+		// 	} else {
+		// 		INTERSECTED.material.color.setHex( 0xeeeeee );
+		// 	}
+		// 	console.log('intersect');
+		// }
+	// } else {
+	// 	// restore previous intersection object (if it exists) to its original color
+	// 	if ( INTERSECTED ) 
+	// 		INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+	// 	// remove previous intersection object reference
+	// 	//     by setting current intersection object to "nothing"
+	// 	INTERSECTED = null;
+	}
 		
 	controls.update();
 	stats.update();
 }
+
+var wordTiles = [];
+var lastTile;
 
 function render() 
 {	
