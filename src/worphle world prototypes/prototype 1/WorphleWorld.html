@@ -178,52 +178,44 @@ function init()
 		this.material = material;
 	}
 
-	var tileIndex = 16;
-	for (var s = 0; s < 4; s++) {
-		for (var x = -30; x <= 30; x += 20) {
-			for (var y = 30; y >= -30; y -= 20) {
-				var rotation_matrix = new THREE.Matrix4().makeRotationAxis(Y_AXIS, NINETY_DEG*s );
-				var thisGeometry = floorGeometry.clone();
-				var thisMaterial = tileMaterial.clone();
-				var tile = new THREE.Mesh(thisGeometry, thisMaterial);
-				tile.position.x = x;
-				tile.position.y = y;
-				tile.position.z = 40;
-				tile.position.applyMatrix4(rotation_matrix);
-				tile.rotateOnAxis( Y_AXIS, NINETY_DEG*s );
-				var thisTile = new Tile(tileIndex, 'b','gray', thisGeometry, thisMaterial);
-				tile.__tile_data = thisTile;
-				targetList.push(tile);
-				scene.add(tile);
-				TILES[tileIndex] = new Tile(tileIndex, 'b','gray', thisGeometry, thisMaterial);
-				tileIndex++;
-			}
-			tileIndex += 16;
-		}
-		tileIndex -= 64;
+	function makeTile(side, axis, x, y, num) {
+		var rotation_matrix = new THREE.Matrix4().makeRotationAxis(axis, NINETY_DEG*side );
+		var thisGeometry = floorGeometry.clone();
+		var thisMaterial = tileMaterial.clone();
+		var tile = new THREE.Mesh(thisGeometry, thisMaterial);
+		tile.position.x = -30 + 20*x;
+		tile.position.y = 30 - 20*y;
+		tile.position.z = 40;
+		tile.position.applyMatrix4(rotation_matrix);
+		tile.rotateOnAxis( axis, NINETY_DEG*side );
+		var thisTile = new Tile(num, null, null, thisGeometry, thisMaterial);
+		tile.__tile_data = thisTile;
+		targetList.push(tile);
+		scene.add(tile);
+		TILES[num] = new Tile(num, null, null, thisGeometry, thisMaterial);
 	}
-	tileIndex = 0;
-	for (var s = 1; s < 4; s+=2) {
-		for (var x = -30; x <= 30; x += 20) {
-			for (var y = 30; y >= -30; y -= 20) {
-				var rotation_matrix = new THREE.Matrix4().makeRotationAxis(X_AXIS, NINETY_DEG*s );
-				var thisGeometry = floorGeometry.clone();
-				var thisMaterial = tileMaterial.clone();
-				var tile = new THREE.Mesh(thisGeometry, thisMaterial);
-				tile.position.x = x;
-				tile.position.y = y;
-				tile.position.z = 40;
-				tile.position.applyMatrix4(rotation_matrix);
-				tile.rotateOnAxis( X_AXIS, NINETY_DEG*s );
-				var thisTile = new Tile(tileIndex, 'a','blue', thisGeometry, thisMaterial);
-				tile.__tile_data = thisTile;
-				targetList.push(tile);
-				scene.add(tile);
-				TILES[tileIndex] = new Tile(tileIndex, 'a','blue', thisGeometry, thisMaterial);
-				tileIndex++;
+
+	var tile = 16;
+	//make sides 0-3
+	for (var side = 0; side < 4; side++) {
+		for (var row = 0; row < 4; row++) {
+			for (var col = 0; col < 4; col++) {
+				makeTile(side-1, Y_AXIS, col,row,tile+row*16+col);
 			}
+			print = [];
 		}
-		tileIndex = 80;
+		tile += 4;
+	}
+	//make sides 4-5
+	tile = 0;
+	for (var side = 3; side > 0; side-=2) {
+		for (var row = 0; row < 4; row++) {
+			for (var col = 0; col < 4; col++) {
+				makeTile(side, X_AXIS, col,row,tile+row*4+col);
+			}
+			print = [];
+		}
+		tile = 80;
 	}
 
 	// create a set of coordinate axes to help orient user
@@ -352,10 +344,10 @@ function update()
 	if ( intersects.length > 0) {
 		var tile = intersects[0].object.__tile_data.num;
 		if (mouse.clicked && tile != lastTile) {
+			socket.emit('partialMove', tile);
 			intersects[0].object.material.color.setHex( 0xff00ff );
 			wordTiles.push(tile);
 			lastTile = tile;
-			socket.emit('partialMove', tile);
 		}
 		// else
 		// // if the closest object intersected is not the currently stored intersection object
