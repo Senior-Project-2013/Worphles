@@ -46,7 +46,7 @@
 			<td>Discussed with the team our real time framework.  Decided to use SocketIO instead.  Removed Meteor, and brough SocketIO in.  Built API for validating words with SocketIO.</td>
 		</tr>
 		<tr>
-			<td>9/19/13</td>
+			<td>9/24/13</td>
 			<td>4:00 PM</td>
 			<td>5:30 PM</td>
 			<td>1.5</td>
