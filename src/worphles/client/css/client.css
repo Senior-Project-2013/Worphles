@@ -41,6 +41,10 @@ canvas {
 	padding: 10px;
 }
 
+.storyImg {
+	width: 100%;
+}
+
 .titlePage, .finPage {
 	font-weight: bold;
 	font-size: 36px;
@@ -58,7 +62,7 @@ canvas {
 	left: 50%;
 	margin-left: -186px;
 	position: absolute;
-	height: 291px;
+	height: 311px;
 }
 
 .centerSideBarContent > #storyTitle {
