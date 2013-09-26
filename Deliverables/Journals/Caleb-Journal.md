@@ -45,4 +45,13 @@
 			<td>Prototyped a 3D rotating cube with a 4x4 grid on it using WebGL/Three.js</td>
 		</tr>
 	</tbody>
+	<tbody>
+		<tr>
+			<td>9/25/13</td>
+			<td>4:00 PM</td>
+			<td>6:00 PM</td>
+			<td>2</td>
+			<td>Set up realtime communication between the server and all connected cubes</td>
+		</tr>
+	</tbody>
 </table>
