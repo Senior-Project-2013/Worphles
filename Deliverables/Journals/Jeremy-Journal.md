@@ -52,5 +52,12 @@
 			<td>1.5</td>
 			<td>Worked with Caleb to get working real time operations.</td>
 		</tr>
+		<tr>
+			<td>9/26/13</td>
+			<td>4:00 PM</td>
+			<td>6:00 PM</td>
+			<td>2</td>
+			<td>Coded the letter generator after researching solutions online.  Originally used a binary search in the solution, but took it out due to complications with finding a good enough implementation.  Performance hit should be minimal considering the small dataset.</td>
+		</tr>
 	</tbody>
 </table>
