@@ -3,7 +3,9 @@
   "version": "0.0.001",
   "private": true,
   "dependencies": {
-    "socket.io": "0.9.14"
+    "socket.io": "0.9.14",
+    "express": "3.4.0",
+    "binary-search": "latest"
   },
   "engines": {
     "node": "0.8.x",
