@@ -11,7 +11,9 @@ io.configure(function () {
   io.set('log level', 1);
 });
 
-app.use('/', express.static(__dirname + '/webui'));
+app.use('/webui', express.static(__dirname + '/webui'));
+app.get('/', function(req, res) { res.sendfile(__dirname+'/webui/WorphleWorld.html'); });
+
 server.listen(process.env.PORT || 3000);
 
 io.sockets.on('connection', function(socket) {

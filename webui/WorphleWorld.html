@@ -4,24 +4,24 @@
 	<title>Hello World (Three.js)</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <link rel=stylesheet href="css/base.css"/>
+    <link rel=stylesheet href="webui/css/base.css"/>
 </head>
 <body>
 
-<script src="js/Three.js"></script>
-<script src="js/Detector.js"></script>
-<script src="js/Stats.js"></script>
-<script src="js/OrbitControls.js"></script>
-<script src="js/THREEx.KeyboardState.js"></script>
-<script src="js/THREEx.FullScreen.js"></script>
-<script src="js/THREEx.WindowResize.js"></script>
+<script src="webui/js/Three.js"></script>
+<script src="webui/js/Detector.js"></script>
+<script src="webui/js/Stats.js"></script>
+<script src="webui/js/OrbitControls.js"></script>
+<script src="webui/js/THREEx.KeyboardState.js"></script>
+<script src="webui/js/THREEx.FullScreen.js"></script>
+<script src="webui/js/THREEx.WindowResize.js"></script>
 
 <!-- jQuery code to display an information button and box when clicked. -->
-<script src="js/jquery-1.9.1.js"></script>
-<script src="js/jquery-ui.js"></script>
-<link rel=stylesheet href="css/jquery-ui.css" />
-<link rel=stylesheet href="css/info.css"/>
-<script src="js/info.js"></script>
+<script src="webui/js/jquery-1.9.1.js"></script>
+<script src="webui/js/jquery-ui.js"></script>
+<link rel=stylesheet href="webui/css/jquery-ui.css" />
+<link rel=stylesheet href="webui/css/info.css"/>
+<script src="webui/js/info.js"></script>
 
 <div id="ThreeJS" style="z-index: 1; position: absolute; left:0px; top:0px"></div>
 <script src="/socket.io/socket.io.js"></script>
@@ -149,7 +149,7 @@ function init()
 		
 	var cubeGeometry = new THREE.CubeGeometry( 79, 79, 79, 4, 4, 4 );
 
-	var cubeTexture = new THREE.ImageUtils.loadTexture('images/tile.png');
+	var cubeTexture = new THREE.ImageUtils.loadTexture('webui/images/tile.png');
 	cubeTexture.wrapS = cubeTexture.wrapT = THREE.RepeatWrapping;
 	cubeTexture.repeat.set(4,4);
 	var cubeMaterial = new THREE.MeshBasicMaterial({map:cubeTexture});
@@ -157,7 +157,7 @@ function init()
 	cube.position.set(0, 0, 0);
 	scene.add( cube );		
 
-	var floorTexture = new THREE.ImageUtils.loadTexture( 'images/tile.png' );
+	var floorTexture = new THREE.ImageUtils.loadTexture( 'webui/images/tile.png' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 	floorTexture.repeat.set( 1, 1 );
 	var tileMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } );
