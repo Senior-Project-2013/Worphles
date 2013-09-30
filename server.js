@@ -1,12 +1,18 @@
-var dictionary = require('./js/dictionary.js')
-var pathValidator = require('./js/path_validator.js')
+var dictionary = require(__dirname+'/server/dictionary.js')
+var pathValidator = require(__dirname+'/server/path_validator.js')
 var express = require('express')
 var app = express();
 var server = require('http').createServer(app)
 var io = require('socket.io').listen(server);
 
-app.use('/', express.static(__dirname + '/../webui'));
-server.listen(3000);
+io.configure(function () { 
+  io.set("transports", ["xhr-polling"]); 
+  io.set("polling duration", 10);
+  io.set('log level', 1);
+});
+
+app.use('/', express.static(__dirname + '/webui'));
+server.listen(process.env.PORT || 3000);
 
 io.sockets.on('connection', function(socket) {
   socket.emit('moveResponse','hi');

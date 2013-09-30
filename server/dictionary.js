@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-var text = fs.readFileSync(__dirname+'/../../public/words.txt', "utf-8");
+var text = fs.readFileSync(__dirname+'/words.txt', "utf-8");
 var wordList = text.split("\n");
 
 var dictionary = {};
