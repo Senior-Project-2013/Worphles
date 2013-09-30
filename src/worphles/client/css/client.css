@@ -1,5 +1,9 @@
-html, a, button {
+html {
 	cursor: url(../resources/cursor.png), auto;
+}
+
+a, button {
+	cursor: url(../resources/mouseover-cursor.png), auto;
 }
 
 body {

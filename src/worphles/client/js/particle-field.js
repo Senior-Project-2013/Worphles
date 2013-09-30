@@ -6,7 +6,7 @@ var renderer,
 		systemCount: 3, //the number of particle systems to render, the higher the number the more particles + the more colorful
 		particleCount: 20, //the number of particles used for each line.  This number is multiplied by systemCount.
 		starCount: 500, //the number of background particles
-		sizeMultiplier: 8, //size increase for spreading particles
+		sizeMultiplier: 2, //size increase for spreading particles
 		averageParticleSpeed: .3, //lower for faster
 		pictureBlur: .02 //higher for more blurry
 	}
