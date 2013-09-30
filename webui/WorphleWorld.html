@@ -302,7 +302,10 @@ function onDocumentMouseDown( event )  {
 
 }
 
-var socket = io.connect('http://localhost');
+// only use when locally debugging
+// var socket = io.connect('http://localhost');
+// uncomment this when deploying!
+var socket = io.connect('http://worphles.herokuapp.com:80');
 socket.on('moveResponse', function(data) {
 	console.log(data);
 });
