@@ -13,53 +13,64 @@
   |------------+------------+----------+----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------|
   | 09/12/2013 | 02:30 PM   | 06:35 PM |                  245 | Completed the feasibility report on scalable tile relationship algorithms, discussed themeing, worked on other parts of report. Worked on algorithm |
   |------------+------------+----------+----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------|
+  | 09/17/2013 | 04:08 PM   | 06:01 PM |                  113 | Worked on neighbor algorithm, discussed project with team                                                                                           |
+  |------------+------------+----------+----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------|
+  | 09/24/2013 | 03:55 PM   | 05:35 PM |                  100 | did stuff                                                                                                                                           |
+  |------------+------------+----------+----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------|
+  | 09/26/2013 | 04:02 PM   | 06:55 PM |                  173 | Drew artwork for introduction book                                                                                                                  |
+  |------------+------------+----------+----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------|
 
   
 ** Helpers
-    #+BEGIN_SRC emacs-lisp
-(defun journal/new-entry()
-  "Insert a new row in the journal table and fill in the date and start time fields."
-  (interactive)
-  (org-table-goto-line 1337)
-  (org-table-goto-column 1)
-  (org-table-insert-row t)
-  (org-table-insert-hline t)
-  (insert (format-time-string "%m/%d/%Y"))
-  (org-table-align)
-  (org-table-next-field)
-  (insert (format-time-string "%I:%M %p"))
-  (org-table-next-field)
-  (org-table-next-field)
-  (org-table-next-field))
+   #+BEGIN_SRC emacs-lisp
+     (defun journal/new-entry()
+       "Insert a new row in the journal table and fill in the date and start time fields."
+       (interactive)
+       (org-table-goto-line 1337)
+       (org-table-goto-column 1)
+       (org-table-insert-row t)
+       (org-table-insert-hline t)
+       (insert (format-time-string "%m/%d/%Y"))
+       (org-table-align)
+       (org-table-next-field)
+       (insert (format-time-string "%I:%M %p"))
+       (org-table-next-field)
+       (org-table-next-field)
+       (org-table-next-field))
+     
+     (defun journal/end-entry()
+       "Fill End Time with the current time."
+       (interactive)
+       (org-table-goto-column 3)
+       (delete-region (point) (progn (org-table-end-of-field 1) (point)))
+       (org-table-align)
+       (insert (format-time-string "%I:%M %p"))
+       (org-table-align))
+     
+     (defun journal/calc-minute() 
+       "Fill the Total Time field in the current row with the elapsed minutes."
+       (interactive)
+       (org-table-goto-column 3)
+       (cl-flet 
+           ((time-string-parse (str)
+                               (list 
+                                (+ (string-to-int (substring str 0 2))
+                                   (if (equal (substring str 6 8) "PM") 12 0))
+                                (string-to-int (substring str 3 5))
+                                (substring str 6 8))))
+         (let* ((start-time (time-string-parse (org-table-get nil 2)))
+                (end-time (time-string-parse (org-table-get nil 3))))
+           (org-table-goto-column 4)  
+           (delete-region (point) (progn (org-table-end-of-field 1) (point)))
+           (insert (format "%s" (+ (* (max (- (first end-time) (first start-time) 1) 0) 60)
+                                   (if (> (first end-time) (first start-time))
+                                       (+ (- 60 (second start-time))
+                                          (second end-time))
+                                     (- (second end-time) (second start-time))))))
+           (org-table-align))))
+   #+END_SRC
 
-(defun journal/end-entry()
-  "Fill End Time with the current time."
-  (interactive)
-  (org-table-goto-column 3)
-  (delete-region (point) (progn (org-table-end-of-field 1) (point)))
-  (org-table-align)
-  (insert (format-time-string "%I:%M %p"))
-  (org-table-align))
+   #+RESULTS:
+   : journal/calc-minute
 
-(defun journal/calc-minute() 
-  "Fill the Total Time field in the current row with the elapsed minutes."
-  (interactive)
-  (org-table-goto-column 3)
-  (cl-flet 
-      ((time-string-parse (str)
-			  (list 
-			   (+ (string-to-int (substring str 0 2))
-			      (if (equal (substring str 6 8) "PM") 12 0))
-			   (string-to-int (substring str 3 5))
-			   (substring str 6 8))))
-    (let* ((start-time (time-string-parse (org-table-get nil 2)))
-	   (end-time (time-string-parse (org-table-get nil 3))))
-      (org-table-goto-column 4)  
-      (delete-region (point) (progn (org-table-end-of-field 1) (point)))
-      (insert (format "%s" (+ (* (max (- (first end-time) (first start-time) 1) 0) 60)
-			      (if (> (first end-time) (first start-time))
-				  (+ (- 60 (second start-time))
-				     (second end-time))
-				(- (second end-time) (second start-time))))))
-      (org-table-align))))
-  #+END_SRC
+   
