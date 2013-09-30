@@ -1,10 +1,10 @@
 $(document).ready(function() {
 	$('#storyButton').click(function() {
-		$('#bookContainer').fadeIn();
+		$('#myBookContainer').fadeIn();
 	});
 
-	$('#bookContainer > .closeBtn').click(function() {
+	$('#myBook > .closeBtn').click(function() {
 		myBook.goToPage(0);
-		$('#bookContainer').fadeOut();
+		$('#myBookContainer').fadeOut();
 	});
 });

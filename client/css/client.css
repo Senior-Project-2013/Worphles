@@ -11,6 +11,7 @@ body {
 	font-family: 'Josefin Sans', sans-serif;
 	text-align: center;
 	background-color: black;
+	margin: 0;
 }
 
 canvas {
@@ -20,7 +21,7 @@ canvas {
 	height: 100%;
 }
 
-#bookContainer > .closeBtn {
+#myBook > .closeBtn {
 	position: absolute;
 	width: 60px;
 	height: 60px;
@@ -31,23 +32,38 @@ canvas {
 	font-size: 30px;
 	opacity: 0.7;
 	filter:alpha(opacity=70);
+	z-index: 20;
 }
 
-#bookContainer > .closeBtn:hover {
+#myBook > .closeBtn:hover {
 	opacity: 1.0;
 	filter:alpha(opacity=100);
+}
+
+.botSideBarContent {
+	width: 100%;
+	margin: 0 auto 30px auto;
+	vertical-align: bottom;
+	position: absolute;
+	bottom: 0;
+}
+
+.centerSideBarContent {
+	margin-top: -145px;
+	width: 100%;
+	top: 50%;
+	left: 50%;
+	margin-left: -186px;
+	position: absolute;
+	height: 311px;
 }
 
 .imBookPage {
 	position: absolute;
 	left: 0px;
 	top: 0px;
-	width: 600px;
-	height: 504px;
 	color: black;
 	overflow: hidden;
-	border: solid 3px black;
-	border-style: dashed;
 	background-color: #DDD;
 	font-size: 26px;
 	vertical-align: text-bottom;
@@ -86,24 +102,6 @@ canvas {
 	margin: 30px auto 0 auto;
 }
 
-.centerSideBarContent {
-	margin-top: -145px;
-	width: 100%;
-	top: 50%;
-	left: 50%;
-	margin-left: -186px;
-	position: absolute;
-	height: 311px;
-}
-
-.botSideBarContent {
-	width: 100%;
-	margin: 0 auto 30px auto;
-	vertical-align: bottom;
-	position: absolute;
-	bottom: 0;
-}
-
 .textDivider {
 	color: white;
 	margin: 0px 20px 0px 20px;
@@ -122,22 +120,17 @@ canvas {
 	font-size: 24px;
 }
 
-#bookContainer {
+#myBookContainer {
 	display: none;
-	width: 1204px;
-	height: 504px;
-	position: absolute;
-	top: 50%;
-	margin-top: -252px;
-	left: 50%;
-	margin-left: -602px;
+	position: relative;
 }
 
 #myBook {
 	display: none;
-	position: absolute;
+	position: relative;
 	width: 100%;
 	height: 100%;
+	margin: 80px auto 0 auto;
 	background-color: transparent;
 	font-family: 'Josefin Sans', sans-serif;
 }
