@@ -267,9 +267,6 @@ function onDocumentMouseDown( event )  {
 	// event.preventDefault();
 	mouse.clicked = true;
 	document.addEventListener( 'mouseup', onDocumentMouseUp, false );
-	// return;
-	
-	console.log("Click.");
 	
 	// update the mouse variable
 	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
@@ -322,8 +319,9 @@ socket.on('partialMove', function(tile) {
 function onDocumentMouseUp( event ) {
 	document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
 	mouse.clicked = false;
-	// alert('You clicked tiles '+wordTiles.join(','));
-	socket.emit('moveComplete',wordTiles);
+	if (wordTiles.length) {
+		socket.emit('moveComplete',wordTiles);
+	}
 	wordTiles = [];
 }
 
