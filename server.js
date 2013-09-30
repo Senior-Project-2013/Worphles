@@ -13,6 +13,10 @@ io.configure(function () {
 
 app.use('/webui', express.static(__dirname + '/webui'));
 app.get('/', function(req, res) { res.sendfile(__dirname+'/webui/WorphleWorld.html'); });
+app.get('/environment.js', function(req, res) {
+  res.setHeader("Content-Type", 'application/javascript');
+  res.send('var WEBSOCKETS_URL = \'' + (process.env.WEBSOCKETS_URL || 'http://localhost') +'\';');
+});
 
 server.listen(process.env.PORT || 3000);
 

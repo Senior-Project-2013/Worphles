@@ -25,6 +25,7 @@
 
 <div id="ThreeJS" style="z-index: 1; position: absolute; left:0px; top:0px"></div>
 <script src="/socket.io/socket.io.js"></script>
+<script src="/environment.js"></script>
 <script>
 /*
 	Three.js "tutorials by example"
@@ -305,10 +306,7 @@ function onDocumentMouseDown( event )  {
 
 }
 
-// only use when locally debugging
-// var socket = io.connect('http://localhost');
-// uncomment this when deploying!
-var socket = io.connect('http://worphles.herokuapp.com:80');
+var socket = io.connect(WEBSOCKETS_URL);
 socket.on('moveResponse', function(data) {
 	console.log(data);
 });
