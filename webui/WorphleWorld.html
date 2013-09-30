@@ -146,12 +146,19 @@ function init()
 	//////////////
 	// GEOMETRY //
 	//////////////
+	var CUBE_SIZE = 80;
+	var tilesPerRow = 4;
+	var tilesPerSide = Math.pow(tilesPerRow,2);
+	var tileSize = CUBE_SIZE / tilesPerRow;
+	var tilePadding = tileSize*0.25;
+	var hitBoxSize = tileSize*0.75;
+	var hitBoxStart = 0.5*tileSize*(tilesPerRow%2+1*((tilesPerRow%2)?-1:1)) + Math.floor((tilesPerRow-0.5)/2)*tileSize;
 		
-	var cubeGeometry = new THREE.CubeGeometry( 79, 79, 79, 4, 4, 4 );
+	var cubeGeometry = new THREE.CubeGeometry( 79.9, 79.9, 79.9, 4, 4, 4 );
 
 	var cubeTexture = new THREE.ImageUtils.loadTexture('webui/images/tile.png');
 	cubeTexture.wrapS = cubeTexture.wrapT = THREE.RepeatWrapping;
-	cubeTexture.repeat.set(4,4);
+	cubeTexture.repeat.set(tilesPerRow,tilesPerRow);
 	var cubeMaterial = new THREE.MeshBasicMaterial({map:cubeTexture});
 	var cube = new THREE.Mesh(cubeGeometry.clone(), cubeMaterial);
 	cube.position.set(0, 0, 0);
@@ -161,13 +168,13 @@ function init()
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 	floorTexture.repeat.set( 1, 1 );
 	var tileMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } );
-	var floorGeometry = new THREE.PlaneGeometry(15, 15);
+	var floorGeometry = new THREE.PlaneGeometry(hitBoxSize,hitBoxSize);
 
 	var X_AXIS = new THREE.Vector3(1,0,0);
 	var Y_AXIS = new THREE.Vector3(0,1,0);
 	var Z_AXIS = new THREE.Vector3(0,0,1);
 	var NINETY_DEG = 90*Math.PI/180;
-	TILES = new Array(96);
+	TILES = new Array(tilesPerSide*6);
 
 	function Tile(num, letter, color, geometry, material) {
 		this.num = num;
@@ -183,8 +190,8 @@ function init()
 		var thisGeometry = floorGeometry.clone();
 		var thisMaterial = tileMaterial.clone();
 		var tile = new THREE.Mesh(thisGeometry, thisMaterial);
-		tile.position.x = -30 + 20*x;
-		tile.position.y = 30 - 20*y;
+		tile.position.x = -hitBoxStart + tileSize*x;
+		tile.position.y = -hitBoxStart + tileSize*y;
 		tile.position.z = 40;
 		tile.position.applyMatrix4(rotation_matrix);
 		tile.rotateOnAxis( axis, NINETY_DEG*side );
@@ -195,27 +202,23 @@ function init()
 		TILES[num] = new Tile(num, null, null, thisGeometry, thisMaterial);
 	}
 
-	var tile = 16;
-	//make sides 0-3
-	for (var side = 0; side < 4; side++) {
-		for (var row = 0; row < 4; row++) {
-			for (var col = 0; col < 4; col++) {
-				makeTile(side-1, Y_AXIS, col,row,tile+row*16+col);
+	// new tiles stuffs!
+	for (var side = 0; side < 6; side++) {
+		console.log('side',side);
+		for (var row = 0; row < tilesPerRow; row++) {
+			console.log('row',row);
+			for (var col = 0; col < tilesPerRow; col++) {
+				var tileNum = side*tilesPerSide + row*tilesPerRow + col;
+				console.log(tileNum);
+				if (side < 4) {
+					makeTile(side, Y_AXIS, col, row, tileNum);
+				} else if (side == 4) {
+					makeTile(1, X_AXIS, col, row, tileNum);
+				} else if (side == 5) {
+					makeTile(-1, X_AXIS, col, row, tileNum);
+				}
 			}
-			print = [];
 		}
-		tile += 4;
-	}
-	//make sides 4-5
-	tile = 0;
-	for (var side = 3; side > 0; side-=2) {
-		for (var row = 0; row < 4; row++) {
-			for (var col = 0; col < 4; col++) {
-				makeTile(side, X_AXIS, col,row,tile+row*4+col);
-			}
-			print = [];
-		}
-		tile = 80;
 	}
 
 	// create a set of coordinate axes to help orient user
