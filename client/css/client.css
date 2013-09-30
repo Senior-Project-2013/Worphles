@@ -1,9 +1,9 @@
 html {
-	cursor: url(../resources/cursor.png), auto;
+	cursor: url(../resources/cursors/stand.png), auto;
 }
 
 a, button {
-	cursor: url(../resources/mouseover-cursor.png), auto;
+	cursor: url(../resources/cursors/lookup.png), auto;
 }
 
 body {
@@ -51,6 +51,14 @@ canvas {
 	background-color: #DDD;
 	font-size: 26px;
 	vertical-align: text-bottom;
+}
+
+.rightPage {
+	cursor: url(../resources/cursors/signright.png), auto;
+}
+
+.leftPage {
+	cursor: url(../resources/cursors/signleft.png), auto;
 }
 
 .imBookPage:hover {
