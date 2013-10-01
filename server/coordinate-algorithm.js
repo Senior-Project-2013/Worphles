@@ -1,30 +1,36 @@
-var gm = require('./geometry.js');
+var geometry = require('./geometry.js');
 var assert = require('assert');
 
 
+/**
+ * Possible Directions, held as vectors
+ */
 var DIRECTIONS = {
-  right:  new gm.Point(1, 0),
-  upRight:  new gm.Point(1, 1),
-  up:  new gm.Point(0, 1),
-  upLeft:  new gm.Point(-1, 1),
-  left:  new gm.Point(-1, 0),
-  downLeft:  new gm.Point(-1, -1),
-  down:  new gm.Point(0, -1),
-  downRight:  new gm.Point(1, -1)
+  right:  new geometry.Vector(1, 0),
+  upRight:  new geometry.Vector(1, 1),
+  up:  new geometry.Vector(0, 1),
+  upLeft:  new geometry.Vector(-1, 1),
+  left:  new geometry.Vector(-1, 0),
+  downLeft:  new geometry.Vector(-1, -1),
+  down:  new geometry.Vector(0, -1),
+  downRight:  new geometry.Vector(1, -1)
 };
 
+/**
+ * A Tile
+ */
 var Tile = function(side, point) {
-  return {
-    side: side,
-    pos: point
-  };
+  this.side = side;
+  this.pos =  point;	
 }
 
+
+/**
+ * Side Relation
+ */
 var SideRelation = function(side, rotations) {
-  return {
-    side: side,
-    rotations: rotations
-  };
+  this.side =  side;
+  this.rotations =  rotations;
 };
 
 /**
@@ -79,64 +85,92 @@ function applyTransform(point, rotations, n) {
 }
 
 /**
- * The game board
+ * The Game Board
  */
 var CubeGrid = function(size) {
 
+  // init the grid
   var grid = [];
-  for (var i = 0; i < size * size * 6; i++) {
-    grid[i] = indexToTile(i, size);
-  }
+  for (var i = 0; i < size * size * 6; i++) grid[i] = indexToTile(i, size);
 
-  return {
-    grid: grid,
-    size: size,
-    sides: Sides,
-    getTile: function(index) {
-      return this.grid[index];
-    },
-    nextTile: function(index, direction) {
-      var thisTile = this.getTile(index);
-      var corner = this.tileCorner(index);
-      
-      if (corner != null && direction == corner) return null;
+  
+  /**
+   * Array of tiles
+   */
+  this.grid =  grid;
 
-      var nextTile = Tile(thisTile.side, thisTile.pos);
-      var thisSide = this.sides[nextTile.side];
-      nextTile.pos = nextTile.pos.add(direction);
-      if (nextTile.pos.y == size) {
-	nextTile.pos.y = 0;
-	nextTile.side = thisSide.top.side;
-	nextTile.pos = applyTransform(nextTile.pos, thisSide.top.rotations, size);
-      } else if (nextTile.pos.y == -1) {
-	nextTile.pos.y = size -1;
-	nextTile.side = thisSide.botom.side;
-	nextTile.pos = applyTransform(nextTile.pos, thisSide.bottome.rotations, size);
-      } else if (nextTile.pos.x == size) {
-	nextTile.pos.x = 0;
-	nextTile.side = thisSide.right.side;
-	nextTile.pos = applyTransform(nextTile.pos, thisSide.right.rotations, size);
-      } else if (nextTile.pos.x == -1) {
-	nextTile.pos.x = size -1;
-	nextTile.side = thisSide.left.side;
-	nextTile.pos = applyTransform(nextTile.pos, thisSide.left.rotations, size);
-      }
-      return nextTile;
-    },
+  
+  /**
+   * Cube size
+   */
+  this.size =  size;
+
+  
+  /**
+   * Array of sides
+   */
+  this.sides =  Sides;
+
+  
+  /**
+   * Get tile at INDEX
+   */
+  this.getTile =  function(index) {
+    return this.grid[index];
+  };
+  
+
+  /**
+   * Get the tile next to the tile at INDEX in the given DIRECTION
+   */
+  this.nextTile =  function(index, direction) {
+    var thisTile = this.getTile(index);
+    var corner = this.tileCorner(index);
     
-    tileIndex: function(tile) {
-      return (tile.side * (size * size)) + (tile.pos.y * size) + tile.pos.x;
-    },
+    if (corner != null && direction == corner) return null;
     
-    tileCorner: function(index) {
-      var sizeSqr = this.size*this.size;
-      var t = index - (sizeSqr * Math.floor(index / sizeSqr));
-      if (t == 0) return DIRECTIONS.downLeft;
-      else if (t == this.size-1) return DIRECTIONS.downRight;
-      else if (t == sizeSqr - this.size) return DIRECTIONS.upLeft;
-      else if (t == sizeSqr - 1) return DIRECTIONS.upRight;
-      else return null;
+    var nextTile = new Tile(thisTile.side, thisTile.pos);
+    var thisSide = this.sides[nextTile.side];
+    nextTile.pos = nextTile.pos.add(direction);
+    if (nextTile.pos.y == size) {
+      nextTile.pos.y = 0;
+      nextTile.side = thisSide.top.side;
+      nextTile.pos = applyTransform(nextTile.pos, thisSide.top.rotations, size);
+    } else if (nextTile.pos.y == -1) {
+      nextTile.pos.y = size -1;
+      nextTile.side = thisSide.botom.side;
+      nextTile.pos = applyTransform(nextTile.pos, thisSide.bottome.rotations, size);
+    } else if (nextTile.pos.x == size) {
+      nextTile.pos.x = 0;
+      nextTile.side = thisSide.right.side;
+      nextTile.pos = applyTransform(nextTile.pos, thisSide.right.rotations, size);
+    } else if (nextTile.pos.x == -1) {
+      nextTile.pos.x = size -1;
+      nextTile.side = thisSide.left.side;
+      nextTile.pos = applyTransform(nextTile.pos, thisSide.left.rotations, size);
     }
+    return nextTile;
+  };
+  
+  /**
+   * Get a tile's index
+   */
+  this.tileIndex = function(tile) {
+    return (tile.side * (size * size)) + (tile.pos.y * size) + tile.pos.x;
+  };
+  
+  /**
+   * Returns the corner that the tile at INDEX is on as a Direction,
+   * if the tile is not on a corner, null is returned
+   */
+  this.tileCorner = function(index) {
+    var sizeSqr = this.size*this.size;
+    var t = index - (sizeSqr * Math.floor(index / sizeSqr));
+    if (t == 0) return DIRECTIONS.downLeft;
+    else if (t == this.size-1) return DIRECTIONS.downRight;
+    else if (t == sizeSqr - this.size) return DIRECTIONS.upLeft;
+    else if (t == sizeSqr - 1) return DIRECTIONS.upRight;
+    else return null;
   };
 };
 
@@ -150,5 +184,5 @@ function indexToTile(index, size) {
   assert(index >=0 && index < size*size*6);
   var side = Math.floor(index / (size * size));
   var sideIndex = index - side * (size * size);
-  return Tile(side, new gm.Point(sideIndex % size, Math.floor(sideIndex / size)));
+  return new Tile(side, new geometry.Vector(sideIndex % size, Math.floor(sideIndex / size)));
 }
