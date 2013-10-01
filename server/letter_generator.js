@@ -1,10 +1,140 @@
-var letterDistribution = [0.0806425, 0.0960163, 0.1229086, 0.1661953, 0.2950576, 0.3195423, 0.3391679, 0.4001551, 0.4692106, 0.4703283, 0.4765805, 0.5175973, 0.5426070, 0.6124568, 0.6862399, 0.7032713, 0.7043362, 0.7659019, 0.8297193, 0.9199659, 0.9478228, 0.9580807, 0.9792730, 0.9809672, 0.9990304, 1.0000000];
-var letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+var letterDistribution = [
+  {
+    letter: "A",
+    frequency: 0.0806425,
+    score: 1
+  },
+  {
+    letter: "B",
+    frequency: 0.0960163,
+    score: 3
+  },
+  {
+    letter: "C",
+    frequency: 0.1229086,
+    score: 3
+  },
+  {
+    letter: "D",
+    frequency: 0.1661953,
+    score: 2
+  },
+  {
+    letter: "E",
+    frequency: 0.2950576,
+    score: 1
+  },
+  {
+    letter: "F",
+    frequency: 0.3195423,
+    score: 4
+  },
+  {
+    letter: "G",
+    frequency: 0.3391679,
+    score: 2
+  },
+  {
+    letter: "H",
+    frequency: 0.4001551,
+    score: 4
+  },
+  {
+    letter: "I",
+    frequency: 0.4692106,
+    score: 1
+  },
+  {
+    letter: "J",
+    frequency: 0.4703283,
+    score: 8
+  },
+  {
+    letter: "K",
+    frequency: 0.4765805,
+    score: 5
+  },
+  {
+    letter: "L",
+    frequency: 0.5175973,
+    score: 1
+  },
+  {
+    letter: "M",
+    frequency: 0.5426070,
+    score: 3
+  },
+  {
+    letter: "N",
+    frequency: 0.6124568,
+    score: 1
+  },
+  {
+    letter: "O",
+    frequency: 0.6862399,
+    score: 1
+  },
+  {
+    letter: "P",
+    frequency: 0.7032713,
+    score: 3
+  },
+  {
+    letter: "Q",
+    frequency: 0.7043362,
+    score: 10
+  },
+  {
+    letter: "R",
+    frequency: 0.7659019,
+    score: 1
+  },
+  {
+    letter: "S",
+    frequency: 0.8297193,
+    score: 1
+  },
+  {
+    letter: "T",
+    frequency: 0.9199659,
+    score: 1
+  },
+  {
+    letter: "U",
+    frequency: 0.9478228,
+    score: 1
+  },
+  {
+    letter: "V",
+    frequency: 0.9580807,
+    score: 5
+  },
+  {
+    letter: "W",
+    frequency: 0.9792730,
+    score: 4
+  },
+  {
+    letter: "X",
+    frequency: 0.9809672,
+    score: 8
+  },
+  {
+    letter: "Y",
+    frequency: 0.9990304,
+    score: 4
+  },
+  {
+    letter: "Z",
+    frequency: 1.0000000,
+    score: 10
+  }];
 
 function getLetter() {
+  var random = Math.random();
   for (i = 0; i < letterDistribution.length; i++) {
-    if (random < letterDistribution[i]) {
-      return letters[i];
+    if (random < letterDistribution[i].frequency) {
+      return letterDistribution[i].letter;
     }
   }
 }
