@@ -1,14 +1,21 @@
-var letterGenerator = require("letter_generator.js");
-
-exports.letterGrid = [];
+var letterGenerator = require(__dirname+"/letter_generator.js");
+var letterGrid = [];
 
 exports.fillGrid = function(gridSize) {
 	numLetters = gridSize * gridSize * 6; //6 - number of sides on cube
 
 	for(var i = 0; i < numLetters; i++)
-		exports.letterGrid[i] = letterGenerator.getLetter();
+		letterGrid[i] = letterGenerator.getLetter();
 }
 
-exports.replaceLetter = function(coordinate) {
-	exports.letterGrid[coordinate] = letterGenerator.getLetter();
+exports.replaceLetterByCoordinate = function(coordinate) {
+	letterGrid[coordinate] = letterGenerator.getLetter();
+}
+
+exports.getGrid = function() {
+  return letterGrid;
+}
+
+exports.getLetterByCoordinate = function(coordinate) {
+  return letterGrid[coordinate];
 }

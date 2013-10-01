@@ -1,9 +1,10 @@
-var dictionary = require(__dirname+'/server/dictionary.js')
-var pathValidator = require(__dirname+'/server/path_validator.js')
-var express = require('express')
-var app = express();
-var server = require('http').createServer(app)
-var io = require('socket.io').listen(server);
+var dictionary = require(__dirname+'/server/dictionary.js'),
+    pathValidator = require(__dirname+'/server/path_validator.js'),
+    //letterGrid = require(__dirname+'/server/letter_grid.js'),
+    express = require('express'),
+    app = express(),
+    server = require('http').createServer(app),
+    io = require('socket.io').listen(server);
 
 io.configure(function () { 
   io.set("transports", ["xhr-polling"]); 
@@ -22,6 +23,8 @@ server.listen(process.env.PORT || 3000);
 
 io.sockets.on('connection', function(socket) {
   socket.emit('moveResponse','hi');
+  //letterGrid.fillGrid(4);
+  //socket.emit('letterGrid', letterGrid.getGrid());
   socket.on('moveComplete', function(data) { validateWord(socket, data); });
   socket.on('partialMove', function(data) { showEveryone(socket, data); });
 });

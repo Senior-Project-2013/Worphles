@@ -1,105 +1,105 @@
 <html lang="en">
 <head>
-	<title>Worphles!</title>
+  <title>Worphles!</title>
 
-	<link rel="stylesheet" href="../css/buttons.css"/>
-	<link href='http://fonts.googleapis.com/css?family=Josefin+Sans' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="../css/client.css"/>
+  <link rel="stylesheet" href="../css/buttons.css"/>
+  <link href='http://fonts.googleapis.com/css?family=Josefin+Sans' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="../css/client.css"/>
 
-	<script src="../lib/jquery-2.0.3.min.js"></script>
-	<script src="../lib/buttons.js"></script>
-	<script src="../lib/three.min.js"></script>
-	<script src="../lib/jquery.imBookFlip-1.3.js"></script>
-	<script src="../js/storybook.js"></script>
-	<script>
-	var myBook;
+  <script src="../lib/jquery-2.0.3.min.js"></script>
+  <script src="../lib/buttons.js"></script>
+  <script src="../lib/three.min.js"></script>
+  <script src="../lib/jquery.imBookFlip-1.3.js"></script>
+  <script src="../js/storybook.js"></script>
+  <script>
+  var myBook;
 
-	$(document).ready(function() {
-		$('.imBookPage').css({ width: window.innerWidth * 0.35, height: window.innerHeight * 0.8, border: 'solid 3px black', 'border-style': 'dashed' });
+  $(document).ready(function() {
+    $('.imBookPage').css({ width: window.innerWidth * 0.35, height: window.innerHeight * 0.8, border: 'solid 3px black', 'border-style': 'dashed' });
 
-		myBook = $("#myBook").imBookFlip({
-			page_class: 'imBookPage'		
-		});	
+    myBook = $("#myBook").imBookFlip({
+      page_class: 'imBookPage'    
+    }); 
 
-		myBook.create();
-	})
-	</script>
+    myBook.create();
+  })
+  </script>
 </head>
 <body>
-	<script src="../js/particle-field.js"></script>
-	<div id="wrapper">
-		<div id="sideBar">
-			<div class="topSideBarContent">
-				<span class="buttonContainer">
-					<a href="#" class="button button-circle button-flat-action">About</a>
-				</span>
-				<span class="buttonContainer">
-					<a href="#" id="storyButton" class="button button-circle button-flat-highlight">The Story</a>
-				</span>
-			</div>
-			<div class="centerSideBarContent">
-			</div>
-			<div class="botSideBarContent">
-				<span class="buttonContainer">
-					<a href="#" id="playButton" class="button button-circle button-flat-primary">Play Worphles!</a>
-				</span>
-			</div>
-		</div>
-		<div id="content">
-			<div id="myBookContainer">
-				<div id="myBook">
-					<div class="imBookPage titlePage rightPage">
-						<span class="storyText">The Legend of Wop</span>
-					</div>
-					<div class="imBookPage leftPage">
-						<span class="storyText">Long ago, in a galaxy far, far away, a creature named Wop roamed a cube planet.</span>
-						<img class="storyImg" src="../resources/storyImages/wop1b.png"/>
-					</div>
-					<div class="imBookPage rightPage">
-						<span class="storyText">Wop was all alone :'( It walked around this planet for centuries. Wop soon became bored.</span>
-						<img class="storyImg" src="../resources/storyImages/wop2b.png"/>
-					</div>
-					<div class="imBookPage leftPage">
-						<span class="storyText">In an attempt to relieve some boredom, Wop spent all its free time learning how to spell. It became the greatest speller in all of the universe.</span>
-						<img class="storyImg" src="../resources/storyImages/wop3b.png"/>
-					</div>
-					<div class="imBookPage rightPage">
-						<span class="storyText">One day while brushing its hair, Wop noticed a large tumor growing off the back of its head.</span>
-						<img class="storyImg" src="../resources/storyImages/wop4b.png"/>
-					</div>
-					<div class="imBookPage leftPage">
-						<span class="storyText">It turns out the tumor was actually an exact copy of itself. However, the copy was a terrible speller. Wop was very surprised to learn that it was asexual!</span>
-						<img class="storyImg" src="../resources/storyImages/wop5b.png"/>
-					</div>
-					<div class="imBookPage rightPage">
-						<span class="storyText">Soon the cube was inhabited by a plethora of these creatures, now named "Worphles". All these Worphles claimed to be the original Wop!</span>
-						<img class="storyImg" src="../resources/storyImages/wop6b.png"/>
-					</div>
-					<div class="imBookPage leftPage">
-						<span class="storyText">The Worphles became violent. Everyone wanted to be acknowledged as the first Worphle.</span>
-						<img class="storyImg" src="../resources/storyImages/wop7b.png"/>
-					</div>
-					<div class="imBookPage rightPage">
-						<span class="storyText">The Worphles realized this bloodshed was unnecessary. They could instead use a vital fact about Wop. Wop was a great speller!</span>
-						<img class="storyImg" src="../resources/storyImages/wop8b.png"/>
-					</div>
-					<div class="imBookPage leftPage">
-						<span class="storyText">A spelling contest was organized. The Worphles made their planet into a playing field for this competition.</span>
-						<img class="storyImg" src="../resources/storyImages/wop9b.png"/>
-					</div>
-					<div class="imBookPage rightPage">
-						<span class="storyText">The competition continues even today.  The winner will be crowned Wop, ruler of words and Worphles! ;)</span>
-						<img class="storyImg" src="../resources/storyImages/wop10b.png"/>
-					</div>
-					<div class="imBookPage finPage leftPage">
-						<span class="storyText">FIN</span>
-					</div>
-					<button class="closeBtn button-circle button-flat-caution">X</button>
-				</div>
-			</div>
-		</div>
-		<script src="../js/particle-spread.js"></script>
-	</div>
-	<script src="../js/particle-spread.js"></script>
+  <script src="../js/particle-field.js"></script>
+  <div id="wrapper">
+    <div id="sideBar">
+      <div class="topSideBarContent">
+        <span class="buttonContainer">
+          <a href="#" class="button button-circle button-flat-action">About</a>
+        </span>
+        <span class="buttonContainer">
+          <a href="#" id="storyButton" class="button button-circle button-flat-highlight">The Story</a>
+        </span>
+      </div>
+      <div class="centerSideBarContent">
+      </div>
+      <div class="botSideBarContent">
+        <span class="buttonContainer">
+          <a href="#" id="playButton" class="button button-circle button-flat-primary">Play Worphles!</a>
+        </span>
+      </div>
+    </div>
+    <div id="content">
+      <div id="myBookContainer">
+        <div id="myBook">
+          <div class="imBookPage titlePage rightPage">
+            <span class="storyText">The Legend of Wop</span>
+          </div>
+          <div class="imBookPage leftPage">
+            <span class="storyText">Long ago, in a galaxy far, far away, a creature named Wop roamed a cube planet.</span>
+            <img class="storyImg" src="../resources/storyImages/wop1b.png"/>
+          </div>
+          <div class="imBookPage rightPage">
+            <span class="storyText">Wop was all alone :'( It walked around this planet for centuries. Wop soon became bored.</span>
+            <img class="storyImg" src="../resources/storyImages/wop2b.png"/>
+          </div>
+          <div class="imBookPage leftPage">
+            <span class="storyText">In an attempt to relieve some boredom, Wop spent all its free time learning how to spell. It became the greatest speller in all of the universe.</span>
+            <img class="storyImg" src="../resources/storyImages/wop3b.png"/>
+          </div>
+          <div class="imBookPage rightPage">
+            <span class="storyText">One day while brushing its hair, Wop noticed a large tumor growing off the back of its head.</span>
+            <img class="storyImg" src="../resources/storyImages/wop4b.png"/>
+          </div>
+          <div class="imBookPage leftPage">
+            <span class="storyText">It turns out the tumor was actually an exact copy of itself. However, the copy was a terrible speller. Wop was very surprised to learn that it was asexual!</span>
+            <img class="storyImg" src="../resources/storyImages/wop5b.png"/>
+          </div>
+          <div class="imBookPage rightPage">
+            <span class="storyText">Soon the cube was inhabited by a plethora of these creatures, now named "Worphles". All these Worphles claimed to be the original Wop!</span>
+            <img class="storyImg" src="../resources/storyImages/wop6b.png"/>
+          </div>
+          <div class="imBookPage leftPage">
+            <span class="storyText">The Worphles became violent. Everyone wanted to be acknowledged as the first Worphle.</span>
+            <img class="storyImg" src="../resources/storyImages/wop7b.png"/>
+          </div>
+          <div class="imBookPage rightPage">
+            <span class="storyText">The Worphles realized this bloodshed was unnecessary. They could instead use a vital fact about Wop. Wop was a great speller!</span>
+            <img class="storyImg" src="../resources/storyImages/wop8b.png"/>
+          </div>
+          <div class="imBookPage leftPage">
+            <span class="storyText">A spelling contest was organized. The Worphles made their planet into a playing field for this competition.</span>
+            <img class="storyImg" src="../resources/storyImages/wop9b.png"/>
+          </div>
+          <div class="imBookPage rightPage">
+            <span class="storyText">The competition continues even today.  The winner will be crowned Wop, ruler of words and Worphles! ;)</span>
+            <img class="storyImg" src="../resources/storyImages/wop10b.png"/>
+          </div>
+          <div class="imBookPage finPage leftPage">
+            <span class="storyText">FIN</span>
+          </div>
+          <button class="closeBtn button-circle button-flat-caution">X</button>
+        </div>
+      </div>
+    </div>
+    <script src="../js/particle-spread.js"></script>
+  </div>
+  <script src="../js/particle-spread.js"></script>
 </body>
 </html>
