@@ -1,6 +1,7 @@
 var geometry = require('./geometry.js');
 var assert = require('assert');
 
+var SIDES_PER_CUBE = 6;
 
 /**
  * Possible Directions, held as vectors
@@ -91,7 +92,7 @@ var CubeGrid = function(size) {
 
   // init the grid
   var grid = [];
-  for (var i = 0; i < size * size * 6; i++) grid[i] = indexToTile(i, size);
+  for (var i = 0; i < size * size * SIDES_PER_CUBE; i++) grid[i] = indexToTile(i, size);
 
   
   /**
@@ -181,7 +182,7 @@ var CubeGrid = function(size) {
  * Initialize a Tile based on an index on a sized CubeGrid 
  */
 function indexToTile(index, size) {
-  assert(index >=0 && index < size*size*6);
+  assert(index >= 0 && index < size*size*SIDES_PER_CUBE);
   var side = Math.floor(index / (size * size));
   var sideIndex = index - side * (size * size);
   return new Tile(side, new geometry.Vector(sideIndex % size, Math.floor(sideIndex / size)));
