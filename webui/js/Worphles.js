@@ -113,7 +113,7 @@ function init(settings)
   // GEOMETRY //
   //////////////
   var CUBE_SIZE = 80;
-  var tilesPerRow = settings.size;
+  var tilesPerRow = settings.gridSize;
   var tilesPerSide = Math.pow(tilesPerRow,2);
   var tileSize = CUBE_SIZE / tilesPerRow;
   var tilePadding = tileSize*0.25;
