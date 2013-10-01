@@ -1,6 +1,6 @@
 var dictionary = require(__dirname+'/server/dictionary.js'),
     pathValidator = require(__dirname+'/server/path_validator.js'),
-    //letterGrid = require(__dirname+'/server/letter_grid.js'),
+    letterGrid = require(__dirname+'/server/letter_grid.js'),
     express = require('express'),
     app = express(),
     server = require('http').createServer(app),
@@ -23,8 +23,8 @@ server.listen(process.env.PORT || 3000);
 
 io.sockets.on('connection', function(socket) {
   socket.emit('moveResponse','hi');
-  //letterGrid.fillGrid(4);
-  //socket.emit('letterGrid', letterGrid.getGrid());
+  letterGrid.fillGrid(6);
+  socket.emit('setup', {size:6,letterGrid:letterGrid.getGrid()});
   socket.on('moveComplete', function(data) { validateWord(socket, data); });
   socket.on('partialMove', function(data) { showEveryone(socket, data); });
 });
