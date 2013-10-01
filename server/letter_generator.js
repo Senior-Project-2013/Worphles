@@ -130,7 +130,7 @@ var letterDistribution = [
     score: 10
   }];
 
-function getLetter() {
+exports.getLetter = function() {
   var random = Math.random();
   for (i = 0; i < letterDistribution.length; i++) {
     if (random < letterDistribution[i].frequency) {
