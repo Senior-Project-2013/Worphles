@@ -25,7 +25,7 @@ server.listen(process.env.PORT || 3000);
 io.sockets.on('connection', function(socket) {
   socket.emit('moveResponse','hi');
   letterGrid.fillGrid(6);
-  gameSettings.setSettingByName('letterGrid', letterGrid);
+  gameSettings.setSettingByName('letterGrid', letterGrid.getGrid());
   socket.emit('setup', gameSettings.getSettings());
   socket.on('moveComplete', function(data) { validateWord(socket, data); });
   socket.on('partialMove', function(data) { showEveryone(socket, data); });
