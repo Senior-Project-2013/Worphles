@@ -1,21 +1,26 @@
 var geometry = require('./geometry.js');
 var assert = require('assert');
 
+/**
+ * Faces of a cube
+ */
 var SIDES_PER_CUBE = 6;
+
 
 /**
  * Possible Directions, held as vectors
  */
 var DIRECTIONS = {
-  right:  new geometry.Vector(1, 0),
-  upRight:  new geometry.Vector(1, 1),
-  up:  new geometry.Vector(0, 1),
-  upLeft:  new geometry.Vector(-1, 1),
-  left:  new geometry.Vector(-1, 0),
-  downLeft:  new geometry.Vector(-1, -1),
-  down:  new geometry.Vector(0, -1),
-  downRight:  new geometry.Vector(1, -1)
+  right:	new geometry.Vector(1, 0),
+  upRight:	new geometry.Vector(1, 1),
+  up:		new geometry.Vector(0, 1),
+  upLeft:	new geometry.Vector(-1, 1),
+  left:		new geometry.Vector(-1, 0),
+  downLeft:	new geometry.Vector(-1, -1),
+  down:		new geometry.Vector(0, -1),
+  downRight:	new geometry.Vector(1, -1)
 };
+
 
 /**
  * A Tile
@@ -34,40 +39,41 @@ var SideRelation = function(side, rotations) {
   this.rotations =  rotations;
 };
 
+
 /**
  * Sides
  */
 var Sides =  [
   {
-    left: new SideRelation(3, 0),
-    right: new SideRelation(1, 0),
-    top: new SideRelation(5, 0),
-    bottom: new SideRelation(4, 0)
+    left:	new SideRelation(3, 0),
+    right:	new SideRelation(1, 0),
+    top:	new SideRelation(5, 0),
+    bottom:	new SideRelation(4, 0)
   },{
-    left: new SideRelation(0, 0),
-    right: new SideRelation(2, 0),
-    top: new SideRelation(5, 1),
-    bottom: new SideRelation(4, 3)
+    left:	new SideRelation(0, 0),
+    right:	new SideRelation(2, 0),
+    top:	new SideRelation(5, 1),
+    bottom:	new SideRelation(4, 3)
   },{
-    left: new SideRelation(1, 0),
-    right: new SideRelation(3, 0),
-    top: new SideRelation(5, 2),
-    bottom: new SideRelation(4, 2)
+    left:	new SideRelation(1, 0),
+    right:	new SideRelation(3, 0),
+    top:	new SideRelation(5, 2),
+    bottom:	new SideRelation(4, 2)
   },{
-    left: new SideRelation(2, 0),
-    right: new SideRelation(0, 0),
-    top: new SideRelation(5, 3),
-    bottom: new SideRelation(4, 1)
+    left:	new SideRelation(2, 0),
+    right:	new SideRelation(0, 0),
+    top:	new SideRelation(5, 3),
+    bottom:	new SideRelation(4, 1)
   },{
-    left: new SideRelation(3, 3),
-    right: new SideRelation(1, 1),
-    top: new SideRelation(0, 0),
-    bottom: new SideRelation(2, 2)
+    left:	new SideRelation(3, 3),
+    right:	new SideRelation(1, 1),
+    top:	new SideRelation(0, 0),
+    bottom:	new SideRelation(2, 2)
   },{
-    left: new SideRelation(3, 1),
-    right: new SideRelation(1, 3),
-    top: new SideRelation(2, 2),
-    bottom: new SideRelation(0, 0)
+    left:	new SideRelation(3, 1),
+    right:	new SideRelation(1, 3),
+    top:	new SideRelation(2, 2),
+    bottom:	new SideRelation(0, 0)
   }];
 
 
@@ -84,6 +90,7 @@ function applyTransform(point, rotations, n) {
   }
   return point;
 }
+
 
 /**
  * The Game Board
@@ -139,8 +146,8 @@ var CubeGrid = function(size) {
       nextTile.pos = applyTransform(nextTile.pos, thisSide.top.rotations, size);
     } else if (nextTile.pos.y == -1) {
       nextTile.pos.y = size -1;
-      nextTile.side = thisSide.botom.side;
-      nextTile.pos = applyTransform(nextTile.pos, thisSide.bottome.rotations, size);
+      nextTile.side = thisSide.bottom.side;
+      nextTile.pos = applyTransform(nextTile.pos, thisSide.bottom.rotations, size);
     } else if (nextTile.pos.x == size) {
       nextTile.pos.x = 0;
       nextTile.side = thisSide.right.side;
@@ -152,6 +159,7 @@ var CubeGrid = function(size) {
     }
     return nextTile;
   };
+
   
   /**
    * Get a tile's index
@@ -160,6 +168,7 @@ var CubeGrid = function(size) {
     return (tile.side * (size * size)) + (tile.pos.y * size) + tile.pos.x;
   };
   
+
   /**
    * Returns the corner that the tile at INDEX is on as a Direction,
    * if the tile is not on a corner, null is returned
@@ -173,17 +182,43 @@ var CubeGrid = function(size) {
     else if (t == sizeSqr - 1) return DIRECTIONS.upRight;
     else return null;
   };
+
+  
+  /**
+   * Returns the neighboring tiles of tile at INDEX as an object.
+   */
+  this.tileNeighbors = function(index) {
+    var result = {};
+    var dir; // swanky!
+    for (dir in DIRECTIONS) {
+      var tile = this.nextTile(index, DIRECTIONS[dir]);
+      result[dir] = (tile != null) ? this.tileIndex(tile) : null;
+    }
+    return result;
+  };
 };
-
-
 
 
 /**
  * Initialize a Tile based on an index on a sized CubeGrid 
  */
 function indexToTile(index, size) {
-  assert(index >= 0 && index < size*size*SIDES_PER_CUBE);
+  assert(index >= 0 && index < size * size * SIDES_PER_CUBE);
   var side = Math.floor(index / (size * size));
   var sideIndex = index - side * (size * size);
   return new Tile(side, new geometry.Vector(sideIndex % size, Math.floor(sideIndex / size)));
 }
+
+
+/**
+ * Auto generate a tile relations object for a cube with a given SIZE
+ */
+function autogenerateRelations(size) {
+  var cg = new CubeGrid(4);
+  var relations = {};
+  for (var i = 0; i < cg.size*cg.size*6; i++) {
+    relations[i] = cg.tileNeighbors(i);
+  }
+  return relations;
+}
+
