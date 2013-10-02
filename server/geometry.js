@@ -159,7 +159,14 @@
     this.y = parseFloat(pick(arguments[0].y, y));
   };
 
-  
+  /**
+   * Point equality
+   */
+  Point.prototype.equals = function(other) {
+    return (this.x == other.x && this.y == other.y);
+  };
+
+
   /**
    * Flip the x and y coordinate of a point
    */
