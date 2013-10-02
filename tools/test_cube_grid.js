@@ -95,6 +95,9 @@ tests.def(testCubePath, [cube4, [3, 16, 79]], true);
 tests.def(testCubePath, [cube4, [0, 1, 2, 4]], false);
 // negative
 tests.def(testCubePath, [cube4, [0, 4, 8, -12]], false);
+// single, out of bounds
+tests.def(testCubePath, [cube4, [10000]], false);
+tests.def(testCubePath, [cube4, [-10000]], false);
 //Wrong types
 tests.def(testCubePath, [cube4, []], TypeError);
 tests.def(testCubePath, [3], TypeError);
