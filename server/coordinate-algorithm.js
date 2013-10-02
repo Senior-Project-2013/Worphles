@@ -146,7 +146,6 @@ var CubeGrid = function(size) {
     // each tile on a cube of size 1 covers every corner of a side
     // size 1 cubes should never have diagonal neighbors
     if (this.size == 1) {
-      console.log(direction, size);
       if ([DIRECTIONS.upLeft, DIRECTIONS.upRight, 
 	   DIRECTIONS.downLeft, DIRECTIONS.downRight].reduce(function(prev, dir) {
 	     return prev || dir.equals(direction);
