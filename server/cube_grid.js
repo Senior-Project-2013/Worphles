@@ -224,10 +224,10 @@ var CubeGrid = function(size) {
    * Determine if a list of indices make a valid path
    */
   this.isValidPath = function(path) {
-    if (path.length == 1) return true;
     var maxIndex = this.size * this.size * SIDES_PER_CUBE - 1,
 	used = {};
     if (path[0] < 0 || path[0] > maxIndex) return false;
+    else if (path.length == 1) return true;
     var available = this.tileNeighbors(path[0]);
     used[path[0]] = true;
     for (var i = 1; i < path.length; i++) {
