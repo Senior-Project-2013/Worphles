@@ -219,12 +219,32 @@ var CubeGrid = function(size) {
     return result;
   };
 
-  
+
   /**
    * Determine if a list of indices make a valid path
    */
   this.isValidPath = function(path) {
-    // TODO
+    if (path.length == 1) return true;
+    var maxIndex = this.size * this.size * SIDES_PER_CUBE - 1,
+	used = {};
+    if (path[0] < 0 || path[0] > maxIndex) return false;
+    var available = this.tileNeighbors(path[0]);
+    used[path[0]] = true;
+    for (var i = 1; i < path.length; i++) {
+      var dir,
+	  index = path[i],
+	  ok = false;
+      if (used[index] != undefined || index < 0 || index > maxIndex) return false;
+      for (dir in available) {
+	if (available[dir] == index) {
+	  available = this.tileNeighbors(path[i]);
+	  used[index] = true;
+	  ok = true;
+	  break;
+	}
+      }
+      if (!ok) return false;
+    }
     return true;
   };
 
