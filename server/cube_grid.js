@@ -218,6 +218,16 @@ var CubeGrid = function(size) {
     }
     return result;
   };
+
+  
+  /**
+   * Determine if a list of indices make a valid path
+   */
+  this.isValidPath = function(path) {
+    // TODO
+    return true;
+  };
+
 };
 
 
