@@ -142,14 +142,27 @@ var CubeGrid = function(size) {
    * Get the tile next to the tile at INDEX in the given DIRECTION
    */
   this.nextTile =  function(index, direction) {
+    
+    // each tile on a cube of size 1 covers every corner of a side
+    // size 1 cubes should never have diagonal neighbors
+    if (this.size == 1) {
+      console.log(direction, size);
+      if ([DIRECTIONS.upLeft, DIRECTIONS.upRight, 
+	   DIRECTIONS.downLeft, DIRECTIONS.downRight].reduce(function(prev, dir) {
+	     return prev || dir.equals(direction);
+	   }, false) == true) return null;
+    }
+
     var thisTile = this.getTile(index);
     var corner = this.tileCorner(index);
-    
+
     if (corner != null && direction == corner) return null;
-    
+
     var nextTile = new Tile(thisTile.side, thisTile.pos);
     var thisSide = this.sides[nextTile.side];
-    nextTile.pos = nextTile.pos.add(direction);
+
+    nextTile.pos = nextTile.pos.add(direction); // add the direction vector
+
     if (nextTile.pos.y == size) {
       nextTile.pos.y = 0;
       nextTile.side = thisSide.top.side;
@@ -252,7 +265,6 @@ module.exports = {
   SideRelation: SideRelation,
   Tile: Tile,
   CubeGrid: CubeGrid,
-  indexToTile: indexToTile,
   applyTransform: applyTransform,
   autogenerateRelations: autogenerateRelations,
   autogenerateRelationsFile: autogenerateRelationsFile
