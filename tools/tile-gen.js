@@ -1,9 +1,17 @@
 #!/usr/bin/env node
 
+/**
+ * Generates json files for tile relationships of any sized cube.
+ * Files start getting huge after size 100, beware.
+ */
 
+/**
+ * Is N a positive number?
+ */
 function isPositiveNumber(n) {
   return (!isNaN(parseFloat(n)) && isFinite(n) && n > 0);
 }
+
 
 /**
  * Main
@@ -15,6 +23,7 @@ function isPositiveNumber(n) {
     var alg = require('../server/coordinate-algorithm.js');
     alg.autogenerateRelationsFile(size, filename);
   } else {
+    console.log("Generates json files for tile relationships of any sized cube.");
     console.log("usage: tile-gen SIZE [filename]");
     process.exit(-1);
   }
