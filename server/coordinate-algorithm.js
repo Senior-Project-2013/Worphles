@@ -236,9 +236,9 @@ function autogenerateRelations(size) {
 /**
  * Auto generate a tile relations object for a cube with a given SIZE and write to file
  */
-function autogenerateRelationsFile(size) {
+function autogenerateRelationsFile(size, filename) {
   var fs = require('fs');
-  var filename = 'tile-auto-relations-'+size+'.json';
+  filename = (filename == undefined) ? 'tile-auto-relations-'+size+'.json' : filename;
   fs.writeFile(filename, JSON.stringify(autogenerateRelations(size), null, 2), 
 	       function(err) {
 		 if(err) {
