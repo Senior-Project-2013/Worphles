@@ -30,6 +30,16 @@ var Tile = function(side, point) {
   this.pos =  point;	
 }
 
+/**
+ * Alternative constructor, initialize from index on a sized cube grid.
+ */
+Tile.fromIndex = function(index, size) {
+  assert(index >= 0 && index < size * size * SIDES_PER_CUBE);
+  var side = Math.floor(index / (size * size));
+  var sideIndex = index - side * (size * size);
+  return new Tile(side, new geometry.Vector(sideIndex % size, Math.floor(sideIndex / size)));
+}
+
 
 /**
  * Side Relation
@@ -99,7 +109,7 @@ var CubeGrid = function(size) {
 
   // init the grid
   var grid = [];
-  for (var i = 0; i < size * size * SIDES_PER_CUBE; i++) grid[i] = indexToTile(i, size);
+  for (var i = 0; i < size * size * SIDES_PER_CUBE; i++) grid[i] = Tile.fromIndex(i, size);
 
   
   /**
@@ -200,17 +210,6 @@ var CubeGrid = function(size) {
 
 
 /**
- * Initialize a Tile based on an index on a sized CubeGrid 
- */
-function indexToTile(index, size) {
-  assert(index >= 0 && index < size * size * SIDES_PER_CUBE);
-  var side = Math.floor(index / (size * size));
-  var sideIndex = index - side * (size * size);
-  return new Tile(side, new geometry.Vector(sideIndex % size, Math.floor(sideIndex / size)));
-}
-
-
-/**
  * Auto generate a tile relations object for a cube with a given SIZE
  */
 function autogenerateRelations(size) {
@@ -243,6 +242,9 @@ function autogenerateRelationsFile(size) {
 }
 
 
+/**
+ * Exports
+ */
 module.exports = {
   DIRECTIONS: DIRECTIONS,
   SIDES_PER_CUBE: SIDES_PER_CUBE,
