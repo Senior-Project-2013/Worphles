@@ -214,7 +214,7 @@ function indexToTile(index, size) {
  * Auto generate a tile relations object for a cube with a given SIZE
  */
 function autogenerateRelations(size) {
-  var cg = new CubeGrid(4);
+  var cg = new CubeGrid(size);
   var relations = {};
   for (var i = 0; i < cg.size*cg.size*6; i++) {
     relations[i] = cg.tileNeighbors(i);
@@ -222,3 +222,36 @@ function autogenerateRelations(size) {
   return relations;
 }
 
+/**
+ * Auto generate a tile relations object for a cube with a given SIZE and write to file
+ */
+function autogenerateRelationsFile(size) {
+  var fs = require('fs');
+  var filename = 'tile-auto-relations-'+size+'.json';
+  fs.writeFile(filename, JSON.stringify(autogenerateRelations(size), null, 2), 
+	       function(err) {
+		 if(err) {
+		   console.log(err);
+		 } else {
+		   fs.stat(filename, function (err, stats) {
+		     console.log("generated: " + filename + " with " + (size*size*6*8) + 
+				 " relations for " + size*size*6 + " tiles");
+		     console.log("size: " + Math.round((stats.size / 1000))/1000 + "MB");
+		   });
+		 }
+	       });
+}
+
+
+module.exports = {
+  DIRECTIONS: DIRECTIONS,
+  SIDES_PER_CUBE: SIDES_PER_CUBE,
+  Sides: Sides,
+  SideRelation: SideRelation,
+  Tile: Tile,
+  CubeGrid: CubeGrid,
+  indexToTile: indexToTile,
+  applyTransform: applyTransform,
+  autogenerateRelations: autogenerateRelations,
+  autogenerateRelationsFile: autogenerateRelationsFile
+};
