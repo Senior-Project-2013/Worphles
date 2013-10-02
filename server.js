@@ -1,6 +1,7 @@
 var dictionary = require(__dirname+'/server/dictionary.js'),
     pathValidator = require(__dirname+'/server/path_validator.js'),
-    //letterGrid = require(__dirname+'/server/letter_grid.js'),
+    letterGrid = require(__dirname+'/server/letter_grid.js'),
+    gameSettings = require(__dirname+'/server/game_settings.js'),
     express = require('express'),
     app = express(),
     server = require('http').createServer(app),
@@ -23,19 +24,28 @@ server.listen(process.env.PORT || 3000);
 
 io.sockets.on('connection', function(socket) {
   socket.emit('moveResponse','hi');
-  //letterGrid.fillGrid(4);
-  //socket.emit('letterGrid', letterGrid.getGrid());
+  letterGrid.fillGrid(6);
+  gameSettings.setSettingByName('letterGrid', letterGrid.getGrid());
+  socket.emit('setup', gameSettings.getSettings());
   socket.on('moveComplete', function(data) { validateWord(socket, data); });
   socket.on('partialMove', function(data) { showEveryone(socket, data); });
 });
 
 function validateWord(socket, data) {
-  console.log(data);
-  socket.emit('moveResponse',data);
-  return;
-  var reply = false;
-  if (dictionary.isAWord(data.word) && pathValidator.isAPath(data.path))
-    reply = true;
+  var reply = {
+    legalMove: false,
+    wordTiles: data.WordTiles
+  }
+
+  var word = ""
+  for(i = 0; i < wordTiles.length, i++) {
+    word += wordTiles[i].letter;
+  }
+
+  if (dictionary.isAWord(word) && pathValidator.isAPath(data.path)) {
+    reply.legalMove = true;
+    //look up word value, increment score
+  }
   socket.emit('moveResponse', reply);
 }
 
