@@ -137,4 +137,5 @@ exports.getLetter = function() {
       return letterDistribution[i].letter;
     }
   }
-}
+  return null;
+};
