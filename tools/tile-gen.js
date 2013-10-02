@@ -20,8 +20,10 @@ function isPositiveNumber(n) {
   if (process.argv.length >= 3 && isPositiveNumber(process.argv[2])) {
     var size = parseInt(process.argv[2]);
     var filename = (process.argv.length > 3) ? process.argv[3] : undefined;
-    var alg = require('../server/coordinate-algorithm.js');
-    alg.autogenerateRelationsFile(size, filename);
+    
+    var grid = require('../server/cube_grid.js');
+    grid.autogenerateRelationsFile(size, filename);
+    
   } else {
     console.log("Generates json files for tile relationships of any sized cube.");
     console.log("usage: tile-gen SIZE [filename]");
