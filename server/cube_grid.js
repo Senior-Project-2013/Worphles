@@ -276,9 +276,9 @@ function autogenerateRelationsFile(size, filename, min) {
 		   console.log(err);
 		 } else {
 		   fs.stat(filename, function (err, stats) {
-		     console.log("generated: " + filename + " with " + (size*size*6*8) + 
-				 " relations for " + size*size*6 + " tiles");
-		     console.log("size: " + Math.round((stats.size / 1000))/1000 + "MB");
+		     // console.log("generated: " + filename + " with " + (size*size*6*8) + 
+				 // " relations for " + size*size*6 + " tiles");
+		     // console.log("size: " + Math.round((stats.size / 1000))/1000 + "MB");
 		   });
 		 }
 	       });
