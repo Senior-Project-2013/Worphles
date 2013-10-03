@@ -7,7 +7,20 @@ var MINUTE = SECOND * 60;
 var DEFAULT_ROUND_TIME = 240 * SECOND;
 var DEFAULT_MAX_PLAYERS = 6;
 var DEFAULT_GRID_SIZE = 4;
-var playerColorOptions = ['red','blue','green','yellow','orange','magenta'];
+var COLORS = {
+  RED: new Color(1,0,0),
+  BLUE: new Color(0,0,1),
+  GREEN: new Color(0,1,0),
+  YELLOW: new Color(1,1,0),
+  MAGENTA: new Color(1,0,1),
+  CYAN: new Color(0,1,1),
+}
+function Color(r,g,b) {
+  this.r = r;
+  this.g = g;
+  this.b = b;
+}
+var playerColorOptions = [COLORS.RED,COLORS.BLUE,COLORS.GREEN,COLORS.YELLOW,COLORS.MAGENTA,COLORS.CYAN];
 
 function Player(socket, color) {
   this.socket = socket;
