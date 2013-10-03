@@ -1,15 +1,18 @@
-var dictionary = require(__dirname+'/server/dictionary.js'),
-    pathValidator = require(__dirname+'/server/path_validator.js'),
-    letterGrid = require(__dirname+'/server/letter_grid.js'),
-    gameSettings = require(__dirname+'/server/game_settings.js').getSettings(),
+var Game = require('./server/game'),
+    dictionary = require('./server/dictionary.js'),
+    pathValidator = require('./server/path_validator.js'),
+    letterGrid = require('./server/letter_grid.js'),
+    gameSettings = require('./server/game_settings.js').getSettings(),
     express = require('express'),
     app = express(),
     server = require('http').createServer(app),
     io = require('socket.io').listen(server);
 
-io.configure(function () { 
-  io.set("transports", ["xhr-polling"]); 
-  io.set("polling duration", 10);
+io.configure(function () {
+  if (process.env.HEROKU) {
+    io.set("transports", ["xhr-polling"]); 
+    io.set("polling duration", 10);
+  }
   io.set('log level', 1);
 });
 
@@ -19,27 +22,40 @@ app.get('/environment.js', function(req, res) {
   res.setHeader("Content-Type", 'application/javascript');
   res.send('var WEBSOCKETS_URL = \'' + (process.env.WEBSOCKETS_URL || 'http://localhost') +'\';');
 });
+var players = [];
 
 server.listen(process.env.PORT || 3000);
 
 io.sockets.on('connection', function(socket) {
-  socket.emit('moveResponse','hi');
-  letterGrid.fillGrid(gameSettings['gridSize']);
-  gameSettings['letterGrid'] = letterGrid.getGrid();
-  socket.emit('setup', gameSettings);
+  players.push({'socket': socket});
+
+  socket.emit('queue',{currentPlayers: players.length, neededPlayers: 6});
+  socket.broadcast.emit('queue',{currentPlayers: players.length, neededPlayers: 6});
+
+  if (players.length == 6) {
+    var game = Game.newGame(players, Game.defaultSettings());
+    for (var i = 0; i < players.length; i++) {
+      players[i].socket.emit('start',game);
+    }
+  }
+
   socket.on('moveComplete', function(data) { validateWord(socket, data); });
   socket.on('partialMove', function(data) { showEveryone(socket, data); });
 });
 
 function validateWord(socket, data) {
+  if (!(data.wordTiles && data.wordTiles.length)) {
+    return socket.emit('moveResponse', {legalMove:false});
+  }
+
   var reply = {
     legalMove: false,
     wordTiles: data.WordTiles
   }
 
-  var word = "";
-  for(i = 0; i < wordTiles.length; i++) {
-    word += wordTiles[i].letter;
+  var word = ""
+  for(var i = 0; i < data.wordTiles.length; i++) {
+    word += data.wordTiles[i].letter;
   }
 
   if (dictionary.isAWord(word) && pathValidator.isAPath(data.path)) {

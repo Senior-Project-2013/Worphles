@@ -23,7 +23,7 @@ var projector, mouse = { x: 0, y: 0 , clicked: false}, INTERSECTED;
 // FUNCTIONS //
 ///////////////
       
-function init(settings) 
+function init(game) 
 {
   ///////////
   // SCENE //
@@ -112,6 +112,7 @@ function init(settings)
   //////////////
   // GEOMETRY //
   //////////////
+  var settings = game.settings
   var CUBE_SIZE = 80;
   var tilesPerRow = settings.gridSize;
   var tilesPerSide = Math.pow(tilesPerRow,2);
@@ -192,12 +193,12 @@ function init(settings)
 
   // new tiles stuffs!
   for (var side = 0; side < 6; side++) {
-    console.log('side',side);
+    // console.log('side',side);
     for (var row = 0; row < tilesPerRow; row++) {
-      console.log('row',row);
+      // console.log('row',row);
       for (var col = 0; col < tilesPerRow; col++) {
         var tileNum = side*tilesPerSide + row*tilesPerRow + col;
-        console.log(tileNum);
+        // console.log(tileNum);
         var _side = side;
         var _axis = Y_AXIS;
         if (side == 4) {
@@ -207,7 +208,7 @@ function init(settings)
           _side = -1;
           _axis = X_AXIS;
         }
-        makeTile(_side, _axis, col, row, tileNum, settings.letterGrid[tileNum]);
+        makeTile(_side, _axis, col, row, tileNum, game.tiles[tileNum].letter);
       }
     }
   }
@@ -283,11 +284,16 @@ function onDocumentMouseDown( event )  {
 
 var socket = io.connect(WEBSOCKETS_URL);
 
-socket.on('setup', function(settings) {
+socket.on('start', function(game) {
+  console.log(game);
   // initialization
-  init(settings);
+  init(game);
   // animation loop / game loop
   animate();
+});
+
+socket.on('queue', function(data) {
+  console.log('have',data.currentPlayers,'need',data.neededPlayers);
 });
 
 socket.on('moveResponse', function(data) {
