@@ -277,21 +277,31 @@ function onDocumentMouseDown( event )  {
   if ( intersects.length > 0 )
   {
     intersects[0].object.material.color.setHex( 0xff00ff );
-    intersects[ 0 ].object.geometry.colorsNeedUpdate = true;
+    intersects[0].object.geometry.colorsNeedUpdate = true;
   }
-
 }
 
 var socket = io.connect(WEBSOCKETS_URL);
+
 socket.on('setup', function(settings) {
   // initialization
   init(settings);
   // animation loop / game loop
   animate();
-})
-socket.on('moveResponse', function(data) {
-  console.log(data);
 });
+
+socket.on('moveResponse', function(data) {
+  if (data.legalMove) {
+    console.log("WOOOOOHOOOOOOOO");
+    //update score on screen
+    //uncolor tiles
+    //change tile letters
+  } else {
+    console.log("BOOOOOOOOOOOOOO");
+    //uncolor tiles
+  }
+});
+
 socket.on('partialMove', function(tile) {
   console.log(tile);
   var faces = TILES[tile].faces;
@@ -301,18 +311,19 @@ socket.on('partialMove', function(tile) {
   }
   TILES[tile].geometry.colorsNeedUpdate = true;
 });
+
 function onDocumentMouseUp( event ) {
   document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
   mouse.clicked = false;
   if (wordTiles.length) {
-    socket.emit('moveComplete',wordTiles);
+    socket.emit('moveComplete', wordTiles);
   }
   wordTiles = [];
 }
 
 function animate() 
 {
-    requestAnimationFrame( animate );
+  requestAnimationFrame( animate );
   render();   
   update();
 }

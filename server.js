@@ -32,12 +32,20 @@ io.sockets.on('connection', function(socket) {
 });
 
 function validateWord(socket, data) {
-  console.log(data);
-  socket.emit('moveResponse',data);
-  return;
-  var reply = false;
-  if (dictionary.isAWord(data.word) && pathValidator.isAPath(data.path))
-    reply = true;
+  var reply = {
+    legalMove: false,
+    wordTiles: data.WordTiles
+  }
+
+  var word = ""
+  for(i = 0; i < wordTiles.length, i++) {
+    word += wordTiles[i].letter;
+  }
+
+  if (dictionary.isAWord(word) && pathValidator.isAPath(data.path)) {
+    reply.legalMove = true;
+    //look up word value, increment score
+  }
   socket.emit('moveResponse', reply);
 }
 
