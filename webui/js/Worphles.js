@@ -112,7 +112,7 @@ function init(game)
   //////////////
   // GEOMETRY //
   //////////////
-  var settings = game.settings
+  var settings = game.settings;
   var CUBE_SIZE = 80;
   var tilesPerRow = settings.gridSize;
   var tilesPerSide = Math.pow(tilesPerRow,2);
