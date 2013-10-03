@@ -19,24 +19,46 @@ function Player(socket, color) {
 
 Player.randomColor = function(i) {
   return playerColorOptions[i];
-}
+};
 
+/**
+ * Create a new tile 
+ */
 function Tile(letter) {
   this.letter = letter;
   this.owner = null;
   this.strength = null; //not needed yet
+  
+  /**
+   * Randomize this tile's letter.
+   */
+  this.randomize = function() {
+    this.letter = Tile.randomLetter();
+  };
 };
 
+
+/**
+ * Returns a random letter.
+ */
 Tile.randomLetter = function() {
   return letterGenerator.getLetter();
 };
 
+
+/**
+ * Game Settings 
+ */
 function Settings(roundTime, maxPlayers, gridSize) {
   this.roundTime = roundTime || DEFAULT_ROUND_TIME;
   this.maxPlayers = maxPlayers || DEFAULT_MAX_PLAYERS;
   this.gridSize = gridSize || DEFAULT_GRID_SIZE;
 };
 
+
+/**
+ * Instance of a Game
+ */
 function Game(inputPlayers, settings) {
   this.settings = settings || new Settings();
 
@@ -51,10 +73,18 @@ function Game(inputPlayers, settings) {
   }
 };
 
+
+/**
+ * Public game constructor
+ */
 module.exports.newGame = function(players, settings) {
   return new Game(players, settings);
-}
+};
 
+
+/**
+ * Default Game Settings
+ */
 module.exports.defaultSettings = function() {
   return new Settings();
-}
+};
