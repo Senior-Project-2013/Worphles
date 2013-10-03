@@ -23,6 +23,7 @@ app.get('/environment.js', function(req, res) {
   res.send('var WEBSOCKETS_URL = \'' + (process.env.WEBSOCKETS_URL || 'http://localhost') +'\';');
 });
 var players = [];
+var game;
 
 server.listen(process.env.PORT || 3000);
 
@@ -33,7 +34,7 @@ io.sockets.on('connection', function(socket) {
   socket.broadcast.emit('queue',{currentPlayers: players.length, neededPlayers: 6});
 
   if (players.length == 6) {
-    var game = Game.newGame(players, Game.defaultSettings());
+    game = Game.newGame(players, Game.defaultSettings());
     for (var i = 0; i < players.length; i++) {
       players[i].socket.emit('start',game);
     }
@@ -43,23 +44,24 @@ io.sockets.on('connection', function(socket) {
   socket.on('partialMove', function(data) { showEveryone(socket, data); });
 });
 
-function validateWord(socket, data) {
-  if (!(data.wordTiles && data.wordTiles.length)) {
+function validateWord(socket, tiles) {
+  if (!tiles.length) {
     return socket.emit('moveResponse', {legalMove:false});
   }
 
   var reply = {
     legalMove: false,
-    wordTiles: data.WordTiles
+    tiles: tiles
   }
 
   var word = ""
-  for(var i = 0; i < data.wordTiles.length; i++) {
-    word += data.wordTiles[i].letter;
+  for(var i = 0; i < tiles.length; i++) {
+    word += game.tiles[tiles[i]].letter;
   }
 
-  if (dictionary.isAWord(word) && pathValidator.isAPath(data.path)) {
+  if (dictionary.isAWord(word) && pathValidator.isAPath(tiles, game.settings.gridSize)) {
     reply.legalMove = true;
+    console.log("HIT");
     //look up word value, increment score
   }
   socket.emit('moveResponse', reply);

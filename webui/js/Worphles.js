@@ -18,13 +18,19 @@ var clock = new THREE.Clock();
 var cube;
 var targetList = [];
 var projector, mouse = { x: 0, y: 0 , clicked: false}, INTERSECTED;
+var me = {};
 
 ///////////////
 // FUNCTIONS //
-///////////////
-      
-function init(game) 
-{
+///////////////     
+function init(game)  {
+
+  for (var i = 0; i < game.players.length; i++) {
+    if (game.players[i].socket == socket.socket.sessionid) {
+      me.color = game.players[i].color;
+    }
+  }
+
   ///////////
   // SCENE //
   ///////////
@@ -262,6 +268,7 @@ function onDocumentMouseDown( event )  {
   // update the mouse variable
   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
   mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+  return;
   
   // find intersections
 
@@ -277,8 +284,8 @@ function onDocumentMouseDown( event )  {
   // if there is one (or more) intersections
   if ( intersects.length > 0 )
   {
-    intersects[0].object.material.color.setHex( 0xff00ff );
-    intersects[0].object.geometry.colorsNeedUpdate = true;
+    // intersects[0].object.material.color.setHex( 0xff00ff );
+    // intersects[0].object.geometry.colorsNeedUpdate = true;
   }
 }
 
@@ -308,12 +315,14 @@ socket.on('moveResponse', function(data) {
   }
 });
 
-socket.on('partialMove', function(tile) {
+socket.on('partialMove', function(data) {
+  var tile = data.tile;
+  var color = data.color;
   console.log(tile);
   var faces = TILES[tile].faces;
   console.log(TILES[tile]);
   for (var i in faces) {
-    faces[i].color.setRGB(0,0,0.9);
+    faces[i].color.setRGB(color.r,color.g,color.b);
   }
   TILES[tile].geometry.colorsNeedUpdate = true;
 });
@@ -348,9 +357,17 @@ function update()
   if ( intersects.length > 0) {
     var tile = intersects[0].object.__tile_data.num;
     if (mouse.clicked && tile != lastTile) {
-      socket.emit('partialMove', tile);
-      intersects[0].object.material.color.setHex( 0xff00ff );
+      socket.emit('partialMove', {tile:tile, color:me.color});
+      var faces = TILES[tile].faces;
+      for (var i in faces) {
+        faces[i].color.setRGB(me.color.r,me.color.g,me.color.b);
+      }
+      TILES[tile].geometry.colorsNeedUpdate = true;
+
+      // intersects[0].object.material.color.setHex( 0xff00ff );
+      console.log(tile);
       wordTiles.push(tile);
+      console.log(wordTiles);
       lastTile = tile;
     }
   }
