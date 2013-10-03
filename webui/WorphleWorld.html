@@ -4,30 +4,52 @@
 	<title>Hello World (Three.js)</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <link rel=stylesheet href="webui/css/base.css"/>
+  <link rel=stylesheet href="css/custom/base.css"/>
+  <link rel=stylesheet href="css/custom/game-sidebar.css"/>
 </head>
 <body>
 
-<script src="webui/js/Three.js"></script>
-<script src="webui/js/Detector.js"></script>
-<script src="webui/js/Stats.js"></script>
-<script src="webui/js/OrbitControls.js"></script>
-<script src="webui/js/THREEx.KeyboardState.js"></script>
-<script src="webui/js/THREEx.FullScreen.js"></script>
-<script src="webui/js/THREEx.WindowResize.js"></script>
+<script src="lib/Three.js"></script>
+<script src="lib/Detector.js"></script>
+<script src="lib/Stats.js"></script>
+<script src="lib/OrbitControls.js"></script>
+<script src="lib/THREEx.KeyboardState.js"></script>
+<script src="lib/THREEx.FullScreen.js"></script>
+<script src="lib/THREEx.WindowResize.js"></script>
 
 <!-- jQuery code to display an information button and box when clicked. -->
-<script src="webui/js/jquery-1.9.1.js"></script>
-<script src="webui/js/jquery-ui.js"></script>
-<link rel=stylesheet href="webui/css/jquery-ui.css" />
-<link rel=stylesheet href="webui/css/info.css"/>
-<script src="webui/js/info.js"></script>
+<script src="lib/jquery-1.9.1.js"></script>
+<script src="lib/jquery-ui.js"></script>
+<link rel=stylesheet href="css/jquery-ui.css" />
+<link rel=stylesheet href="css/info.css"/>
+<script src="lib/info.js"></script>
 
+<script src="lib/object-watch.js"></script>
+<script src="lib/tinysort.min.js"></script>
+
+<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+
+<
 <div id="ThreeJS" style="z-index: 1; position: absolute; left:0px; top:0px"></div>
-<script src="/socket.io/socket.io.js"></script>
+<script src="/socket.io.js"></script>
 <script src="/environment.js"></script>
-<script src="webui/js/Worphles.js"></script>
+<script src="js/Worphles.js"></script>
 
+<script src="js/Scoreboard.js"></script>
+
+<div id="body-wrapper">
+  <div id="sidebar">
+    <div id="scoreboard">
+      <span class="title">
+        SCOREBOARD
+      </span>
+      <ul id="scores">
+      </ul>
+    </div>
+    <div class="buttons">
+    </div>
+  </div>
+</div>
 </body>
 </html>
 
