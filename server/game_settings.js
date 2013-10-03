@@ -7,11 +7,3 @@ var settings = {
 exports.getSettings = function() {
 	return settings;
 }
-
-exports.getSettingByName = function(name) {
-  return settings[name];
-}
-
-exports.setSettingByName = function(settingName, setting) {
-  settings[settingName] = setting;
-}

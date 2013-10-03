@@ -8,14 +8,6 @@ exports.fillGrid = function(gridSize) {
 		letterGrid[i] = letterGenerator.getLetter();
 }
 
-exports.replaceLetterByCoordinate = function(coordinate) {
-	letterGrid[coordinate] = letterGenerator.getLetter();
-}
-
 exports.getGrid = function() {
   return letterGrid;
-}
-
-exports.getLetterByCoordinate = function(coordinate) {
-  return letterGrid[coordinate];
 }
