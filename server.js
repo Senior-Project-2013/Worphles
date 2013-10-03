@@ -1,4 +1,5 @@
-var dictionary = require('./server/dictionary.js'),
+var Game = require('./server/game'),
+    dictionary = require('./server/dictionary.js'),
     pathValidator = require('./server/path_validator.js'),
     letterGrid = require('./server/letter_grid.js'),
     gameSettings = require('./server/game_settings.js').getSettings(),
@@ -21,15 +22,22 @@ app.get('/environment.js', function(req, res) {
   res.setHeader("Content-Type", 'application/javascript');
   res.send('var WEBSOCKETS_URL = \'' + (process.env.WEBSOCKETS_URL || 'http://localhost') +'\';');
 });
+var players = [];
 
 server.listen(process.env.PORT || 3000);
 
 io.sockets.on('connection', function(socket) {
-  socket.emit('moveResponse','hi');
+  players.push({'socket': socket});
 
-  letterGrid.fillGrid(gameSettings.gridSize);
-  gameSettings.letterGrid = letterGrid.getGrid();
-  socket.emit('setup', gameSettings);
+  socket.emit('queue',{currentPlayers: players.length, neededPlayers: 6});
+  socket.broadcast.emit('queue',{currentPlayers: players.length, neededPlayers: 6});
+
+  if (players.length == 6) {
+    var game = Game.newGame(players, Game.defaultSettings());
+    for (var i = 0; i < players.length; i++) {
+      players[i].socket.emit('start',game);
+    }
+  }
 
   socket.on('moveComplete', function(data) { validateWord(socket, data); });
   socket.on('partialMove', function(data) { showEveryone(socket, data); });

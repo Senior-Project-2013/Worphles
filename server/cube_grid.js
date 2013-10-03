@@ -307,3 +307,13 @@ module.exports = {
   autogenerateRelations: autogenerateRelations,
   autogenerateRelationsFile: autogenerateRelationsFile
 };
+
+var singleGrids = [];
+module.exports.getGrid = function(size) {
+  if (singleGrids[size]) {
+    return singleGrids[size];
+  } else {
+    singleGrids[size] = new CubeGrid(size);
+    return singleGrids[size];
+  }
+}
