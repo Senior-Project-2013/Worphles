@@ -248,6 +248,13 @@ var CubeGrid = function(size) {
     return true;
   };
 
+
+  /**
+   * To String
+   */
+  this.toString = function() {
+    return "CubeGrid::" + this.size;
+  };
 };
 
 
