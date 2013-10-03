@@ -37,8 +37,8 @@ function validateWord(socket, data) {
     wordTiles: data.WordTiles
   }
 
-  var word = ""
-  for(i = 0; i < wordTiles.length, i++) {
+  var word = "";
+  for(i = 0; i < wordTiles.length; i++) {
     word += wordTiles[i].letter;
   }
 
