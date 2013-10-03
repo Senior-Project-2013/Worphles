@@ -1,0 +1,72 @@
+canvas {
+  width: 75%;
+}
+
+#sidebar {
+  position: absolute;
+  height: 100%;
+  width: 25%;
+  min-width: 300px;
+  max-width: 400px;
+  opacity: 0.7;
+  background-color: black;
+}
+
+#sidebar > #scoreboard {
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-size: 40px;
+  height: 65%;
+  min-height: 10em;
+  width: 80%;
+  margin: 1em auto 0 auto;
+  background-color: transparent;
+  text-align: center;
+}
+
+#sidebar > #scoreboard > .title {
+  display: block;
+  width: 100%;
+  background-color: #2F2;
+  padding: 0.2em 0 0.2em 0;
+}
+
+#sidebar > #scoreboard > #scores {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  height: 100%;
+}
+
+#sidebar > #scoreboard > #scores > .scoreRow {
+  width: 100%;
+  margin-top: 3px;
+}
+
+#sidebar > #scoreboard > #scores > .scoreRow > .avatar {
+  text-align: left;
+  width: 22%;
+  height: 100%;
+  background-color: white;
+  margin-right: 10px;
+  float: left;
+}
+
+#sidebar > #scoreboard > #scores > .scoreRow > .playerName {
+  float: left;
+  font-size: 32px;
+}
+
+#sidebar > #scoreboard > #scores > .scoreRow > .scoreValue {
+  color: white;
+  float: right;
+  font-size: 32px;
+  text-align: right;
+  margin-right: 10px;
+}
+
+#sidebar > #scoreboard > .scoreRow > .playerName,
+#sidebar > #scoreboard > .scoreRow > .scoreValue {
+  height: 100%;
+  width: 35%;
+  line-height: 50px;
+}
