@@ -18,13 +18,19 @@ var clock = new THREE.Clock();
 var cube;
 var targetList = [];
 var projector, mouse = { x: 0, y: 0 , clicked: false}, INTERSECTED;
+var me = {};
 
 ///////////////
 // FUNCTIONS //
-///////////////
-      
-function init(settings) 
-{
+///////////////     
+function init(game)  {
+
+  for (var i = 0; i < game.players.length; i++) {
+    if (game.players[i].socket == socket.socket.sessionid) {
+      me.color = game.players[i].color;
+    }
+  }
+
   ///////////
   // SCENE //
   ///////////
@@ -112,6 +118,7 @@ function init(settings)
   //////////////
   // GEOMETRY //
   //////////////
+  var settings = game.settings;
   var CUBE_SIZE = 80;
   var tilesPerRow = settings.gridSize;
   var tilesPerSide = Math.pow(tilesPerRow,2);
@@ -192,12 +199,12 @@ function init(settings)
 
   // new tiles stuffs!
   for (var side = 0; side < 6; side++) {
-    console.log('side',side);
+    // console.log('side',side);
     for (var row = 0; row < tilesPerRow; row++) {
-      console.log('row',row);
+      // console.log('row',row);
       for (var col = 0; col < tilesPerRow; col++) {
         var tileNum = side*tilesPerSide + row*tilesPerRow + col;
-        console.log(tileNum);
+        // console.log(tileNum);
         var _side = side;
         var _axis = Y_AXIS;
         if (side == 4) {
@@ -207,7 +214,7 @@ function init(settings)
           _side = -1;
           _axis = X_AXIS;
         }
-        makeTile(_side, _axis, col, row, tileNum, settings.letterGrid[tileNum]);
+        makeTile(_side, _axis, col, row, tileNum, game.tiles[tileNum].letter);
       }
     }
   }
@@ -261,6 +268,7 @@ function onDocumentMouseDown( event )  {
   // update the mouse variable
   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
   mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+  return;
   
   // find intersections
 
@@ -276,18 +284,23 @@ function onDocumentMouseDown( event )  {
   // if there is one (or more) intersections
   if ( intersects.length > 0 )
   {
-    intersects[0].object.material.color.setHex( 0xff00ff );
-    intersects[0].object.geometry.colorsNeedUpdate = true;
+    // intersects[0].object.material.color.setHex( 0xff00ff );
+    // intersects[0].object.geometry.colorsNeedUpdate = true;
   }
 }
 
 var socket = io.connect(WEBSOCKETS_URL);
 
-socket.on('setup', function(settings) {
+socket.on('start', function(game) {
+  console.log(game);
   // initialization
-  init(settings);
+  init(game);
   // animation loop / game loop
   animate();
+});
+
+socket.on('queue', function(data) {
+  console.log('have',data.currentPlayers,'need',data.neededPlayers);
 });
 
 socket.on('moveResponse', function(data) {
@@ -302,12 +315,14 @@ socket.on('moveResponse', function(data) {
   }
 });
 
-socket.on('partialMove', function(tile) {
+socket.on('partialMove', function(data) {
+  var tile = data.tile;
+  var color = data.color;
   console.log(tile);
   var faces = TILES[tile].faces;
   console.log(TILES[tile]);
   for (var i in faces) {
-    faces[i].color.setRGB(0,0,0.9);
+    faces[i].color.setRGB(color.r,color.g,color.b);
   }
   TILES[tile].geometry.colorsNeedUpdate = true;
 });
@@ -342,9 +357,17 @@ function update()
   if ( intersects.length > 0) {
     var tile = intersects[0].object.__tile_data.num;
     if (mouse.clicked && tile != lastTile) {
-      socket.emit('partialMove', tile);
-      intersects[0].object.material.color.setHex( 0xff00ff );
+      socket.emit('partialMove', {tile:tile, color:me.color});
+      var faces = TILES[tile].faces;
+      for (var i in faces) {
+        faces[i].color.setRGB(me.color.r,me.color.g,me.color.b);
+      }
+      TILES[tile].geometry.colorsNeedUpdate = true;
+
+      // intersects[0].object.material.color.setHex( 0xff00ff );
+      console.log(tile);
       wordTiles.push(tile);
+      console.log(wordTiles);
       lastTile = tile;
     }
   }
