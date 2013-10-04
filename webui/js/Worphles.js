@@ -294,15 +294,7 @@ function setupWebSockets() {
   });
 
   socket.on('partialMove', function(data) {
-    var tile = data.tile;
-    var color = data.color;
-    console.log(tile);
-    var faces = TILES[tile].faces;
-    console.log(TILES[tile]);
-    for (var i in faces) {
-      faces[i].color.setRGB(color.r,color.g,color.b);
-    }
-    TILES[tile].geometry.colorsNeedUpdate = true;
+    colorTile(data.tile, data.color)
   });
 };
 
