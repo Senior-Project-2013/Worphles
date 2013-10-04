@@ -6,8 +6,8 @@ exports.fillGrid = function(gridSize) {
 
 	for(var i = 0; i < numLetters; i++)
 		letterGrid[i] = letterGenerator.getLetter();
-}
+};
 
 exports.getGrid = function() {
   return letterGrid;
-}
+};

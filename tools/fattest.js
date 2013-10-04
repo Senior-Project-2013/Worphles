@@ -1,3 +1,6 @@
+/**
+ * Fattest, a small unit testing tool
+ */
 
 /**
  * String Colors
