@@ -231,8 +231,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 		{
 			if ( event.button === 2 )
 				state = STATE.ROTATE;
-			if ( event.button === 1 )
-				state = STATE.ZOOM;
+			// if ( event.button === 1 )
+			// 	state = STATE.ZOOM;
 			// if ( event.button === 0 )
 			// 	state = STATE.PAN;
 		}

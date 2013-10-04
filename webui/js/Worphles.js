@@ -223,7 +223,9 @@ function mouseMove(event)  {
 }
 
 function mouseDown(event)  {
-  if (event.button == 2) {
+  if (event.button == 1) {
+    return;
+  } if (event.button == 2) {
     mouse.rClicked = true;
     document.addEventListener( 'mouseup', mouseUp, false );
     return;
@@ -234,7 +236,9 @@ function mouseDown(event)  {
 }
 
 function mouseUp(event) {
-  if (event.button == 2) {
+  if (event.button == 1) {
+    return;
+  } if (event.button == 2) {
     mouse.rClicked = false;
     return;
   }
