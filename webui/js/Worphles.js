@@ -25,10 +25,15 @@ var me = {};
 ///////////////     
 function init(game)  {
 
-  for (var i = 0; i < game.players.length; i++) {
-    if (game.players[i].socket == socket.socket.sessionid) {
+  console.log(socket.socket.sessionid);
+  for (var i in game.players) {
+    if (i == socket.socket.sessionid) {
       me.color = game.players[i].color;
     }
+    console.log(i);
+    // if (game.players[i].socket == socket.socket.sessionid) {
+    //   me.color = game.players[i].color;
+    // }
   }
 
   ///////////
@@ -303,15 +308,17 @@ socket.on('queue', function(data) {
   console.log('have',data.currentPlayers,'need',data.neededPlayers);
 });
 
-socket.on('moveResponse', function(data) {
-  if (data.legalMove) {
-    console.log("WOOOOOHOOOOOOOO");
-    //update score on screen
-    //uncolor tiles
-    //change tile letters
-  } else {
-    console.log("BOOOOOOOOOOOOOO");
-    //uncolor tiles
+socket.on('successfulMove', function(data) {
+  console.log('successfulMove',data);
+  for (var i in data.newTiles) {
+    colorTile(data[i], data.player.color);
+  }
+});
+
+socket.on('unsuccessfulMove', function(data) {
+  console.log('unsuccessfulMove',data);
+  for (var i in data) {
+    colorTile(data[i]);
   }
 });
 
@@ -374,6 +381,16 @@ function update()
     
   controls.update();
   stats.update();
+}
+
+function colorTile(tile, color) {
+  color = color || {r:1,g:1,b:1};
+  var faces = TILES[tile].faces;
+  for (var i in faces) {
+    console.log('coloring tile',tile,color,i);
+    faces[i].color.setRGB(color.r,color.g,color.b);
+  }
+  TILES[tile].geometry.colorsNeedUpdate = true;
 }
 
 var wordTiles = [];

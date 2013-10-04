@@ -41,18 +41,15 @@ io.sockets.on('connection', function(socket) {
   }
 
   socket.on('moveComplete', function(data) { validateWord(socket, data); });
-  socket.on('partialMove', function(data) { showEveryone(socket, data); });
+  socket.on('partialMove', function(data) { showEveryone('partialMove', data); });
 });
 
 function validateWord(socket, tiles) {
   if (!tiles.length) {
-    return socket.emit('moveResponse', {legalMove:false});
+    return;
   }
 
-  var reply = {
-    legalMove: false,
-    tiles: tiles
-  }
+  var legalMove = false;
 
   var word = ""
   for(var i = 0; i < tiles.length; i++) {
@@ -60,13 +57,14 @@ function validateWord(socket, tiles) {
   }
 
   if (dictionary.isAWord(word) && pathValidator.isAPath(tiles, game.settings.gridSize)) {
-    reply.legalMove = true;
-    console.log("HIT");
-    //look up word value, increment score
+    showEveryone('successfulMove', {player: game.players[socket.id], newTiles: game.getNewLetters(tiles)});
+  } else {
+    showEveryone('unsuccessfulMove', tiles);
   }
-  socket.emit('moveResponse', reply);
 }
 
-function showEveryone(socket, data) {
-  socket.broadcast.emit('partialMove',data);
+function showEveryone(message, data) {
+  for (var i = 0; i < players.length; i++) {
+    players[i].socket.emit(message,data);
+  }
 }
