@@ -86,10 +86,13 @@ function Game(inputPlayers, settings) {
     this.tiles.push(new Tile(Tile.randomLetter()));
   }
 
-  this.getNewLetters = function(tiles) {
+  this.tileUpdate = function(id, tiles) {
     var newTiles = {};
     for (var i = 0; i < tiles.length; i++) {
-      newTiles[tiles[i]] = Tile.randomLetter();
+      var newLetter = Tile.randomLetter();
+      this.tiles[tiles[i]].owner = id;
+      this.tiles[tiles[i]].letter = newLetter;
+      newTiles[tiles[i]] = {letter: newLetter, owner: id};
     }
     return newTiles;
   }

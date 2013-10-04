@@ -18,23 +18,26 @@ var clock = new THREE.Clock();
 var cube;
 var targetList = [];
 var projector, mouse = { x: 0, y: 0 , clicked: false}, INTERSECTED;
-var me = {};
+var me;
+var players;
 
 ///////////////
 // FUNCTIONS //
 ///////////////     
 function init(game)  {
+  me = socket.socket.sessionid;
+  players = game.players;
+  // console.log(socket.socket.sessionid);
+  // for (var i in game.players) {
+  //   if (i == socket.socket.sessionid) {
 
-  console.log(socket.socket.sessionid);
-  for (var i in game.players) {
-    if (i == socket.socket.sessionid) {
-      me.color = game.players[i].color;
-    }
-    console.log(i);
-    // if (game.players[i].socket == socket.socket.sessionid) {
-    //   me.color = game.players[i].color;
-    // }
-  }
+  //     me.color = game.players[i].color;
+  //   }
+  //   console.log(i);
+  //   // if (game.players[i].socket == socket.socket.sessionid) {
+  //   //   me.color = game.players[i].color;
+  //   // }
+  // }
 
   ///////////
   // SCENE //
@@ -154,14 +157,18 @@ function init(game)  {
   var NINETY_DEG = 90*Math.PI/180;
   TILES = new Array(tilesPerSide*6);
 
-  function Tile(num, letter, letterMesh, color, geometry, material) {
+  function Tile(num, letter, letterCanvas, letterContext, letterTexture, letterMesh, color, geometry, material) {
     this.num = num;
     this.letter = letter;
+    this.letterCanvas = letterCanvas;
+    this.letterContext = letterContext;
+    this.letterTexture = letterTexture;
     this.letterMesh = letterMesh;
     this.color = color;
     this.geometry = geometry;
     this.faces = geometry.faces;
     this.material = material;
+    this.owner = null;
   }
 
   function makeTile(side, axis, x, y, num, letter) {
@@ -197,7 +204,7 @@ function init(game)  {
     letterMesh.rotateOnAxis( axis, NINETY_DEG*side);
     scene.add(letterMesh);
 
-    var thisTile = new Tile(num, letter, letterMesh, null, thisGeometry, thisMaterial);
+    var thisTile = new Tile(num, letter, canvas, context, texture, letterMesh, null, thisGeometry, thisMaterial);
     tile.__tile_data = thisTile;
     TILES[num] = thisTile;
   }
@@ -310,8 +317,8 @@ socket.on('queue', function(data) {
 
 socket.on('successfulMove', function(data) {
   console.log('successfulMove',data);
-  for (var i in data.newTiles) {
-    colorTile(data[i], data.player.color);
+  for (var i in data) {
+    updateTile(i, data[i].letter, data[i].owner);
   }
 });
 
@@ -364,10 +371,10 @@ function update()
   if ( intersects.length > 0) {
     var tile = intersects[0].object.__tile_data.num;
     if (mouse.clicked && tile != lastTile) {
-      socket.emit('partialMove', {tile:tile, color:me.color});
+      socket.emit('partialMove', {tile:tile, color:players[me].color});
       var faces = TILES[tile].faces;
       for (var i in faces) {
-        faces[i].color.setRGB(me.color.r,me.color.g,me.color.b);
+        faces[i].color.setRGB(players[me].color.r,players[me].color.g,players[me].color.b);
       }
       TILES[tile].geometry.colorsNeedUpdate = true;
 
@@ -383,8 +390,30 @@ function update()
   stats.update();
 }
 
+function updateTile(tile, letter, owner) {
+  updateTileOwner(tile, owner);
+  colorTile(tile, players[owner].color);
+  changeTileLetter(tile, letter);
+}
+
+function updateTileOwner(tile, owner) {
+  TILES[tile].owner = owner;
+}
+
+function changeTileLetter(tile, letter) {
+  TILES[tile].letterContext.clearRect ( 0,0, TILES[tile].letterCanvas.width, TILES[tile].letterCanvas.height);
+  TILES[tile].letterContext.fillText(letter||'0', 100, 130);
+  TILES[tile].letterTexture.needsUpdate = true;
+}
+
 function colorTile(tile, color) {
-  color = color || {r:1,g:1,b:1};
+  if (!color) {
+    if (TILES[tile].owner) {
+      color = players[TILES[tile].owner].color;
+    } else {
+      color = {r:1,g:1,b:1};
+    }
+  }
   var faces = TILES[tile].faces;
   for (var i in faces) {
     console.log('coloring tile',tile,color,i);

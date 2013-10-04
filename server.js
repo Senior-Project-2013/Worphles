@@ -57,7 +57,7 @@ function validateWord(socket, tiles) {
   }
 
   if (dictionary.isAWord(word) && pathValidator.isAPath(tiles, game.settings.gridSize)) {
-    showEveryone('successfulMove', {player: game.players[socket.id], newTiles: game.getNewLetters(tiles)});
+    showEveryone('successfulMove', game.tileUpdate(socket.id, tiles));
   } else {
     showEveryone('unsuccessfulMove', tiles);
   }
