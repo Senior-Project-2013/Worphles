@@ -75,14 +75,23 @@ function Settings(roundTime, maxPlayers, gridSize) {
 function Game(inputPlayers, settings) {
   this.settings = settings || new Settings();
 
-  this.players = [];
+  this.players = {};
   for (var i = 0; i < this.settings.maxPlayers && i < inputPlayers.length; i++) {
-    this.players.push(new Player(inputPlayers[i].socket.id, Player.randomColor(i)));
+    console.log('newplayer',inputPlayers[i].socket.id);
+    this.players[inputPlayers[i].socket.id] = new Player(inputPlayers[i].socket.id, Player.randomColor(i));
   }
 
   this.tiles = [];
   for (var i = 0; i < this.settings.gridSize * this.settings.gridSize * 6; i++) {
     this.tiles.push(new Tile(Tile.randomLetter()));
+  }
+
+  this.getNewLetters = function(tiles) {
+    var newTiles = {};
+    for (var i = 0; i < tiles.length; i++) {
+      newTiles[tiles[i]] = Tile.randomLetter();
+    }
+    return newTiles;
   }
 };
 
