@@ -44,9 +44,7 @@ io.sockets.on('connection', function(socket) {
 
   if (players.length == 6) {
     game = Game.newGame(players, Game.defaultSettings());
-    for (var i = 0; i < players.length; i++) {
-      players[i].socket.emit('start',game);
-    }
+    showEveryone('start',game);
   }
 
   socket.on('moveComplete', function(data) { validateWord(socket, data); });
