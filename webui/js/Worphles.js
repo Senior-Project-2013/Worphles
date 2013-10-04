@@ -37,7 +37,7 @@ var me;
 var players;
 
 // a place to put the currently selected tiles
-var wordTiles = [];
+var currentTiles = [];
 // the last selected tile
 var lastTile;
 
@@ -175,13 +175,10 @@ function TileGraphicsSettings(tilesPerRow, tileSize) {
   this.floorGeometry = new THREE.PlaneGeometry(this.hitBoxSize,this.hitBoxSize);
 }
 
-function Tile(num, letter, letterCanvas, letterContext, letterTexture, letterMesh, color, geometry, material) {
+function Tile(num, letter, letterResources, color, geometry, material) {
   this.num = num;
   this.letter = letter;
-  this.letterCanvas = letterCanvas;
-  this.letterContext = letterContext;
-  this.letterTexture = letterTexture;
-  this.letterMesh = letterMesh;
+  this.letterResources = letterResources;
   this.color = color;
   this.geometry = geometry;
   this.faces = geometry.faces;
@@ -222,7 +219,7 @@ function makeTile(side, axis, x, y, num, letter, gSettings) {
   letterMesh.rotateOnAxis( axis, NINETY_DEG*side);
   scene.add(letterMesh);
 
-  var thisTile = new Tile(num, letter, canvas, context, texture, letterMesh, null, thisGeometry, thisMaterial);
+  var thisTile = new Tile(num, letter, {canvasHeight: canvas.height, canvasWidth: canvas.width, letterContext: context, letterTexture: texture}, null, thisGeometry, thisMaterial);
   tile.__tile_data = thisTile;
   TILES[num] = thisTile;
 }
@@ -253,10 +250,10 @@ function mouseUp(event) {
   }
   document.removeEventListener( 'mouseup', mouseUp, false );
   mouse.lClicked = false;
-  if (wordTiles.length) {
-    socket.emit('moveComplete', wordTiles);
+  if (currentTiles.length) {
+    socket.emit('moveComplete', currentTiles);
   }
-  wordTiles = [];
+  currentTiles = [];
   lastTile = null;
 }
 
@@ -319,7 +316,7 @@ function update() {
     if (mouse.lClicked && !mouse.rClicked && tile != lastTile) {
       socket.emit('partialMove', {tile:tile, color:players[me].color});
       colorTile(tile, players[me].color);
-      wordTiles.push(tile);
+      currentTiles.push(tile);
       lastTile = tile;
     }
   }
@@ -339,9 +336,9 @@ function updateTileOwner(tile, owner) {
 }
 
 function changeTileLetter(tile, letter) {
-  TILES[tile].letterContext.clearRect ( 0,0, TILES[tile].letterCanvas.width, TILES[tile].letterCanvas.height);
-  TILES[tile].letterContext.fillText(letter||'0', 100, 130);
-  TILES[tile].letterTexture.needsUpdate = true;
+  TILES[tile].letterResources.letterContext.clearRect ( 0,0, TILES[tile].letterResources.canvasWidth, TILES[tile].letterResources.canvasHeight);
+  TILES[tile].letterResources.letterContext.fillText(letter||'0', 100, 130);
+  TILES[tile].letterResources.letterTexture.needsUpdate = true;
 }
 
 function colorTile(tile, color) {
