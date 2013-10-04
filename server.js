@@ -28,6 +28,15 @@ var game;
 server.listen(process.env.PORT || 3000);
 
 io.sockets.on('connection', function(socket) {
+  socket.on('disconnect', function() {
+    console.log(socket.id,'disconnected');
+    for (var i = 0; i < players.length; i++) {
+      if (players[i].socket.id == socket.id) {
+        players.splice(i,1);
+        break;
+      }
+    }
+  });
   players.push({'socket': socket});
 
   socket.emit('queue',{currentPlayers: players.length, neededPlayers: 6});
