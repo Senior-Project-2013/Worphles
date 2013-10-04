@@ -47,6 +47,15 @@ var Y_AXIS = new THREE.Vector3(0,1,0);
 var Z_AXIS = new THREE.Vector3(0,0,1);
 var NINETY_DEG = 90*Math.PI/180;
 
+var ABSOLUTE_FAIL = 'Sorry, your browser does not support WebGL...\nYou won\'t be able to play this game :(';
+
+// only start the game if the browser/graphics card support WebGL
+if (Detector.webgl) {
+  setupWebSockets();
+} else {
+  alert(ABSOLUTE_FAIL);
+}
+
 /**
   Start up the game
 */     
@@ -254,15 +263,6 @@ function mouseUp(event) {
 function updateMouse(event) {
   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
   mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-}
-
-if (Detector.webgl) {
-  // this is required to start anything up
-  setupWebSockets();
-} else {
-  // can't render the graphics on this browser...
-  alert('Sorry, your browser does not support WebGL...\n'+
-        'You won\'t be able to play this game :(');
 }
 
 function setupWebSockets() {
