@@ -43,6 +43,15 @@ app.get('/maxPlayers/:num', function(req, res) {
     res.send('You fool of a Took!');
   }
 });
+
+// stop the current game
+app.get('/restart', function(req, res) {
+  _.each(Object.keys(games), function(game) {
+    delete games[game];
+  });
+  res.send('restarted');
+});
+
 var waitingPlayers = [];
 var games = {};
 
@@ -51,6 +60,12 @@ server.listen(process.env.PORT || 3000);
 
 // handle each new player that connects
 io.sockets.on('connection', function(socket) {
+  // heroku's kinda slow... probably shouldn't do multiple games
+  if (process.env.HEROKU && Object.keys(games).length > 0) {
+    socket.emit('full');
+    return;
+  }
+
   socket.on('disconnect', function() {
     console.log(socket.id,'disconnected');
     _.each(waitingPlayers, function(player, i) {

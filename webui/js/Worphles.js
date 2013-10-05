@@ -268,7 +268,12 @@ function updateMouse(event) {
 
 function setupWebSockets() {
   socket = io.connect(WEBSOCKETS_URL);
+  socket.on('full', function(data) {
+    $('#queue').text('Sorry, server\'s full');
+  });
+
   socket.on('start', function(game) {
+    $('#sidebar').fadeIn();
     $('#queuePopup').fadeOut();
     // initialization
     init(game);
