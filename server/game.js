@@ -31,7 +31,7 @@ function Player(socket, color) {
 };
 
 Player.randomColor = function(i) {
-  return playerColorOptions[i];
+  return playerColorOptions[i%playerColorOptions.length];
 };
 
 /**
@@ -113,3 +113,6 @@ module.exports.newGame = function(players, settings) {
 module.exports.defaultSettings = function() {
   return new Settings();
 };
+
+module.exports.Settings = Settings;
+module.exports.Game = Game;

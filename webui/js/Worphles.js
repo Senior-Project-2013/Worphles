@@ -265,7 +265,7 @@ function updateMouse(event) {
 function setupWebSockets() {
   socket = io.connect(WEBSOCKETS_URL);
   socket.on('start', function(game) {
-    $('#queue').text('');
+    $('#queuePopup').fadeOut();
     // initialization
     init(game);
     // animation loop / game loop
@@ -273,8 +273,22 @@ function setupWebSockets() {
   });
 
   socket.on('queue', function(data) {
-    $('#queue').text('Waiting for '+(data.neededPlayers-data.currentPlayers)+' more players');
-    console.log('have',data.currentPlayers,'need',data.neededPlayers);
+    if (data.almostReady) {
+      $('#queue').text('Starting...');
+    } else {
+      var queueText = '';
+      for (var i = 0; i < data.currentPlayers; i++) {
+        queueText+='1.';
+      }
+      for (var i = data.currentPlayers; i < data.neededPlayers; i++) {
+        queueText+='0';
+        if (i+1 != data.neededPlayers) {
+          queueText+='.';
+        }
+      }
+      $('#queue').text(queueText);
+      console.log('have',data.currentPlayers,'need',data.neededPlayers);
+    }
   });
 
   socket.on('stillhere?', function(data, callback) {

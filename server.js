@@ -10,6 +10,8 @@ var Game = require('./server/game'),
     _ = require('underscore'),
     async = require('async');
 
+var PLAYERS_TO_START = 6;
+
 io.configure(function () {
   if (process.env.HEROKU) {
     io.set("transports", ["xhr-polling"]); 
@@ -24,6 +26,11 @@ app.get('/environment.js', function(req, res) {
   res.setHeader("Content-Type", 'application/javascript');
   res.send('var WEBSOCKETS_URL = \'' + (process.env.WEBSOCKETS_URL || 'http://localhost') +'\';');
 });
+app.get('/maxPlayers/:num', function(req, res) {
+  PLAYERS_TO_START=req.params.num;
+  res.send('Now expecting '+PLAYERS_TO_START+' players');
+  showQueueUpdate();
+});
 var players = [];
 var game;
 
@@ -37,13 +44,15 @@ io.sockets.on('connection', function(socket) {
         players.splice(i,1);
       }
     });
+    showQueueUpdate();
   });
   players.push({'socket': socket});
 
-  if (players.length == 6) {
+  if (players.length == PLAYERS_TO_START) {
+    showEveryone('queue',{almostReady:true});
     checkEveryoneStillHere(function(theyreStillHere) {
       if (theyreStillHere) {
-        game = Game.newGame(players, Game.defaultSettings());
+        game = new Game.Game(players, new Game.Settings(null, PLAYERS_TO_START, null));
         showEveryone('start',game);
       } else {
         showQueueUpdate();
@@ -58,7 +67,7 @@ io.sockets.on('connection', function(socket) {
 });
 
 function showQueueUpdate() {
-  showEveryone('queue', {currentPlayers: players.length, neededPlayers: 6});
+  showEveryone('queue', {currentPlayers: players.length, neededPlayers: PLAYERS_TO_START});
 }
 
 function checkEveryoneStillHere(callback) {
