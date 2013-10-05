@@ -27,9 +27,13 @@ app.get('/environment.js', function(req, res) {
   res.send('var WEBSOCKETS_URL = \'' + (process.env.WEBSOCKETS_URL || 'http://localhost') +'\';');
 });
 app.get('/maxPlayers/:num', function(req, res) {
-  PLAYERS_TO_START=req.params.num;
-  res.send('Now expecting '+PLAYERS_TO_START+' players');
-  showQueueUpdate();
+  if (req.params.num > 1) {
+    PLAYERS_TO_START=req.params.num;
+    res.send('Now expecting '+PLAYERS_TO_START+' players');
+    showQueueUpdate();
+  } else {
+    res.send('You fool of a Took!');
+  }
 });
 var players = [];
 var game;
