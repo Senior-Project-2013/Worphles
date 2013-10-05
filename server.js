@@ -7,6 +7,7 @@ var Game = require('./server/game'),
     app = express(),
     server = require('http').createServer(app),
     io = require('socket.io').listen(server),
+    _ = require('underscore'),
     async = require('async');
 
 io.configure(function () {
@@ -31,12 +32,11 @@ server.listen(process.env.PORT || 3000);
 io.sockets.on('connection', function(socket) {
   socket.on('disconnect', function() {
     console.log(socket.id,'disconnected');
-    for (var i = 0; i < players.length; i++) {
-      if (players[i].socket.id == socket.id) {
+    _.each(players, function(player, i) {
+      if (player.socket.id == socket.id) {
         players.splice(i,1);
-        break;
       }
-    }
+    });
   });
   players.push({'socket': socket});
 
@@ -102,10 +102,10 @@ function validateWord(socket, tiles) {
 
   var legalMove = false;
 
-  var word = ""
-  for(var i = 0; i < tiles.length; i++) {
-    word += game.tiles[tiles[i]].letter;
-  }
+  var word = "";
+  _each(tiles, function(tile) {
+    word += game.tiles[tile].letter;
+  });
 
   if (dictionary.isAWord(word) && pathValidator.isAPath(tiles, game.settings.gridSize)) {
     showEveryone('successfulMove', game.tileUpdate(socket.id, tiles));
@@ -115,7 +115,7 @@ function validateWord(socket, tiles) {
 }
 
 function showEveryone(message, data) {
-  for (var i = 0; i < players.length; i++) {
-    players[i].socket.emit(message,data);
-  }
+  _.each(players, function(player) {
+    player.socket.emit(message, data);
+  });
 }
