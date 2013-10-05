@@ -103,7 +103,7 @@ function validateWord(socket, tiles) {
   var legalMove = false;
 
   var word = "";
-  _each(tiles, function(tile) {
+  _.each(tiles, function(tile) {
     word += game.tiles[tile].letter;
   });
 
