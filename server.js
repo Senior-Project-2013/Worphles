@@ -12,20 +12,28 @@ var Game = require('./server/game'),
 
 var PLAYERS_TO_START = 6;
 
+// websockets configuration
 io.configure(function () {
+  // heroku doesn't use real websockets
   if (process.env.HEROKU) {
     io.set("transports", ["xhr-polling"]); 
     io.set("polling duration", 10);
   }
   io.set('log level', 1);
 });
-
-app.use('/webui', express.static(__dirname + '/webui'));
-app.get('/', function(req, res) { res.sendfile(__dirname+'/webui/WorphleWorld.html'); });
+// let client know if we're on localhost or not
 app.get('/environment.js', function(req, res) {
   res.setHeader("Content-Type", 'application/javascript');
   res.send('var WEBSOCKETS_URL = \'' + (process.env.WEBSOCKETS_URL || 'http://localhost') +'\';');
 });
+
+// serve all webui contents statically
+app.use('/webui', express.static(__dirname + '/webui'));
+
+// serve the main game html file
+app.get('/', function(req, res) { res.sendfile(__dirname+'/webui/WorphleWorld.html'); });
+
+// set the max number of players
 app.get('/maxPlayers/:num', function(req, res) {
   if (req.params.num > 1) {
     PLAYERS_TO_START=req.params.num;
@@ -38,8 +46,10 @@ app.get('/maxPlayers/:num', function(req, res) {
 var players = [];
 var game;
 
+// start up the server
 server.listen(process.env.PORT || 3000);
 
+// handle each new player that connects
 io.sockets.on('connection', function(socket) {
   socket.on('disconnect', function() {
     console.log(socket.id,'disconnected');
@@ -70,10 +80,12 @@ io.sockets.on('connection', function(socket) {
   socket.on('partialMove', function(data) { showEveryone('partialMove', data); });
 });
 
+// tell all waiting players the queue status
 function showQueueUpdate() {
   showEveryone('queue', {currentPlayers: players.length, neededPlayers: PLAYERS_TO_START});
 }
 
+// make sure everyone who's waiting to play is still around
 function checkEveryoneStillHere(callback) {
   async.map(players, checkStillHere, function(err, thoseStillHere) {
     var everyoneHere = true;
@@ -93,6 +105,7 @@ function checkEveryoneStillHere(callback) {
   });
 }
 
+// make sure this player is still waiting to play
 function checkStillHere(player, callback) {
   var responded = false;
   player.socket.emit('stillhere?', 'plzrespond', function(err, res) {
@@ -109,6 +122,7 @@ function checkStillHere(player, callback) {
 }
 
 function validateWord(socket, tiles) {
+// validate a word that's trying to be played
   if (!tiles.length) {
     return;
   }
@@ -130,5 +144,6 @@ function validateWord(socket, tiles) {
 function showEveryone(message, data) {
   _.each(players, function(player) {
     player.socket.emit(message, data);
+// send every player in this game something
   });
 }
