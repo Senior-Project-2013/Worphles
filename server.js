@@ -43,8 +43,8 @@ app.get('/maxPlayers/:num', function(req, res) {
     res.send('You fool of a Took!');
   }
 });
-var players = [];
-var game;
+var waitingPlayers = [];
+var games = {};
 
 // start up the server
 server.listen(process.env.PORT || 3000);
@@ -53,21 +53,25 @@ server.listen(process.env.PORT || 3000);
 io.sockets.on('connection', function(socket) {
   socket.on('disconnect', function() {
     console.log(socket.id,'disconnected');
-    _.each(players, function(player, i) {
-      if (player.socket.id == socket.id) {
-        players.splice(i,1);
+    _.each(waitingPlayers, function(player, i) {
+      if (player.id == socket.id) {
+        waitingPlayers.splice(i,1);
       }
     });
     showQueueUpdate();
   });
-  players.push({'socket': socket});
+  waitingPlayers.push(socket);
 
-  if (players.length == PLAYERS_TO_START) {
-    showEveryone('queue',{almostReady:true});
+  if (waitingPlayers.length == PLAYERS_TO_START) {
+    showEveryone(null, 'queue',{almostReady:true});
     checkEveryoneStillHere(function(theyreStillHere) {
       if (theyreStillHere) {
-        game = new Game.Game(players, new Game.Settings(null, PLAYERS_TO_START, null));
-        showEveryone('start',game);
+        var newGameId = waitingPlayers[0].id;
+        games[newGameId] = new Game.Game(newGameId, waitingPlayers, new Game.Settings(null, PLAYERS_TO_START, null));
+        var gameClone = _.clone(games[newGameId]);
+        gameClone.playerSockets = null;
+        showEveryone(null,'start',gameClone);
+        waitingPlayers.length = 0;
       } else {
         showQueueUpdate();
       }
@@ -76,18 +80,18 @@ io.sockets.on('connection', function(socket) {
     showQueueUpdate();
   }
 
-  socket.on('moveComplete', function(data) { validateWord(socket, data); });
-  socket.on('partialMove', function(data) { showEveryone('partialMove', data); });
+  socket.on('moveComplete', function(data) { validateWord(data.game, socket.id, data.tiles); });
+  socket.on('partialMove', function(data) { showEveryone(data.game, 'partialMove', data); });
 });
 
 // tell all waiting players the queue status
 function showQueueUpdate() {
-  showEveryone('queue', {currentPlayers: players.length, neededPlayers: PLAYERS_TO_START});
+  showEveryone(null,'queue', {currentPlayers: waitingPlayers.length, neededPlayers: PLAYERS_TO_START});
 }
 
 // make sure everyone who's waiting to play is still around
 function checkEveryoneStillHere(callback) {
-  async.map(players, checkStillHere, function(err, thoseStillHere) {
+  async.map(waitingPlayers, checkStillHere, function(err, thoseStillHere) {
     var everyoneHere = true;
     if (err) {
       console.log('everyonestillhereerr',err);
@@ -95,8 +99,8 @@ function checkEveryoneStillHere(callback) {
     } else {
       for (var i = thoseStillHere.length-1; i >= 0; i--) {
         if (!thoseStillHere[i]) {
-          console.log('removing player',players[i].socket.id);
-          players.splice(i,1);
+          console.log('removing player',waitingPlayers[i].id);
+          waitingPlayers.splice(i,1);
           everyoneHere = false;
         }
       }
@@ -108,21 +112,21 @@ function checkEveryoneStillHere(callback) {
 // make sure this player is still waiting to play
 function checkStillHere(player, callback) {
   var responded = false;
-  player.socket.emit('stillhere?', 'plzrespond', function(err, res) {
+  player.emit('stillhere?', 'plzrespond', function(err, res) {
     responded = true;
-    console.log('player',player.socket.id,'responded');
+    console.log('player',player.id,'responded');
     callback(null, true);
   });
   setTimeout(function() {
     if (!responded) {
-      console.log('player',player.socket.id,'did not respond');
+      console.log('player',player.id,'did not respond');
       callback(null, false);
     }
   }, 500);
 }
 
-function validateWord(socket, tiles) {
 // validate a word that's trying to be played
+function validateWord(game, player, tiles) {
   if (!tiles.length) {
     return;
   }
@@ -131,19 +135,20 @@ function validateWord(socket, tiles) {
 
   var word = "";
   _.each(tiles, function(tile) {
-    word += game.tiles[tile].letter;
+    word += games[game].tiles[tile].letter;
   });
 
-  if (dictionary.isAWord(word) && pathValidator.isAPath(tiles, game.settings.gridSize)) {
-    showEveryone('successfulMove', game.tileUpdate(socket.id, tiles));
+  if (dictionary.isAWord(word) && pathValidator.isAPath(tiles, games[game].settings.gridSize)) {
+    showEveryone(game, 'successfulMove', games[game].tileUpdate(player, tiles));
   } else {
-    showEveryone('unsuccessfulMove', tiles);
+    showEveryone(game, 'unsuccessfulMove', tiles);
   }
 }
 
-function showEveryone(message, data) {
-  _.each(players, function(player) {
-    player.socket.emit(message, data);
 // send every player in this game something
+function showEveryone(game, message, data) {
+  var thePlayerSockets = (game?games[game].playerSockets:waitingPlayers);
+  _.each(thePlayerSockets, function(playerSocket) {
+    playerSocket.emit(message, data);
   });
 }

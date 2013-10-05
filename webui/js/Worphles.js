@@ -31,6 +31,8 @@ var targetList = [];
 var projector;
 var mouse = { x: 0, y: 0 ,lClicked: false, rClicked: false};
 var INTERSECTED;
+// current game's id
+var gameId;
 // current player's id
 var me;
 // all players in this game
@@ -60,6 +62,8 @@ if (Detector.webgl) {
   Start up the game
 */     
 function init(game)  {
+  // save game id
+  gameId = game.id;
   // players
   me = socket.socket.sessionid;
   players = game.players;
@@ -251,7 +255,7 @@ function mouseUp(event) {
   document.removeEventListener( 'mouseup', mouseUp, false );
   mouse.lClicked = false;
   if (currentTiles.length) {
-    socket.emit('moveComplete', currentTiles);
+    socket.emit('moveComplete', {game:gameId, tiles:currentTiles});
   }
   currentTiles = [];
   lastTile = null;
@@ -310,7 +314,7 @@ function setupWebSockets() {
   });
 
   socket.on('partialMove', function(data) {
-    colorTile(data.tile, data.color)
+    colorTile(data.tile, players[data.player].color);
   });
 };
 
@@ -333,7 +337,7 @@ function update() {
   if ( intersects.length > 0) {
     var tile = intersects[0].object.__tile_data.num;
     if (mouse.lClicked && !mouse.rClicked && tile != lastTile) {
-      socket.emit('partialMove', {tile:tile, color:players[me].color});
+      socket.emit('partialMove', {game:gameId, tile:tile, player:me});
       colorTile(tile, players[me].color);
       currentTiles.push(tile);
       lastTile = tile;

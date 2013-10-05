@@ -26,7 +26,7 @@ function Player(socket, color) {
   this.socket = socket;
   this.color = color;
   this.name = null;
-  this.id = null;
+  this.id = socket;
   this.score = 0;
 };
 
@@ -72,13 +72,16 @@ function Settings(roundTime, maxPlayers, gridSize) {
 /**
  * Instance of a Game
  */
-function Game(inputPlayers, settings) {
+function Game(id, inputPlayers, settings) {
+  this.id = id;
   this.settings = settings || new Settings();
 
   this.players = {};
+  this.playerSockets = {};
   for (var i = 0; i < this.settings.maxPlayers && i < inputPlayers.length; i++) {
-    console.log('newplayer',inputPlayers[i].socket.id);
-    this.players[inputPlayers[i].socket.id] = new Player(inputPlayers[i].socket.id, Player.randomColor(i));
+    console.log('newplayer',inputPlayers[i].id);
+    this.players[inputPlayers[i].id] = new Player(inputPlayers[i].id, Player.randomColor(i));
+    this.playerSockets[inputPlayers[i].id] = inputPlayers[i];
   }
 
   this.tiles = [];
