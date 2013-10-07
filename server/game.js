@@ -1,4 +1,4 @@
-var letterGenerator = require('./letter_generator');
+var dictionary = require('./dictionary');
 var cubeGrid = require('./cube_grid').getGrid();
 var _ = require('underscore');
 
@@ -86,7 +86,7 @@ function Tile(letter) {
  * Returns a random letter.
  */
 Tile.randomLetter = function() {
-  return letterGenerator.getLetter();
+  return dictionary.makeLetter();
 };
 
 
@@ -136,7 +136,6 @@ function Game(id, inputPlayerSockets, settings) {
       _.each(this.players, function(player) {
         gameClone.players[player.id] = player.safeCopy();
       });
-      console.log('new players',gameClone.players);
       return gameClone;
   };
 };
