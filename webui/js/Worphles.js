@@ -15,6 +15,7 @@
 */
 
 // the web socket where all the magic happens
+var scoreboard = new Scoreboard();
 var socket;
 var container;
 var scene;
@@ -303,6 +304,11 @@ function setupWebSockets() {
   });
 
   socket.on('start', function(game) {
+    //console.log(game.players)
+
+    //add scoreboard
+    scoreboard.init(game.players);
+
     $('#sidebar').fadeIn();
     $('#queuePopup').fadeOut();
     // initialization
