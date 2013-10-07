@@ -7,7 +7,7 @@ var players = [
   {
       'name': 'Caleb',
       'color': '#5F5',
-      'score': 18
+      'score': 9001
   }, 
   {
       'name': 'Erik',
