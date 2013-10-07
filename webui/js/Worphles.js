@@ -357,6 +357,13 @@ function setupWebSockets() {
   socket.on('partialMove', function(data) {
     colorTile(data.tile, players[data.player].color);
   });
+
+  socket.on('scoreboardUpdate', function(data) {
+    for(var i = 0; i < Object.keys(data).length; i++) {
+      var playerId = Object.keys(data)[i];
+      scoreboard.updateScoreDisplay(playerId, data[playerId]);
+    } 
+  })
 };
 
 function animate() {
