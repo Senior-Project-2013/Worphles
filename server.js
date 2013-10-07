@@ -8,7 +8,7 @@ var Game = require('./server/game'),
     _ = require('underscore'),
     async = require('async');
 
-var PLAYERS_TO_START = 6;
+var PLAYERS_TO_START = Game.DEFAULTS.MAX_PLAYERS;
 
 // websockets configuration
 io.configure(function () {
@@ -17,7 +17,7 @@ io.configure(function () {
     io.set("transports", ["xhr-polling"]); 
     io.set("polling duration", 10);
   }
-  // io.set('log level', 1);
+  io.set('log level', 1);
 });
 // let client know if we're on localhost or not
 app.get('/environment.js', function(req, res) {
@@ -56,7 +56,6 @@ var games = {};
 // start up the server
 server.listen(process.env.PORT || 3000);
 
-var playerNum = 1; //temporary
 
 // handle each new player that connects
 io.sockets.on('connection', function(socket) {
@@ -72,14 +71,12 @@ io.sockets.on('connection', function(socket) {
       _.each(waitingPlayers, function(player, i) {
         if (player.id == socket.id) {
           waitingPlayers.splice(i,1);
-          playerNum--;
         }
       });
       showQueueUpdate();
     });
 
-    waitingPlayers.push(new Game.Player(socket.id, socket, Game.Player.randomColor(waitingPlayers.length), "Player " + playerNum));
-    playerNum++;
+    waitingPlayers.push(new Game.Player(socket.id, socket, Game.Player.randomColor(waitingPlayers.length), "Player " + waitingPlayers.length));
 
     if (waitingPlayers.length == PLAYERS_TO_START) {
       showEveryone(null, 'queue',{almostReady:true});
@@ -165,7 +162,7 @@ function validateWord(game, player, tiles) {
 
 // send every player in this game something
 function showEveryone(game, message, data) {
-  _.each((game?games[game].players:waitingPlayers), function(player) {
+  _.each((game ? games[game].players : waitingPlayers), function(player) {
     player.socket.emit(message, data);
   });
 }

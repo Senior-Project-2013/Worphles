@@ -13,7 +13,7 @@ var MS_PER_MIN = MS_PER_SEC * 60;
 
 var DEFAULTS = {
   ROUND_TIME: 240 * MS_PER_SEC,
-  MAX_PLAYERS: 6,
+  MAX_PLAYERS: 2,
   GRID_SIZE: 4
 };
 
@@ -112,7 +112,10 @@ function Game(id, players, settings) {
     this.tiles.push(new Tile(Tile.randomLetter()));
   }
 
-  this.players = players;
+  this.players = {};
+  _.each(players, function(player) {
+    this.players[player.id] = player;
+  }, this);
 
   this.tileUpdate = function(id, tiles) {
     var newTiles = {};
@@ -154,3 +157,4 @@ module.exports.defaultSettings = function() {
 module.exports.Settings = Settings;
 module.exports.Game = Game;
 module.exports.Player = Player;
+module.exports.DEFAULTS = DEFAULTS;
