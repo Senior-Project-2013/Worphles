@@ -56,7 +56,6 @@ var games = {};
 // start up the server
 server.listen(process.env.PORT || 3000);
 
-
 // handle each new player that connects
 io.sockets.on('connection', function(socket) {
   socket.on('joinQueue', function() {
@@ -156,6 +155,7 @@ function validateWord(game, player, tiles) {
 
   if (dictionary.isAWord(word) && pathValidator.isAPath(tiles, games[game].settings.gridSize)) {
     showEveryone(game, 'successfulMove', games[game].tileUpdate(player, tiles));
+    showEveryone(game, 'scoreboardUpdate', updatePlayerScores(games[game]));
   } else {
     showEveryone(game, 'unsuccessfulMove', tiles);
   }
@@ -166,4 +166,17 @@ function showEveryone(game, message, data) {
   _.each((game ? games[game].players : waitingPlayers), function(player) {
     player.socket.emit(message, data);
   });
+}
+
+//update the player scores hash out of the game's player objects
+function updatePlayerScores(game) {
+  var playerScores = {};
+
+  for(var i = 0; i < Object.keys(game.players).length; i++) {
+    var playerId = Object.keys(game.players)[i];
+    playerScores[playerId] = game.players[playerId].score;
+  }
+
+  console.log(playerScores);
+  return playerScores;
 }

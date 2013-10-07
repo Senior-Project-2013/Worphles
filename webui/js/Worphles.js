@@ -387,9 +387,17 @@ function setupWebSockets() {
     colorTile(data.tile, players[data.player].color);
   });
 
+
   socket.on('chat', function(data) {
     showChat(data.player, data.message);
   });
+
+  socket.on('scoreboardUpdate', function(data) {
+    for(var i = 0; i < Object.keys(data).length; i++) {
+      var playerId = Object.keys(data)[i];
+      scoreboard.updateScoreDisplay(playerId, data[playerId]);
+    } 
+  })
 };
 
 function animate() {

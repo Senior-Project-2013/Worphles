@@ -12,9 +12,6 @@ function Scoreboard() {
 
   /* creates a score row */
   this.createScoreRow = function(num, player) {
-    console.log(player)
-    var rowId = "playerRow" + num;
-
     var color = {
       r: (player.color.r * 255),
       g: (player.color.g * 255),
@@ -22,7 +19,7 @@ function Scoreboard() {
     }
 
     $('<li/>', {
-      id: rowId,
+      id: player.id,
       class: 'scoreRow',
       score: player.score,
       height: '18%'
@@ -30,24 +27,24 @@ function Scoreboard() {
 
     $('<img/>', {
       class: 'avatar'
-    }).appendTo('#'+rowId);
+    }).appendTo('#'+player.id);
 
     $('<span/>', {
       text: player.name,
       class: 'playerName'
-    }).appendTo('#'+rowId);
+    }).appendTo('#'+player.id);
 
     $('<span/>', {
       text: player.score,
       class: 'scoreValue'
-    }).appendTo('#'+rowId);
+    }).appendTo('#'+player.id);
   }
 
   /* updates the score display */
   this.updateScoreDisplay = function(id, score) {
-    $("#playerRow" + id + " .scoreValue").text(score);
-    $("#playerRow" + id).attr({score: score});
-    resort();
+    $("#" + id + " .scoreValue").text(score);
+    $("#" + id).attr({score: score});
+    this.resort();
   }
 
   /* resorts the score rows by score */

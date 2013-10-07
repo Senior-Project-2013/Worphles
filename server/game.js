@@ -121,8 +121,17 @@ function Game(id, players, settings) {
     var newTiles = {};
     for (var i = 0; i < tiles.length; i++) {
       var newLetter = Tile.randomLetter();
-      this.tiles[tiles[i]].owner = id;
-      this.tiles[tiles[i]].letter = newLetter;
+      var tileToUpdate = this.tiles[tiles[i]];
+      var oldOwner = this.players[tileToUpdate.owner];
+      var newOwner = this.players[id];
+      tileToUpdate.owner = id;
+
+      if(oldOwner)
+        oldOwner.score--;
+      if(newOwner)
+      newOwner.score++;
+
+      tileToUpdate.letter = newLetter;
       newTiles[tiles[i]] = {letter: newLetter, owner: id};
     }
     return newTiles;
