@@ -97,6 +97,7 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('moveComplete', function(data) { validateWord(data.game, socket.id, data.tiles); });
   socket.on('partialMove', function(data) { showEveryone(data.game, 'partialMove', data); });
+  socket.on('chat', function(data) {showEveryone(data.game, 'chat', {player:socket.id, message:data.message})});
 });
 
 // tell all waiting players the queue status

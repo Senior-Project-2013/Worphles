@@ -58,6 +58,7 @@ $(function() {
   // only start the game if the browser/graphics card support WebGL
   if (Detector.webgl) {
     setupButtons();
+    setupChat();
     setupWebSockets();
   } else {
     alert(ABSOLUTE_FAIL);
@@ -99,7 +100,7 @@ function init(game)  {
   // automatically resize renderer
   THREEx.WindowResize(renderer, camera);
   // toggle full-screen on given key press
-  THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
+  // THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
 
   // set up mouse controls
   controls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -272,6 +273,15 @@ function updateMouse(event) {
   mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 }
 
+function setupChat() {
+  $('#textInput').keyup(function(e) {
+    if (e.which == 13 /*enter*/) {
+      sendChat($('#textInput').val());
+      $('#textInput').val('');
+    }
+  });
+}
+
 function setupButtons() {
   $('#joinQueue').text('Join Queue');
   $('#customGame').text('Custom Game');
@@ -297,6 +307,23 @@ function showButtons() {
   $('#joinQueue').fadeIn(); 
 }
 
+function sendChat(chat) {
+  socket.emit('chat', {game:gameId, message:chat});
+}
+
+function showChat(player, message) {
+  console.log(player,message);
+
+  var color = {
+    r: (players[player].color.r * 255),
+    g: (players[player].color.g * 255),
+    b: (players[player].color.b * 255)
+  }
+  var colorString = 'background-color:rgb('+color.r+','+color.g+','+color.b+')';
+
+  $('#messages').append('<div style='+colorString+'>'+players[player].name+': '+message+'</div>');
+}
+
 function setupWebSockets() {
   socket = io.connect(WEBSOCKETS_URL);
   socket.on('full', function(data) {
@@ -304,13 +331,15 @@ function setupWebSockets() {
   });
 
   socket.on('start', function(game) {
-    //console.log(game.players)
-
-    //add scoreboard
+    // add scoreboard
     scoreboard.init(game.players);
-
-    $('#sidebar').fadeIn();
+    // hide popups
+    $('.sidebar').fadeIn();
     $('#queuePopup').fadeOut();
+    $('#textInput').fadeIn(function() {
+      $('#textInput').focus();
+    });
+
     // initialization
     init(game);
     // animation loop / game loop
@@ -356,6 +385,10 @@ function setupWebSockets() {
 
   socket.on('partialMove', function(data) {
     colorTile(data.tile, players[data.player].color);
+  });
+
+  socket.on('chat', function(data) {
+    showChat(data.player, data.message);
   });
 };
 

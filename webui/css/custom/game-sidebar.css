@@ -1,4 +1,4 @@
-#sidebar {
+.sidebar {
   position: absolute;
   height: 100%;
   width: 25%;
@@ -9,7 +9,11 @@
   display: none;
 }
 
-#sidebar > #scoreboard {
+.sidebar.right-sidebar {
+  right: 0px;
+}
+
+.sidebar > #scoreboard, #chat {
   font-family: 'Open Sans Condensed', sans-serif;
   font-size: 40px;
   height: 65%;
@@ -20,26 +24,41 @@
   text-align: center;
 }
 
-#sidebar > #scoreboard > .title {
-  display: block;
-  width: 100%;
-  background-color: #2F2;
-  padding: 0.2em 0 0.2em 0;
-}
-
-#sidebar > #scoreboard > #scores {
+.sidebar > #chat > #messages {
+  font-size: 20px;
+  color: white;
+  text-align: left;
   padding: 0;
   margin: 0;
   list-style: none;
   height: 100%;
 }
 
-#sidebar > #scoreboard > #scores > .scoreRow {
+.sidebar > #chat > #messages > .message {
   width: 100%;
   margin-top: 3px;
 }
 
-#sidebar > #scoreboard > #scores > .scoreRow > .avatar {
+.sidebar > #scoreboard > .title, .sidebar > #chat > .title {
+  display: block;
+  width: 100%;
+  background-color: #2F2;
+  padding: 0.2em 0 0.2em 0;
+}
+
+.sidebar > #scoreboard > #scores {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  height: 100%;
+}
+
+.sidebar > #scoreboard > #scores > .scoreRow {
+  width: 100%;
+  margin-top: 3px;
+}
+
+.sidebar > #scoreboard > #scores > .scoreRow > .avatar {
   text-align: left;
   width: 22%;
   height: 100%;
@@ -48,12 +67,12 @@
   float: left;
 }
 
-#sidebar > #scoreboard > #scores > .scoreRow > .playerName {
+.sidebar > #scoreboard > #scores > .scoreRow > .playerName {
   float: left;
   font-size: 32px;
 }
 
-#sidebar > #scoreboard > #scores > .scoreRow > .scoreValue {
+.sidebar > #scoreboard > #scores > .scoreRow > .scoreValue {
   color: white;
   float: right;
   font-size: 32px;
@@ -61,8 +80,8 @@
   margin-right: 10px;
 }
 
-#sidebar > #scoreboard > .scoreRow > .playerName,
-#sidebar > #scoreboard > .scoreRow > .scoreValue {
+.sidebar > #scoreboard > .scoreRow > .playerName,
+.sidebar > #scoreboard > .scoreRow > .scoreValue {
   height: 100%;
   width: 35%;
   line-height: 50px;
