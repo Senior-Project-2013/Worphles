@@ -1,27 +1,50 @@
 var letterGenerator = require('./letter_generator');
 var cubeGrid = require('./cube_grid').getGrid();
 
+
+/**
+ * game psuedo constants
+ */
+
 // all time is in milliseconds
-var SECOND = 1000;
-var MINUTE = SECOND * 60;
-var DEFAULT_ROUND_TIME = 240 * SECOND;
-var DEFAULT_MAX_PLAYERS = 6;
-var DEFAULT_GRID_SIZE = 4;
+var MS_PER_SEC = 1000;
+var MS_PER_MIN = MS_PER_SEC * 60;
+
+var DEFAULTS = {
+  ROUND_TIME: 240 * MS_PER_SEC,
+  MAX_PLAYERS: 6,
+  GRID_SIZE: 4
+};
+
 var COLORS = {
   RED: new Color(1,0,0),
   BLUE: new Color(0,0,1),
   GREEN: new Color(0,1,0),
   YELLOW: new Color(1,1,0),
   MAGENTA: new Color(1,0,1),
-  CYAN: new Color(0,1,1),
-}
+  CYAN: new Color(0,1,1)
+};
+
+
+/**
+ * Create a new Color
+ */
 function Color(r,g,b) {
   this.r = r;
   this.g = g;
   this.b = b;
-}
+};
+
+
+/**
+ * List of available player colors
+ */
 var playerColorOptions = [COLORS.RED,COLORS.BLUE,COLORS.GREEN,COLORS.YELLOW,COLORS.MAGENTA,COLORS.CYAN];
 
+
+/**
+ * Create a new player
+ */
 function Player(socket, color) {
   this.socket = socket;
   this.color = color;
@@ -30,9 +53,14 @@ function Player(socket, color) {
   this.score = 0;
 };
 
+
+/**
+ * Returns a random player color
+ */
 Player.randomColor = function(i) {
   return playerColorOptions[i%playerColorOptions.length];
 };
+
 
 /**
  * Create a new tile 
@@ -63,9 +91,9 @@ Tile.randomLetter = function() {
  * Game Settings 
  */
 function Settings(roundTime, maxPlayers, gridSize) {
-  this.roundTime = roundTime || DEFAULT_ROUND_TIME;
-  this.maxPlayers = maxPlayers || DEFAULT_MAX_PLAYERS;
-  this.gridSize = gridSize || DEFAULT_GRID_SIZE;
+  this.roundTime = roundTime || DEFAULTS.ROUND_TIME;
+  this.maxPlayers = maxPlayers || DEFAULTS.MAX_PLAYERS;
+  this.gridSize = gridSize || DEFAULTS.GRID_SIZE;
 };
 
 
