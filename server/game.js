@@ -1,5 +1,6 @@
 var letterGenerator = require('./letter_generator');
 var cubeGrid = require('./cube_grid').getGrid();
+var _ = require('underscore');
 
 
 /**
@@ -41,16 +42,18 @@ function Color(r,g,b) {
  */
 var playerColorOptions = [COLORS.RED,COLORS.BLUE,COLORS.GREEN,COLORS.YELLOW,COLORS.MAGENTA,COLORS.CYAN];
 
-
-/**
- * Create a new player
- */
-function Player(socket, color) {
+function Player(id, socket, color, name, score, safe) {
+  this.id = id;
   this.socket = socket;
   this.color = color;
   this.name = null;
-  this.id = socket;
   this.score = 0;
+
+  if (!safe) {
+    this.safeCopy = function() {
+      return new Player(this.id, null, this.color, this.name, this.score, true);
+    };
+  }
 };
 
 
@@ -100,16 +103,15 @@ function Settings(roundTime, maxPlayers, gridSize) {
 /**
  * Instance of a Game
  */
-function Game(id, inputPlayers, settings) {
+function Game(id, inputPlayerSockets, settings) {
   this.id = id;
   this.settings = settings || new Settings();
 
   this.players = {};
   this.playerSockets = {};
-  for (var i = 0; i < this.settings.maxPlayers && i < inputPlayers.length; i++) {
-    console.log('newplayer',inputPlayers[i].id);
-    this.players[inputPlayers[i].id] = new Player(inputPlayers[i].id, Player.randomColor(i));
-    this.playerSockets[inputPlayers[i].id] = inputPlayers[i];
+  for (var i = 0; i < this.settings.maxPlayers && i < inputPlayerSockets.length; i++) {
+    console.log('newplayer',inputPlayerSockets[i].id);
+    this.players[inputPlayerSockets[i].id] = new Player(inputPlayerSockets[i].id, inputPlayerSockets[i], Player.randomColor(i));
   }
 
   this.tiles = [];
@@ -126,7 +128,17 @@ function Game(id, inputPlayers, settings) {
       newTiles[tiles[i]] = {letter: newLetter, owner: id};
     }
     return newTiles;
-  }
+  };
+
+  this.safeCopy = function() {
+      var gameClone = _.clone(this);
+      gameClone.players = {};
+      _.each(this.players, function(player) {
+        gameClone.players[player.id] = player.safeCopy();
+      });
+      console.log('new players',gameClone.players);
+      return gameClone;
+  };
 };
 
 
