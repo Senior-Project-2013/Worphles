@@ -31,6 +31,7 @@ var targetList = [];
 var projector;
 var mouse = { x: 0, y: 0 ,lClicked: false, rClicked: false};
 var INTERSECTED;
+var TILES;
 // current game's id
 var gameId;
 // current player's id
