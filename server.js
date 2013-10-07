@@ -84,9 +84,7 @@ io.sockets.on('connection', function(socket) {
         if (theyreStillHere) {
           var newGameId = waitingPlayers[0].id;
           games[newGameId] = new Game.Game(newGameId, waitingPlayers, new Game.Settings(null, PLAYERS_TO_START, null));
-          var gameClone = _.clone(games[newGameId]);
-          gameClone.playerSockets = null;
-          showEveryone(null,'start',gameClone);
+          showEveryone(null,'start',games[newGameId].safeCopy());
           waitingPlayers.length = 0;
         } else {
           showQueueUpdate();
@@ -164,8 +162,13 @@ function validateWord(game, player, tiles) {
 
 // send every player in this game something
 function showEveryone(game, message, data) {
-  var thePlayerSockets = (game?games[game].playerSockets:waitingPlayers);
-  _.each(thePlayerSockets, function(playerSocket) {
-    playerSocket.emit(message, data);
-  });
+  if (game) {
+    _.each(games[game].players, function(player) {
+      player.socket.emit(message, data);
+    });
+  } else {
+    _.each(waitingPlayers, function(playerSocket) {
+      playerSocket.emit(message, data);
+    });
+  }
 }

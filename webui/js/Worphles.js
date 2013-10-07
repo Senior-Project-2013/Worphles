@@ -281,7 +281,7 @@ function setupButtons() {
     console.log('joinQueue');
   });
   $('#customGame').click(function() {
-    $('#customGame').text('Custom Game\njk ;)');
+    $('#customGame').text('jk ;)');
   });
 }
 
