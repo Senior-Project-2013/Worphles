@@ -5,3 +5,4 @@
 node_modules
 \#*
 .\#*
+/tools/tile-auto-relations-*.json
