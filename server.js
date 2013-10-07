@@ -17,7 +17,7 @@ io.configure(function () {
     io.set("transports", ["xhr-polling"]); 
     io.set("polling duration", 10);
   }
-  io.set('log level', 1);
+  // io.set('log level', 1);
 });
 // let client know if we're on localhost or not
 app.get('/environment.js', function(req, res) {
@@ -56,6 +56,8 @@ var games = {};
 // start up the server
 server.listen(process.env.PORT || 3000);
 
+var playerNum = 1; //temporary
+
 // handle each new player that connects
 io.sockets.on('connection', function(socket) {
   socket.on('joinQueue', function() {
@@ -70,11 +72,14 @@ io.sockets.on('connection', function(socket) {
       _.each(waitingPlayers, function(player, i) {
         if (player.id == socket.id) {
           waitingPlayers.splice(i,1);
+          playerNum--;
         }
       });
       showQueueUpdate();
     });
-    waitingPlayers.push(socket);
+
+    waitingPlayers.push(new Game.Player(socket.id, socket, Game.Player.randomColor(waitingPlayers.length), "Player " + playerNum));
+    playerNum++;
 
     if (waitingPlayers.length == PLAYERS_TO_START) {
       showEveryone(null, 'queue',{almostReady:true});
@@ -125,7 +130,7 @@ function checkEveryoneStillHere(callback) {
 // make sure this player is still waiting to play
 function checkStillHere(player, callback) {
   var responded = false;
-  player.emit('stillhere?', 'plzrespond', function(err, res) {
+  player.socket.emit('stillhere?', 'plzrespond', function(err, res) {
     responded = true;
     console.log('player',player.id,'responded');
     callback(null, true);
@@ -160,13 +165,7 @@ function validateWord(game, player, tiles) {
 
 // send every player in this game something
 function showEveryone(game, message, data) {
-  if (game) {
-    _.each(games[game].players, function(player) {
-      player.socket.emit(message, data);
-    });
-  } else {
-    _.each(waitingPlayers, function(playerSocket) {
-      playerSocket.emit(message, data);
-    });
-  }
+  _.each((game?games[game].players:waitingPlayers), function(player) {
+    player.socket.emit(message, data);
+  });
 }

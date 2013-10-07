@@ -46,8 +46,8 @@ function Player(id, socket, color, name, score, safe) {
   this.id = id;
   this.socket = socket;
   this.color = color;
-  this.name = null;
-  this.score = 0;
+  this.name = name;
+  this.score = score || 0;
 
   if (!safe) {
     this.safeCopy = function() {
@@ -103,21 +103,16 @@ function Settings(roundTime, maxPlayers, gridSize) {
 /**
  * Instance of a Game
  */
-function Game(id, inputPlayerSockets, settings) {
+function Game(id, players, settings) {
   this.id = id;
   this.settings = settings || new Settings();
-
-  this.players = {};
-  this.playerSockets = {};
-  for (var i = 0; i < this.settings.maxPlayers && i < inputPlayerSockets.length; i++) {
-    console.log('newplayer',inputPlayerSockets[i].id);
-    this.players[inputPlayerSockets[i].id] = new Player(inputPlayerSockets[i].id, inputPlayerSockets[i], Player.randomColor(i));
-  }
 
   this.tiles = [];
   for (var i = 0; i < this.settings.gridSize * this.settings.gridSize * 6; i++) {
     this.tiles.push(new Tile(Tile.randomLetter()));
   }
+
+  this.players = players;
 
   this.tileUpdate = function(id, tiles) {
     var newTiles = {};
@@ -158,3 +153,4 @@ module.exports.defaultSettings = function() {
 
 module.exports.Settings = Settings;
 module.exports.Game = Game;
+module.exports.Player = Player;
