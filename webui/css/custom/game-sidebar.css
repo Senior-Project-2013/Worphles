@@ -32,6 +32,7 @@
   margin: 0;
   list-style: none;
   height: 100%;
+  overflow: hidden;
 }
 
 .sidebar > #chat > #messages > .message {

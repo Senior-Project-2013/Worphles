@@ -7,6 +7,13 @@ body
 	overflow: hidden;
 }
 
+#canvas {
+  position: absolute;
+  height: 100%;
+  width: 50%;
+  left: 25%;
+}
+
 #queuePopup {
   display: none;
   font-family: 'Open Sans Condensed', sans-serif;
@@ -58,8 +65,8 @@ body
 
 #textInput {
   position: absolute;
-  left: 40%;
-  width: 20%;
-  bottom: 1px;
+  left: 10%;
+  width: 80%;
+  bottom: 5%;
   display: none;
 }

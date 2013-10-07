@@ -308,7 +308,9 @@ function showButtons() {
 }
 
 function sendChat(chat) {
-  socket.emit('chat', {game:gameId, message:chat});
+  if (chat && chat !== '') {
+    socket.emit('chat', {game:gameId, message:chat});
+  }
 }
 
 function showChat(player, message) {
