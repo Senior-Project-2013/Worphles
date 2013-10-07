@@ -75,7 +75,7 @@ io.sockets.on('connection', function(socket) {
       showQueueUpdate();
     });
 
-    waitingPlayers.push(new Game.Player(socket.id, socket, Game.Player.randomColor(waitingPlayers.length), "Player " + waitingPlayers.length+1));
+    waitingPlayers.push(new Game.Player(socket.id, socket, Game.Player.randomColor(waitingPlayers.length), "Player " + waitingPlayers.length));
 
     if (waitingPlayers.length == PLAYERS_TO_START) {
       showEveryone(null, 'queue',{almostReady:true});
