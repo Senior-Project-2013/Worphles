@@ -51,12 +51,16 @@ var NINETY_DEG = 90*Math.PI/180;
 
 var ABSOLUTE_FAIL = 'Sorry, your browser does not support WebGL...\nYou won\'t be able to play this game :(';
 
-// only start the game if the browser/graphics card support WebGL
-if (Detector.webgl) {
-  setupWebSockets();
-} else {
-  alert(ABSOLUTE_FAIL);
-}
+// startup
+$(function() {
+  // only start the game if the browser/graphics card support WebGL
+  if (Detector.webgl) {
+    setupButtons();
+    setupWebSockets();
+  } else {
+    alert(ABSOLUTE_FAIL);
+  }
+});
 
 /**
   Start up the game
@@ -264,6 +268,31 @@ function mouseUp(event) {
 function updateMouse(event) {
   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
   mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
+function setupButtons() {
+  $('#joinQueue').text('Join Queue');
+  $('#customGame').text('Custom Game');
+
+  $('#joinQueue').click(function() {
+    hideButtons();
+    $('#queuePopup').fadeIn();
+    socket.emit('joinQueue');
+    console.log('joinQueue');
+  });
+  $('#customGame').click(function() {
+    $('#customGame').text('Custom Game\njk ;)');
+  });
+}
+
+function hideButtons() {
+  $('#customGame').fadeOut();
+  $('#joinQueue').fadeOut();
+}
+
+function showButtons() {
+  $('#customGame').fadeIn();
+  $('#joinQueue').fadeIn(); 
 }
 
 function setupWebSockets() {

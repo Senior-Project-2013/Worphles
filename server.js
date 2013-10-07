@@ -60,40 +60,42 @@ server.listen(process.env.PORT || 3000);
 
 // handle each new player that connects
 io.sockets.on('connection', function(socket) {
-  // heroku's kinda slow... probably shouldn't do multiple games
-  if (process.env.HEROKU && Object.keys(games).length > 0) {
-    socket.emit('full');
-    return;
-  }
+  socket.on('joinQueue', function() {
+    // heroku's kinda slow... probably shouldn't do multiple games
+    if (process.env.HEROKU && Object.keys(games).length > 0) {
+      socket.emit('full');
+      return;
+    }
 
-  socket.on('disconnect', function() {
-    console.log(socket.id,'disconnected');
-    _.each(waitingPlayers, function(player, i) {
-      if (player.id == socket.id) {
-        waitingPlayers.splice(i,1);
-      }
+    socket.on('disconnect', function() {
+      console.log(socket.id,'disconnected');
+      _.each(waitingPlayers, function(player, i) {
+        if (player.id == socket.id) {
+          waitingPlayers.splice(i,1);
+        }
+      });
+      showQueueUpdate();
     });
-    showQueueUpdate();
+    waitingPlayers.push(socket);
+
+    if (waitingPlayers.length == PLAYERS_TO_START) {
+      showEveryone(null, 'queue',{almostReady:true});
+      checkEveryoneStillHere(function(theyreStillHere) {
+        if (theyreStillHere) {
+          var newGameId = waitingPlayers[0].id;
+          games[newGameId] = new Game.Game(newGameId, waitingPlayers, new Game.Settings(null, PLAYERS_TO_START, null));
+          var gameClone = _.clone(games[newGameId]);
+          gameClone.playerSockets = null;
+          showEveryone(null,'start',gameClone);
+          waitingPlayers.length = 0;
+        } else {
+          showQueueUpdate();
+        }
+      });
+    } else {
+      showQueueUpdate();
+    }
   });
-  waitingPlayers.push(socket);
-
-  if (waitingPlayers.length == PLAYERS_TO_START) {
-    showEveryone(null, 'queue',{almostReady:true});
-    checkEveryoneStillHere(function(theyreStillHere) {
-      if (theyreStillHere) {
-        var newGameId = waitingPlayers[0].id;
-        games[newGameId] = new Game.Game(newGameId, waitingPlayers, new Game.Settings(null, PLAYERS_TO_START, null));
-        var gameClone = _.clone(games[newGameId]);
-        gameClone.playerSockets = null;
-        showEveryone(null,'start',gameClone);
-        waitingPlayers.length = 0;
-      } else {
-        showQueueUpdate();
-      }
-    });
-  } else {
-    showQueueUpdate();
-  }
 
   socket.on('moveComplete', function(data) { validateWord(data.game, socket.id, data.tiles); });
   socket.on('partialMove', function(data) { showEveryone(data.game, 'partialMove', data); });
