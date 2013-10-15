@@ -327,7 +327,7 @@ function showChat(player, message) {
 }
 
 function setupWebSockets() {
-  socket = io.connect(WEBSOCKETS_URL);
+  socket = io.connect();
   socket.on('full', function(data) {
     $('#queue').text('Sorry, server\'s full');
   });
