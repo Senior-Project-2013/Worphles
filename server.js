@@ -24,7 +24,7 @@ app.use('/webui', express.static(__dirname + '/webui'));
 // serve the main game html file
 app.get('/', function(req, res) { res.sendfile(__dirname+'/webui/Home.html'); });
 
-app.get('/playWorphles', function(req, res) { res.sendfile(__dirname+'/webui/WorphleWorld.html'); });
+app.get('/play', function(req, res) { res.sendfile(__dirname+'/webui/WorphleWorld.html'); });
 
 // set the max number of players
 app.get('/maxPlayers/:num', function(req, res) {

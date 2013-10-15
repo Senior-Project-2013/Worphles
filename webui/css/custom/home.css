@@ -1,9 +1,9 @@
 html {
-	cursor: url(../resources/cursors/stand.png), auto;
+	cursor: url(/webui/resources/cursors/stand.png), auto;
 }
 
 a, button {
-	cursor: url(../resources/cursors/lookup.png), auto;
+	cursor: url(/webui/resources/cursors/lookup.png), auto;
 }
 
 body {
@@ -72,11 +72,11 @@ canvas {
 }
 
 .rightPage {
-	cursor: url(../resources/cursors/signright.png), auto;
+	cursor: url(/webui/resources/cursors/signright.png), auto;
 }
 
 .leftPage {
-	cursor: url(../resources/cursors/signleft.png), auto;
+	cursor: url(/webui/resources/cursors/signleft.png), auto;
 }
 
 .imBookPage:hover {
