@@ -337,6 +337,7 @@ function setupWebSockets() {
     scoreboard.init(game.players);
     // hide popups
     $('.sidebar').fadeIn();
+    $('#currentWord').fadeIn();
     $('#queuePopup').fadeOut();
     $('#textInput').fadeIn(function() {
       $('#textInput').focus();
@@ -424,6 +425,7 @@ function update() {
       socket.emit('partialMove', {game:gameId, tile:tile, player:me});
       colorTile(tile, players[me].color);
       currentTiles.push(tile);
+      updateWordDisplay(currentTiles);
       lastTile = tile;
     }
   }
@@ -466,4 +468,14 @@ function colorTile(tile, color) {
 
 function render() { 
   renderer.render( scene, camera );
+}
+
+function updateWordDisplay(tiles) {
+  var word = '';
+
+  for(var i = 0; i < tiles.length; i++) {
+    word += tiles[i].letter;
+  }
+
+  $('#currentWord').text(word);
 }

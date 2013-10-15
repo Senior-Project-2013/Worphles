@@ -1,0 +1,52 @@
+.button {
+  color: white;
+  padding: 20px;
+  border: 1px solid white;
+  border-radius: 30px;
+  text-decoration: none;
+}
+
+.button-blue {
+  background-color: #00F;
+}
+
+.button-blue:hover {
+  background-color: #33F;
+  color: #EEE;
+}
+
+.button-green {
+  background-color: #2A2;
+}
+
+.button-green:hover {
+  background-color: #5A5;
+  color: #EEE;
+}
+
+.button-red {
+  background-color: #F00;
+}
+
+.button-red:hover {
+  background-color: #F33;
+  color: #EEE;
+}
+
+.button-purple {
+  background-color: #909;
+}
+
+.button-purple:hover {
+  background-color: #B0B;
+  color: #EEE;
+}
+
+.button-orange {
+  background-color: #E80;
+}
+
+.button-orange:hover {
+  background-color: #F80;
+  color: #EEE;
+};
