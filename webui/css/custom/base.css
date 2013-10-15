@@ -3,6 +3,7 @@ body
 	font-family: Monospace;
 	font-weight: bold;
 	background-color: #ccccff;
+  background-color: black;
 	margin: 0px;
 	overflow: hidden;
 }

@@ -40,6 +40,13 @@ var me;
 // all players in this game
 var players;
 
+// star field
+var starSystems;
+var starSettings = {
+  starCount: 500, //the number of background particles
+  averageParticleSpeed: .3, //lower for faster
+};
+
 // a place to put the currently selected tiles
 var currentTiles = [];
 // the last selected tile
@@ -151,12 +158,11 @@ function init(game)  {
     }
   }
   
-  // foggy
-  scene.fog = new THREE.FogExp2( 0x9999ff, 0.00025 );
-  
   // initialize object to perform world/screen calculations
   projector = new THREE.Projector();
   
+  createParticleSystems();
+
   document.addEventListener( 'mousedown', mouseDown, false );
   document.addEventListener( 'mousemove', mouseMove, false );
 }
@@ -266,6 +272,8 @@ function mouseUp(event) {
   }
   currentTiles = [];
   lastTile = null;
+
+  $('#currentWord').text('');
 }
 
 function updateMouse(event) {
@@ -470,12 +478,43 @@ function render() {
   renderer.render( scene, camera );
 }
 
-function updateWordDisplay(tiles) {
+function updateWordDisplay(tileNums) {
   var word = '';
 
   for(var i = 0; i < tiles.length; i++) {
-    word += tiles[i].letter;
+    word += TILES[tileNums[i]].letter;
   }
 
   $('#currentWord').text(word);
+}
+
+function createParticleSystems() {
+  /* STARS */
+  var particles = new THREE.Geometry,
+    pMaterial = new THREE.ParticleBasicMaterial({
+      color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
+      size: 1
+    })
+
+  createStarParticles(particles)
+
+  var starSystem = new THREE.ParticleSystem(particles, pMaterial)
+  starSystem.position.set(0, 0, 0)
+  scene.add(starSystem)
+  particleSystems.push(starSystem)
+}
+
+function createStarParticles(particles) {
+  for(var s = 0; s < settings.starCount; s++) {
+    var pX = (Math.random() * 40) - 20,
+      pY = (Math.random() * 20) - 10,
+      pZ = (Math.random() * 10) - 24,
+      particle = new THREE.Vector3(pX, pY, pZ)
+
+    particle.speed = (Math.random() * 0.6) + .03
+    particle.originalX = pX
+    particle.originalY = pY
+    particle.spread = false
+    particles.vertices.push(particle)
+  }
 }
