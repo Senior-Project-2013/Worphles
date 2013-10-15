@@ -15,6 +15,7 @@
 */
 
 // the web socket where all the magic happens
+var scoreboard = new Scoreboard();
 var socket;
 var container;
 var scene;
@@ -31,6 +32,9 @@ var targetList = [];
 var projector;
 var mouse = { x: 0, y: 0 ,lClicked: false, rClicked: false};
 var INTERSECTED;
+var TILES;
+// current game's id
+var gameId;
 // current player's id
 var me;
 // all players in this game
@@ -49,17 +53,24 @@ var NINETY_DEG = 90*Math.PI/180;
 
 var ABSOLUTE_FAIL = 'Sorry, your browser does not support WebGL...\nYou won\'t be able to play this game :(';
 
-// only start the game if the browser/graphics card support WebGL
-if (Detector.webgl) {
-  setupWebSockets();
-} else {
-  alert(ABSOLUTE_FAIL);
-}
+// startup
+$(function() {
+  // only start the game if the browser/graphics card support WebGL
+  if (Detector.webgl) {
+    setupButtons();
+    setupChat();
+    setupWebSockets();
+  } else {
+    alert(ABSOLUTE_FAIL);
+  }
+});
 
 /**
   Start up the game
 */     
 function init(game)  {
+  // save game id
+  gameId = game.id;
   // players
   me = socket.socket.sessionid;
   players = game.players;
@@ -89,7 +100,7 @@ function init(game)  {
   // automatically resize renderer
   THREEx.WindowResize(renderer, camera);
   // toggle full-screen on given key press
-  THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
+  // THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
 
   // set up mouse controls
   controls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -251,7 +262,7 @@ function mouseUp(event) {
   document.removeEventListener( 'mouseup', mouseUp, false );
   mouse.lClicked = false;
   if (currentTiles.length) {
-    socket.emit('moveComplete', currentTiles);
+    socket.emit('moveComplete', {game:gameId, tiles:currentTiles});
   }
   currentTiles = [];
   lastTile = null;
@@ -262,10 +273,76 @@ function updateMouse(event) {
   mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 }
 
+function setupChat() {
+  $('#textInput').keyup(function(e) {
+    if (e.which == 13 /*enter*/) {
+      sendChat($('#textInput').val());
+      $('#textInput').val('');
+    }
+  });
+}
+
+function setupButtons() {
+  $('#joinQueue').text('Join Queue');
+  $('#customGame').text('Custom Game');
+
+  $('#joinQueue').click(function() {
+    hideButtons();
+    $('#queuePopup').fadeIn();
+    socket.emit('joinQueue');
+    console.log('joinQueue');
+  });
+  $('#customGame').click(function() {
+    $('#customGame').text('jk ;)');
+  });
+}
+
+function hideButtons() {
+  $('#customGame').fadeOut();
+  $('#joinQueue').fadeOut();
+}
+
+function showButtons() {
+  $('#customGame').fadeIn();
+  $('#joinQueue').fadeIn(); 
+}
+
+function sendChat(chat) {
+  if (chat && chat !== '') {
+    socket.emit('chat', {game:gameId, message:chat});
+  }
+}
+
+function showChat(player, message) {
+  console.log(player,message);
+
+  var color = {
+    r: (players[player].color.r * 255),
+    g: (players[player].color.g * 255),
+    b: (players[player].color.b * 255)
+  }
+  var colorString = 'background-color:rgb('+color.r+','+color.g+','+color.b+')';
+
+  $('#messages').append('<div style='+colorString+'>'+players[player].name+': '+message+'</div>');
+}
+
 function setupWebSockets() {
-  socket = io.connect(WEBSOCKETS_URL);
+  socket = io.connect();
+  socket.on('full', function(data) {
+    $('#queue').text('Sorry, server\'s full');
+  });
+
   socket.on('start', function(game) {
-    console.log(game);
+    // add scoreboard
+    scoreboard.init(game.players);
+    // hide popups
+    $('.sidebar').fadeIn();
+    $('#currentWord').fadeIn();
+    $('#queuePopup').fadeOut();
+    $('#textInput').fadeIn(function() {
+      $('#textInput').focus();
+    });
+
     // initialization
     init(game);
     // animation loop / game loop
@@ -273,7 +350,26 @@ function setupWebSockets() {
   });
 
   socket.on('queue', function(data) {
-    console.log('have',data.currentPlayers,'need',data.neededPlayers);
+    if (data.almostReady) {
+      $('#queue').text('Starting...');
+    } else {
+      var queueText = '';
+      for (var i = 0; i < data.currentPlayers; i++) {
+        queueText+='1.';
+      }
+      for (var i = data.currentPlayers; i < data.neededPlayers; i++) {
+        queueText+='0';
+        if (i+1 != data.neededPlayers) {
+          queueText+='.';
+        }
+      }
+      $('#queue').text(queueText);
+      console.log('have',data.currentPlayers,'need',data.neededPlayers);
+    }
+  });
+
+  socket.on('stillhere?', function(data, callback) {
+    callback();
   });
 
   socket.on('successfulMove', function(data) {
@@ -291,8 +387,20 @@ function setupWebSockets() {
   });
 
   socket.on('partialMove', function(data) {
-    colorTile(data.tile, data.color)
+    colorTile(data.tile, players[data.player].color);
   });
+
+
+  socket.on('chat', function(data) {
+    showChat(data.player, data.message);
+  });
+
+  socket.on('scoreboardUpdate', function(data) {
+    for(var i = 0; i < Object.keys(data).length; i++) {
+      var playerId = Object.keys(data)[i];
+      scoreboard.updateScoreDisplay(playerId, data[playerId]);
+    } 
+  })
 };
 
 function animate() {
@@ -314,9 +422,10 @@ function update() {
   if ( intersects.length > 0) {
     var tile = intersects[0].object.__tile_data.num;
     if (mouse.lClicked && !mouse.rClicked && tile != lastTile) {
-      socket.emit('partialMove', {tile:tile, color:players[me].color});
+      socket.emit('partialMove', {game:gameId, tile:tile, player:me});
       colorTile(tile, players[me].color);
       currentTiles.push(tile);
+      updateWordDisplay(currentTiles);
       lastTile = tile;
     }
   }
@@ -359,4 +468,14 @@ function colorTile(tile, color) {
 
 function render() { 
   renderer.render( scene, camera );
+}
+
+function updateWordDisplay(tiles) {
+  var word = '';
+
+  for(var i = 0; i < tiles.length; i++) {
+    word += tiles[i].letter;
+  }
+
+  $('#currentWord').text(word);
 }

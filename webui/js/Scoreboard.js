@@ -1,72 +1,54 @@
-var players = [
-  {
-      'name': 'Alex',
-      'color': '#F55',
-      'score': 2400
-  }, 
-  {
-      'name': 'Caleb',
-      'color': '#5F5',
-      'score': 18
-  }, 
-  {
-      'name': 'Erik',
-      'color': '#476',
-      'score': 20
-  }, 
-  {
-      'name': 'Jeremy',
-      'color': '#725',
-      'score': 24
-  }, 
-  {
-      'name': 'Jordon',
-      'color': '#337',
-      'score': 32
+function Scoreboard() {
+
+  this.init = function(players) {
+    this.players = players ? players : [];
+
+    for(var i = 0; i < Object.keys(players).length; i++) {
+      this.createScoreRow(i, players[Object.keys(players)[i]]);
+    }
+
+    this.resort();
   }
-];
 
-$(document).ready(function() {
-  for(var p = players.length-1; p >= 0; p--)
-    createScoreRow(p, players[p]);
+  /* creates a score row */
+  this.createScoreRow = function(num, player) {
+    var color = {
+      r: (player.color.r * 255),
+      g: (player.color.g * 255),
+      b: (player.color.b * 255)
+    }
 
-  resort();
-});
+    $('<li/>', {
+      id: player.id,
+      class: 'scoreRow',
+      score: player.score,
+      height: '18%'
+    }).css('background-color', 'rgb('+color.r+','+color.g+','+color.b+')').appendTo('#scores');
 
-/* creates a score row */
-function createScoreRow(num, player) {
-  var rowId = "playerRow" + num;
+    $('<img/>', {
+      class: 'avatar'
+    }).appendTo('#'+player.id);
 
-  $('<li/>', {
-    id: rowId,
-    class: 'scoreRow',
-    score: player.score,
-    height: '18%'
-  }).css('background-color', player.color).appendTo('#scores');
+    $('<span/>', {
+      text: player.name,
+      class: 'playerName'
+    }).appendTo('#'+player.id);
 
-  $('<img/>', {
-    class: 'avatar'
-  }).appendTo('#'+rowId);
+    $('<span/>', {
+      text: player.score,
+      class: 'scoreValue'
+    }).appendTo('#'+player.id);
+  }
 
-  $('<span/>', {
-    text: player.name,
-    class: 'playerName'
-  }).appendTo('#'+rowId);
+  /* updates the score display */
+  this.updateScoreDisplay = function(id, score) {
+    $("#" + id + " .scoreValue").text(score);
+    $("#" + id).attr({score: score});
+    this.resort();
+  }
 
-  $('<span/>', {
-    text: player.score,
-    class: 'scoreValue'
-  }).appendTo('#'+rowId);
-}
-
-/* updates the score display */
-function updateScoreDisplay(id, score) {
-  $("#playerRow" + id + " .scoreValue").text(score);
-  $("#playerRow" + id).attr({score: score});
-  resort();
-}
-
-/* resorts the score rows by score */
-function resort() {
-  return $('#scores > li').tsort({ order: 'desc', attr: 'score' });
+  /* resorts the score rows by score */
+  this.resort = function() {
+    return $('#scores > li').tsort({ order: 'desc', attr: 'score' });
+  }
 }

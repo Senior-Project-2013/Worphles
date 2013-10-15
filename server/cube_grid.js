@@ -28,7 +28,7 @@ var DIRECTIONS = {
 var Tile = function(side, point) {
   this.side = side;
   this.pos =  point;	
-}
+};
 
 /**
  * Alternative constructor, initialize from index on a sized cube grid.
@@ -38,7 +38,7 @@ Tile.fromIndex = function(index, size) {
   var side = Math.floor(index / (size * size));
   var sideIndex = index - side * (size * size);
   return new Tile(side, new geometry.Vector(sideIndex % size, Math.floor(sideIndex / size)));
-}
+};
 
 
 /**
@@ -346,4 +346,4 @@ module.exports.getGrid = function(size) {
     singleGrids[size] = new CubeGrid(size);
     return singleGrids[size];
   }
-}
+};

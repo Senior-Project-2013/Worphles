@@ -6,3 +6,73 @@ body
 	margin: 0px;
 	overflow: hidden;
 }
+
+#canvas {
+  position: absolute;
+  height: 100%;
+  width: 50%;
+  left: 25%;
+}
+
+#queuePopup {
+  display: none;
+  font-family: 'Open Sans Condensed', sans-serif;
+  position: absolute;
+  left: 10%;
+  top: 35%;
+  width: 80%;
+  height: 30%;
+  z-index: 100;
+  font-size: 50px;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  background-color: rgba(0,0,0,0.65);
+  border-radius: 10px;
+}
+
+#joinQueue {
+  font-family: 'Open Sans Condensed', sans-serif;
+  position: absolute;
+  left: 10%;
+  top: 35%;
+  width: 30%;
+  height: 30%;
+  z-index: 100;
+  font-size: 80px;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  background-color: rgba(0,0,0,0.65);
+  border-radius: 10px;
+}
+
+#customGame {
+  font-family: 'Open Sans Condensed', sans-serif;
+  position: absolute;
+  left: 55%;
+  top: 35%;
+  width: 30%;
+  height: 30%;
+  z-index: 100;
+  font-size: 80px;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  background-color: rgba(0,0,0,0.65);
+  border-radius: 10px;
+}
+
+#textInput {
+  position: absolute;
+  left: 10%;
+  width: 80%;
+  bottom: 5%;
+  display: none;
+}
+
+#currentWord {
+  font-size: 40px;
+  position: absolute;
+  left: 50%;
+}
