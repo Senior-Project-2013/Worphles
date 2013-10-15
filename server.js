@@ -88,7 +88,7 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('moveComplete', function(data) { games[data.game].validateWord(socket.id, data.tiles); });
-  socket.on('partialMove', function(data) { showEveryone(data.game, 'partialMove', data); });
+  socket.on('partialMove', function(data) { games[data.game].showPartialMove(data); });
   socket.on('chat', function(data) {showEveryone(data.game, 'chat', {player:socket.id, message:data.message})});
 });
 

@@ -158,10 +158,8 @@ function Game(id, players, settings) {
   this.validateWord = function(player, inputTiles) {
     var word = "";
     _.each(inputTiles, function(tile) {
-      console.log(tile);
       word += this.tiles[tile].letter;
     }, this);
-    console.log('word',word);
 
     if (dictionary.isAWord(word) && pathValidator.isAPath(inputTiles, this.settings.gridSize)) {
       this.showEveryone('successfulMove', this.tileUpdate(player, inputTiles));
@@ -170,6 +168,10 @@ function Game(id, players, settings) {
       this.showEveryone('unsuccessfulMove', inputTiles);
     }
   };
+
+  this.showPartialMove = function(tile) {
+    this.showEveryone('partialMove', tile);
+  }
 
   this.showEveryone = function(message, data) {
     _.each(this.players, function(player) {
