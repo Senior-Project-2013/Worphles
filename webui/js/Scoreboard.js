@@ -1,7 +1,7 @@
 function Scoreboard() {
 
   this.init = function(players) {
-    this.players = players ? players : [];
+    this.players = players ? players : {};
 
     for(var i = 0; i < Object.keys(players).length; i++) {
       this.createScoreRow(i, players[Object.keys(players)[i]]);
