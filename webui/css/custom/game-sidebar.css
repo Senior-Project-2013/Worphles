@@ -4,8 +4,8 @@
   width: 25%;
   min-width: 300px;
   max-width: 400px;
-  opacity: 0.7;
-  background-color: black;
+  background: rgb(0, 0, 0);
+  background: rgba(0, 0, 0, 0.6);
   display: none;
 }
 
@@ -40,7 +40,9 @@
   margin-top: 3px;
 }
 
-.sidebar > #scoreboard > .title, .sidebar > #chat > .title {
+.sidebar > #scoreboard > .title,
+.sidebar > #chat > .title,
+#gameLobbies > .title {
   display: block;
   width: 100%;
   background-color: #2F2;
