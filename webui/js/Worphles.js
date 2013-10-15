@@ -479,7 +479,7 @@ function render() {
 function updateWordDisplay(tileNums) {
   var word = '';
 
-  for(var i = 0; i < tiles.length; i++) {
+  for(var i = 0; i < tileNums.length; i++) {
     word += TILES[tileNums[i]].letter;
   }
 
