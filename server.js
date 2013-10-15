@@ -1,6 +1,4 @@
 var Game = require('./server/game'),
-    dictionary = require('./server/dictionary.js'),
-    pathValidator = require('./server/path_validator.js'),
     express = require('express'),
     app = express(),
     server = require('http').createServer(app),
@@ -89,7 +87,7 @@ io.sockets.on('connection', function(socket) {
     }
   });
 
-  socket.on('moveComplete', function(data) { validateWord(data.game, socket.id, data.tiles); });
+  socket.on('moveComplete', function(data) { games[data.game].validateWord(socket.id, data.tiles); });
   socket.on('partialMove', function(data) { showEveryone(data.game, 'partialMove', data); });
   socket.on('chat', function(data) {showEveryone(data.game, 'chat', {player:socket.id, message:data.message})});
 });
@@ -135,43 +133,9 @@ function checkStillHere(player, callback) {
   }, 500);
 }
 
-// validate a word that's trying to be played
-function validateWord(game, player, tiles) {
-  if (!tiles.length) {
-    return;
-  }
-
-  var legalMove = false;
-
-  var word = "";
-  _.each(tiles, function(tile) {
-    word += games[game].tiles[tile].letter;
-  });
-
-  if (dictionary.isAWord(word) && pathValidator.isAPath(tiles, games[game].settings.gridSize)) {
-    showEveryone(game, 'successfulMove', games[game].tileUpdate(player, tiles));
-    showEveryone(game, 'scoreboardUpdate', updatePlayerScores(games[game]));
-  } else {
-    showEveryone(game, 'unsuccessfulMove', tiles);
-  }
-}
-
 // send every player in this game something
 function showEveryone(game, message, data) {
   _.each((game ? games[game].players : waitingPlayers), function(player) {
     player.socket.emit(message, data);
   });
-}
-
-//update the player scores hash out of the game's player objects
-function updatePlayerScores(game) {
-  var playerScores = {};
-
-  for(var i = 0; i < Object.keys(game.players).length; i++) {
-    var playerId = Object.keys(game.players)[i];
-    playerScores[playerId] = game.players[playerId].score;
-  }
-
-  console.log(playerScores);
-  return playerScores;
 }

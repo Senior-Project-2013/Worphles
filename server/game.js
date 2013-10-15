@@ -1,4 +1,5 @@
 var dictionary = require('./dictionary');
+var pathValidator = require('./path_validator.js');
 var cubeGrid = require('./cube_grid').getGrid();
 var _ = require('underscore');
 
@@ -117,6 +118,14 @@ function Game(id, players, settings) {
     this.players[player.id] = player;
   }, this);
 
+  this.getPlayerScores = function() {
+    var scores = {};
+    _.each(this.players, function(player) {
+      scores[player.id] = player.score;
+    });
+    return scores;
+  }
+
   this.tileUpdate = function(id, tiles) {
     var newTiles = {};
     for (var i = 0; i < tiles.length; i++) {
@@ -129,7 +138,7 @@ function Game(id, players, settings) {
       if(oldOwner)
         oldOwner.score--;
       if(newOwner)
-      newOwner.score++;
+        newOwner.score++;
 
       tileToUpdate.letter = newLetter;
       newTiles[tiles[i]] = {letter: newLetter, owner: id};
@@ -138,13 +147,35 @@ function Game(id, players, settings) {
   };
 
   this.safeCopy = function() {
-      var gameClone = _.clone(this);
-      gameClone.players = {};
-      _.each(this.players, function(player) {
-        gameClone.players[player.id] = player.safeCopy();
-      });
-      return gameClone;
+    var gameClone = _.clone(this);
+    gameClone.players = {};
+    _.each(this.players, function(player) {
+      gameClone.players[player.id] = player.safeCopy();
+    });
+    return gameClone;
   };
+
+  this.validateWord = function(player, inputTiles) {
+    var word = "";
+    _.each(inputTiles, function(tile) {
+      console.log(tile);
+      word += this.tiles[tile].letter;
+    }, this);
+    console.log('word',word);
+
+    if (dictionary.isAWord(word) && pathValidator.isAPath(inputTiles, this.settings.gridSize)) {
+      this.showEveryone('successfulMove', this.tileUpdate(player, inputTiles));
+      this.showEveryone('scoreboardUpdate', this.getPlayerScores());
+    } else {
+      this.showEveryone('unsuccessfulMove', inputTiles);
+    }
+  };
+
+  this.showEveryone = function(message, data) {
+    _.each(this.players, function(player) {
+      player.socket.emit(message, data);
+    });
+  }
 };
 
 
