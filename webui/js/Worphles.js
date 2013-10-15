@@ -454,6 +454,7 @@ function changeTileLetter(tile, letter) {
   TILES[tile].letterResources.letterContext.clearRect ( 0,0, TILES[tile].letterResources.canvasWidth, TILES[tile].letterResources.canvasHeight);
   TILES[tile].letterResources.letterContext.fillText(letter||'0', 100, 130);
   TILES[tile].letterResources.letterTexture.needsUpdate = true;
+  TILES[tile].letter = letter;
 }
 
 function colorTile(tile, color) {
