@@ -20,10 +20,10 @@ io.configure(function () {
   io.set('log level', 1);
 });
 // let client know if we're on localhost or not
-app.get('/environment.js', function(req, res) {
-  res.setHeader("Content-Type", 'application/javascript');
-  res.send('var WEBSOCKETS_URL = \'' + (process.env.WEBSOCKETS_URL || 'http://localhost') +'\';');
-});
+// app.get('/environment.js', function(req, res) {
+//   res.setHeader("Content-Type", 'application/javascript');
+//   res.send('var WEBSOCKETS_URL = \'' + (process.env.WEBSOCKETS_URL || 'http://localhost') +'\';');
+// });
 
 // serve all webui contents statically
 app.use('/webui', express.static(__dirname + '/webui'));
