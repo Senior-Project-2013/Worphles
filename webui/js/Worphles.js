@@ -160,8 +160,6 @@ function init(game)  {
   
   // initialize object to perform world/screen calculations
   projector = new THREE.Projector();
-  
-  createParticleSystems();
 
   document.addEventListener( 'mousedown', mouseDown, false );
   document.addEventListener( 'mousemove', mouseMove, false );
@@ -486,35 +484,4 @@ function updateWordDisplay(tileNums) {
   }
 
   $('#currentWord').text(word);
-}
-
-function createParticleSystems() {
-  /* STARS */
-  var particles = new THREE.Geometry,
-    pMaterial = new THREE.ParticleBasicMaterial({
-      color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
-      size: 1
-    })
-
-  createStarParticles(particles)
-
-  var starSystem = new THREE.ParticleSystem(particles, pMaterial)
-  starSystem.position.set(0, 0, 0)
-  scene.add(starSystem)
-  particleSystems.push(starSystem)
-}
-
-function createStarParticles(particles) {
-  for(var s = 0; s < settings.starCount; s++) {
-    var pX = (Math.random() * 40) - 20,
-      pY = (Math.random() * 20) - 10,
-      pZ = (Math.random() * 10) - 24,
-      particle = new THREE.Vector3(pX, pY, pZ)
-
-    particle.speed = (Math.random() * 0.6) + .03
-    particle.originalX = pX
-    particle.originalY = pY
-    particle.spread = false
-    particles.vertices.push(particle)
-  }
 }
