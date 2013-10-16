@@ -15,7 +15,9 @@ var MS_PER_MIN = MS_PER_SEC * 60;
 var DEFAULTS = {
   ROUND_TIME: 240 * MS_PER_SEC,
   MAX_PLAYERS: 2,
-  GRID_SIZE: 4
+  GRID_SIZE: 4,
+  NAME: 'Worphles',
+  PASSWORD: ''
 };
 
 var COLORS = {
@@ -37,13 +39,18 @@ function Color(r,g,b) {
   this.b = b;
 };
 
+/**
+ * Returns a 'random' color
+ */
+Color.randomColor = function(i) {
+  return COLORS[Object.keys(COLORS)[i%Object.keys(COLORS).length]];
+};
+
 
 /**
- * List of available player colors
+ * Our Player object
  */
-var playerColorOptions = [COLORS.RED,COLORS.BLUE,COLORS.GREEN,COLORS.YELLOW,COLORS.MAGENTA,COLORS.CYAN];
-
-function Player(id, socket, color, name, score, safe) {
+function Player(id, socket, name, color, score, safe) {
   this.id = id;
   this.socket = socket;
   this.color = color;
@@ -52,17 +59,9 @@ function Player(id, socket, color, name, score, safe) {
 
   if (!safe) {
     this.safeCopy = function() {
-      return new Player(this.id, null, this.color, this.name, this.score, true);
+      return new Player(this.id, null, this.name, this.color, this.score, true);
     };
   }
-};
-
-
-/**
- * Returns a random player color
- */
-Player.randomColor = function(i) {
-  return playerColorOptions[i%playerColorOptions.length];
 };
 
 
@@ -94,18 +93,21 @@ Tile.randomLetter = function() {
 /**
  * Game Settings 
  */
-function Settings(roundTime, maxPlayers, gridSize) {
+function Settings(roundTime, maxPlayers, gridSize, name, password) {
   this.roundTime = roundTime || DEFAULTS.ROUND_TIME;
   this.maxPlayers = maxPlayers || DEFAULTS.MAX_PLAYERS;
   this.gridSize = gridSize || DEFAULTS.GRID_SIZE;
+  this.name = name || DEFAULTS.NAME;
+  this.password = password || DEFAULTS.PASSWORD;
 };
 
 
 /**
  * Instance of a Game
  */
-function Game(id, players, settings) {
-  this.id = id;
+function Game(hostPlayer, settings) {
+  this.started = false;
+  this.id = hostPlayer.id;
   this.settings = settings || new Settings();
 
   this.tiles = [];
@@ -114,9 +116,40 @@ function Game(id, players, settings) {
   }
 
   this.players = {};
-  _.each(players, function(player) {
+  this.players[hostPlayer.id] = hostPlayer;
+
+  this.start = function() {
+    if (this.settings.maxPlayers == Object.keys(this.players).length) {
+      var i = 0;
+      _.each(this.players, function(player) {
+        player.color = Color.randomColor(i);
+        i++;
+      });
+      this.started = true;
+      this.showEveryone('start', this.safeCopy());
+      return true;
+    } else {
+      console.log('can\'t start, not enough players');
+    }
+  };
+
+  this.addPlayer = function(player, password) {
+    if (Object.keys(this.players).length >= this.settings.maxPlayers) {
+      console.log('game already full');
+      return;
+    } 
+    if (this.started) {
+      console.log('game already started');
+      return;
+    }
+    if (this.players[player.id]) {
+      console.log('already in game');
+      return;
+    }
+
     this.players[player.id] = player;
-  }, this);
+    return true;
+  }
 
   this.getPlayerScores = function() {
     var scores = {};
@@ -124,7 +157,7 @@ function Game(id, players, settings) {
       scores[player.id] = player.score;
     });
     return scores;
-  }
+  };
 
   this.tileUpdate = function(id, tiles) {
     var newTiles = {};
@@ -178,6 +211,18 @@ function Game(id, players, settings) {
       player.socket.emit(message, data);
     });
   }
+
+  this.gameListInfo = function() {
+    var info = {};
+    info.id = this.id;
+    info.name = this.settings.name;
+    info.password = this.settings.password !== '';
+    info.currentPlayers = Object.keys(this.players).length;
+    info.maxPlayers = this.settings.maxPlayers;
+    info.gridSize = this.settings.gridSize;
+    info.roundTime = this.settings.roundTime;
+    return info;
+  };
 };
 
 

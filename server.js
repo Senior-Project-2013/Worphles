@@ -45,7 +45,6 @@ app.get('/restart', function(req, res) {
   res.send('restarted');
 });
 
-var waitingPlayers = [];
 var games = {};
 
 // start up the server
@@ -53,6 +52,16 @@ server.listen(process.env.PORT || 3000);
 
 // handle each new player that connects
 io.sockets.on('connection', function(socket) {
+  var thisPlayer;
+  socket.on('name', function(name) {
+    if (name) {
+      thisPlayer = new Game.Player(socket.id, socket, name);
+      socket.emit('hi', name);
+    } else {
+      socket.emit('nameFail','youFail');
+    }
+  });
+
   socket.on('joinQueue', function() {
     // heroku's kinda slow... probably shouldn't do multiple games
     if (process.env.LIMIT_ONE_GAME && Object.keys(games).length > 0) {
@@ -78,7 +87,7 @@ io.sockets.on('connection', function(socket) {
         if (theyreStillHere) {
           var newGameId = waitingPlayers[0].id;
           games[newGameId] = new Game.Game(newGameId, waitingPlayers, new Game.Settings(null, PLAYERS_TO_START, null));
-          showEveryone(null,'start',games[newGameId].safeCopy());
+          games[newGameId].start();
           waitingPlayers.length = 0;
         } else {
           showQueueUpdate();
@@ -89,9 +98,61 @@ io.sockets.on('connection', function(socket) {
     }
   });
 
+  socket.on('gameList', function() {
+    var gameList = [];
+    _.each(games, function(game) {
+      if (!game.started) {
+        gameList.push( game.gameListInfo() );
+      }
+    });
+    socket.emit('gameList', gameList);
+  })
+
+  socket.on('joinGame', function(data) {
+    var gameId = data && data.id;
+    var password = data && data.password;
+    if (gameId && games[gameId]) {
+      if (games[gameId].addPlayer(thisPlayer, password)) {
+        socket.emit('joinedGame', data);
+      } else {
+        socket.emit('deniedGame', data);
+      }
+    }
+  });
+
+  socket.on('createGame', function(data) {
+    if (!thisPlayer) {
+      return socket.emit('nameFail');
+    }
+
+    var name = data && data.name;
+    var password = data && data.password;
+    var size = data && data.size;
+    var maxPlayers = data && data.maxPlayers;
+    var time = data && data.time;
+
+    var gameSettings = new Game.Settings(time, maxPlayers, size, name, password);
+    var game = new Game.Game(thisPlayer, gameSettings);
+    games[game.id] = game;
+
+    socket.emit('gameCreated');
+  });
+
+  socket.on('startGame', function(data) {
+    if (!(thisPlayer && thisPlayer.id)) {
+      return socket.emit('nameFail');
+    }
+    if (!games[thisPlayer.id]) {
+      return socket.emit('startFail', {message: 'You can\'t start a game unless you\'re the host'});
+    }
+    if (!games[thisPlayer.id].start()) {
+      return socket.emit('startFail', {message: 'Not enough players to start'});
+    }
+  });
+
   socket.on('moveComplete', function(data) { games[data.game].validateWord(socket.id, data.tiles); });
   socket.on('partialMove', function(data) { games[data.game].showPartialMove(data); });
-  socket.on('chat', function(data) {showEveryone(data.game, 'chat', {player:socket.id, message:data.message})});
+  socket.on('chat', function(data) { showEveryone(data.game, 'chat', {player:socket.id, message:data.message})});
 });
 
 // tell all waiting players the queue status

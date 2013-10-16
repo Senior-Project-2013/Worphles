@@ -64,9 +64,9 @@ var ABSOLUTE_FAIL = 'Sorry, your browser does not support WebGL...\nYou won\'t b
 $(function() {
   // only start the game if the browser/graphics card support WebGL
   if (Detector.webgl) {
+    setupWebSockets();
     setupButtons();
     setupChat();
-    setupWebSockets();
   } else {
     alert(ABSOLUTE_FAIL);
   }
@@ -289,17 +289,28 @@ function setupChat() {
 }
 
 function setupButtons() {
+  var name;
+  while(!name) {
+    name = prompt('Your name?');
+  }
+  socket.emit('name', name);
+
   $('#joinQueue').text('Join Queue');
-  $('#customGame').text('Custom Game');
+  $('#customGame').text('Create Game');
 
   $('#joinQueue').click(function() {
-    hideButtons();
-    $('#queuePopup').fadeIn();
-    socket.emit('joinQueue');
-    console.log('joinQueue');
+    socket.emit('gameList');
   });
   $('#customGame').click(function() {
-    $('#customGame').text('jk ;)');
+    if ($('#customGame').text() === 'Start') {
+      return socket.emit('startGame');
+    }
+
+    var gInput;
+    while(!(gInput && gInput.length == 5)) {
+      gInput = prompt('name:password:size:maxPlayers:time').split(':');
+    }
+    socket.emit('createGame', {name: gInput[0], password: gInput[1], size: gInput[2], maxPlayers: gInput[3], time: gInput[4]});
   });
 }
 
@@ -338,7 +349,50 @@ function setupWebSockets() {
     $('#queue').text('Sorry, server\'s full');
   });
 
+  socket.on('hi', function(data) {
+    console.log('hi',data);
+  });
+  
+  socket.on('nameFail', function(data) {
+    var name;
+    while(!name) {
+      name = prompt('Your name?');
+    }
+    socket.emit('name', name);
+  });
+
+  socket.on('gameCreated', function() {
+    $('#customGame').text('Start');
+    console.log('Game Created');
+  });
+
+  socket.on('startFail', function(data) {
+    alert('can\'t start because '+data.message);
+  });
+
+  socket.on('gameList', function(data) {
+    var listString = "";
+    for (var i = 0; i < data.length; i++) {
+      listString += i+': '+ data[i].name + (data[i].maxPlayers-data[i].currentPlayers > 0 ? '':' - Full') + (data[i].password ? ' - Password Required':'') +'\n';
+    }
+    var gameIndex = prompt(listString);
+    var password = '';
+    if (data[gameIndex].password) {
+      password = prompt('password');
+    }
+    socket.emit('joinGame', {id: data[gameIndex].id, password: password});
+  });
+
+  socket.on('joinedGame', function(data) {
+    alert("Joined Game: "+JSON.stringify(data));
+  });
+
+  socket.on('deniedGame', function(data) {
+    alert("Denied Game: "+JSON.stringify(data));
+  });
+
   socket.on('start', function(game) {
+    hideButtons();
     // add scoreboard
     scoreboard.init(game.players);
     // hide popups
