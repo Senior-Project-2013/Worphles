@@ -145,3 +145,7 @@ canvas {
 	top: 0;
 	left: 0;
 }
+
+#mainLobbyContainer {
+	display: none;
+}

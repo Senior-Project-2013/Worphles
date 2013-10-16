@@ -4,17 +4,20 @@
 
   <link rel="stylesheet" href="webui/css/custom/custom-buttons.css"/>
   <link href='http://fonts.googleapis.com/css?family=Josefin+Sans' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="webui/css/custom/mainLobby.css"/>
+  <link rel="stylesheet" href="webui/css/custom/game-sidebar.css"/>
   <link rel="stylesheet" href="webui/css/custom/home.css"/>
 
   <script src="webui/lib/jquery-1.9.1.js"></script>
   <script src="webui/lib/Three.js"></script>
   <script src="webui/lib/jquery.imBookFlip-1.3.js"></script>
   <script src="webui/js/storybook.js"></script>
+  <script src="webui/js/mainLobby.js"></script>
   <script>
   var myBook;
 
   $(document).ready(function() {
-    $('.imBookPage').css({ width: window.innerWidth * 0.35, height: window.innerHeight * 0.8, border: 'solid 3px black', 'border-style': 'dashed' });
+    $('.imBookPage').css({ width: window.innerWidth * 0.33, height: window.innerHeight * 0.8, border: 'solid 3px black', 'border-style': 'dashed' });
 
     myBook = $("#myBook").imBookFlip({
       page_class: 'imBookPage'    
@@ -27,7 +30,7 @@
 <body>
   <script src="webui/js/particle-field.js"></script>
   <div id="wrapper">
-    <div id="sideBar">
+    <div class="sidebar">
       <div class="topSideBarContent">
         <span class="buttonContainer">
           <a href="#" class="button button-blue">Tutorial</a>
@@ -45,6 +48,15 @@
       </div>
     </div>
     <div id="content">
+      <div id="mainLobbyContainer">
+        <div id="mainLobby">
+          <span class="title">
+            Game Lobbies
+          </span>
+          <ul id="gameLobbies">
+          </ul>
+        </div>
+      </div>
       <div id="myBookContainer">
         <div id="myBook">
           <div class="imBookPage titlePage rightPage">
