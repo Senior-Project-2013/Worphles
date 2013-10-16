@@ -55,7 +55,7 @@ server.listen(process.env.PORT || 3000);
 io.sockets.on('connection', function(socket) {
   socket.on('joinQueue', function() {
     // heroku's kinda slow... probably shouldn't do multiple games
-    if (process.env.HEROKU && Object.keys(games).length > 0) {
+    if (process.env.LIMIT_ONE_GAME && Object.keys(games).length > 0) {
       socket.emit('full');
       return;
     }
