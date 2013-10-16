@@ -10,8 +10,8 @@ var PLAYERS_TO_START = Game.DEFAULTS.MAX_PLAYERS;
 
 // websockets configuration
 io.configure(function () {
-  // heroku doesn't use real websockets
-  if (process.env.HEROKU) {
+  // heroku has websockets in beta!
+  if (process.env.USE_POLLING) {
     io.set("transports", ["xhr-polling"]); 
     io.set("polling duration", 10);
   }
