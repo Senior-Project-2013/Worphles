@@ -29,7 +29,6 @@ input:-moz-placeholder {
   color: white;
   padding: 20px;
   padding-top: 10px;
-  border: 1px solid white;
   border-radius: 30px;
   text-decoration: none;
 }
