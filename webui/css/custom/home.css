@@ -112,10 +112,10 @@ canvas {
 
 #content {
 	position: absolute;
-	width: 80%;
+	width: 75%;
 	height: 100%;
 	top: 0%;
-	left: 20%;
+	left: 25%;
 }
 
 #playButton {
@@ -124,7 +124,6 @@ canvas {
 }
 
 #myBookContainer {
-	display: none;
 	position: relative;
 }
 
