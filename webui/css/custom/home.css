@@ -119,6 +119,7 @@ canvas {
 }
 
 #playButton {
+
 	width: 250px;
 	font-size: 40px;
 }
@@ -137,6 +138,11 @@ canvas {
 	font-family: 'Josefin Sans', sans-serif;
 }
 
+#nameInput {
+	margin-bottom: 24px;
+	width: 75%;
+}
+
 #wrapper {
 	position: absolute;
 	width: 100%;
@@ -146,5 +152,5 @@ canvas {
 }
 
 #mainLobbyContainer {
-	display: none;
+	/*display: none;*/
 }

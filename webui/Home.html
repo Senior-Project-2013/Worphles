@@ -25,6 +25,12 @@
   <script src="webui/lib/THREEx.FullScreen.js"></script>
   <script src="webui/lib/THREEx.WindowResize.js"></script>
   <script src="webui/lib/tinysort.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      var test = new MainLobby();
+      test.init(testLobbies);
+    })
+  </script>
 </head>
 <body id="bodyContent">
   <script src="webui/js/particle-field.js"></script>
@@ -37,7 +43,10 @@
       <div class="centerSideBarContent">
       </div>
       <div class="botSideBarContent">
-        <a href="#" id="playButton" class="button button-orange">Play Worphles!</a>
+        <input id="nameInput" class="input" type="text" maxlength="12" placeholder="enter your player name..."/>
+        <div>
+          <a href="#" id="playButton" class="button button-orange">Play Worphles!</a>
+        </div>
       </div>
     </div>
     <div id="content">

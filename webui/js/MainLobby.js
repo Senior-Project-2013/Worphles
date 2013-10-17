@@ -29,11 +29,11 @@ function MainLobby() {
     $('<li/>', {
       id: lobby.id,
       class: 'gameLobbyRow'
-    }).appendTo('#gameLobbies');
+    }).appendTo($('#gameLobbies'));
 
     $('<span/>', {
       text: lobby.name,
       class: 'title'
-    }).appendTo('#' + lobby.id)
+    }).appendTo($('#' + lobby.id));
   }
 }
