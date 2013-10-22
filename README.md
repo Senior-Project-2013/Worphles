@@ -2,5 +2,4 @@ Worphles!
 ============
 
 
-![Woppy](http://i.imgur.com/BUnybiB.png)
-
+![Woppy](/webui/resources/storyImages/wop1.png)
