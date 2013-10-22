@@ -373,8 +373,11 @@ function setupWebSockets() {
       listString += i+': '+ data[i].name + (data[i].maxPlayers-data[i].currentPlayers > 0 ? '':' - Full') + (data[i].password ? ' - Password Required':'') +'\n';
     }
     var gameIndex = prompt(listString);
+    if (!(gameIndex && data[gameIndex])) {
+      return;
+    }
     var password = '';
-    if (data[gameIndex].password) {
+    if (gameIndex && data[gameIndex].password) {
       password = prompt('password');
     }
     socket.emit('joinGame', {id: data[gameIndex].id, password: password});

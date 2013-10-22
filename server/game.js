@@ -134,17 +134,17 @@ function Game(hostPlayer, settings) {
   };
 
   this.addPlayer = function(player, password) {
+    if (this.settings.password !== password) {
+      return console.log('wrong password');
+    }
     if (Object.keys(this.players).length >= this.settings.maxPlayers) {
-      console.log('game already full');
-      return;
+      return console.log('game already full');
     } 
     if (this.started) {
-      console.log('game already started');
-      return;
+      return console.log('game already started');
     }
     if (this.players[player.id]) {
-      console.log('already in game');
-      return;
+      return console.log('already in game');
     }
 
     this.players[player.id] = player;
