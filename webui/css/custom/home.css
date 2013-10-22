@@ -72,11 +72,19 @@ canvas {
 }
 
 .rightPage {
+<<<<<<< Updated upstream
 	cursor: url(/webui/resources/cursors/signright.png), auto;
 }
 
 .leftPage {
 	cursor: url(/webui/resources/cursors/signleft.png), auto;
+=======
+	cursor: url(webui/resources/cursors/signright.png), auto;
+}
+
+.leftPage {
+	cursor: url(webui/resources/cursors/signleft.png), auto;
+>>>>>>> Stashed changes
 }
 
 .imBookPage:hover {

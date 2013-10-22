@@ -72,7 +72,8 @@ body
 }
 
 #currentWord {
-  font-size: 40px;
-  position: absolute;
-  left: 50%;
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-size: 80px;
+  position: relative;
+  text-align: center;
 }
