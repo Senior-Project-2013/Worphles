@@ -3,9 +3,12 @@ var bookLoaded = false;
 $(document).ready(function() {
 	$('#storyButton').click(function() {
     if(!bookLoaded) {
-      $('#content').load('webui/views/Storybook.html');
+      hideContentDivs();
+      $('#storyBookContainer').fadeIn();
+      $('#storyBookContainer').load('webui/views/Storybook.html');
       bookLoaded = true;
     } else {
+      hideContentDivs();
       $('#myBookContainer').fadeIn();
     }
 	});

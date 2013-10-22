@@ -545,8 +545,6 @@ $(document).ready(function() {
   playButton.css('opacity', 0.5);
 
   $('#nameInput').keyup(function() {
-    console.log($(this).val())
-
     if($(this).val().length < 3) {
       playButton.attr('disabled', true);
       playButton.css('opacity', 0.5);
@@ -557,6 +555,21 @@ $(document).ready(function() {
   });
 
   $('#playButton').click(function() {
-    playerName = $(this).val();
+    playerName = $('#nameInput').val();
+
+    $('#greeting').text('Welcome, ' + playerName + '!');
+
+    $('#askName').fadeOut();
+    $('#lobbyButtons').fadeIn();
   })
+
+  $('#showLobbies').click(function() {
+    hideContentDivs();
+    $('#mainLobbyContainer').fadeIn();
+  });
 });
+
+function hideContentDivs() {
+  $('#mainLobbyContainer').attr('display', 'none');
+  $('#storyBookContainer').attr('display', 'none');
+}

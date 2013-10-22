@@ -156,5 +156,18 @@ canvas {
 }
 
 #mainLobbyContainer {
-	/*display: none;*/
+	display: none;
+}
+
+#lobbyButtons {
+	display: none;
+}
+
+#showLobbies, #createLobby {
+	font-size: 24px;
+}
+
+#greeting {
+	font-size: 24px;
+	color: white;
 }

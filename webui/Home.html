@@ -17,8 +17,6 @@
   <script src="webui/lib/jquery-ui.js"></script>
   <script src="webui/lib/Three.js"></script>
   <script src="webui/lib/jquery.imBookFlip-1.3.js"></script>
-  <script src="webui/js/mainLobby.js"></script>
-  <script src="webui/js/storybook.js"></script>
   <script src="webui/lib/Detector.js"></script>
   <script src="webui/lib/Stats.js"></script>
   <script src="webui/lib/OrbitControls.js"></script>
@@ -30,13 +28,8 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="webui/js/Scoreboard.js"></script>
   <script src="webui/js/Worphles.js"></script>
-
-  <script>
-    $(document).ready(function() {
-      var test = new MainLobby();
-      test.init(testLobbies);
-    })
-  </script>
+  <script src="webui/js/mainLobby.js"></script>
+  <script src="webui/js/storybook.js"></script>
 </head>
 <body>
   <div id="homePage">
@@ -50,13 +43,24 @@
         <div class="centerSideBarContent">
         </div>
         <div class="botSideBarContent">
-          <input id="nameInput" class="input" type="text" maxlength="12" placeholder="enter your player name..."/>
-          <div>
-            <button id="playButton" class="button button-orange">Play Worphles!</button>
+          <div id="askName">
+            <input id="nameInput" class="input" type="text" maxlength="12" placeholder="enter your player name..."/>
+            <div>
+              <button id="playButton" class="button button-orange">Play Worphles!</button>
+            </div>
+          </div>
+          <div id="lobbyButtons">
+            <div>
+              <span id="greeting"></span>
+            </div>
+            <button id="showLobbies" class="button button-purple">Show Lobbies</button>
+            <button id="createLobby" class="button button-purple">Create Lobby</button>
           </div>
         </div>
       </div>
       <div id="content">
+        <div id="storyBookContainer">
+        </div>
         <div id="mainLobbyContainer">
           <div id="mainLobby">
             <span class="title">
