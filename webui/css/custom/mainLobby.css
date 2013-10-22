@@ -52,7 +52,6 @@
 }
 #gameLobbies > .gameLobbyRow > .gameGridSize {
   text-align: right;
-  margin-right: 10%;
   float: right;
   font-size: 30px;
 }
@@ -62,4 +61,5 @@
   float: right;
   color: blue;
   font-size: 30px;
+  width: 20%;
 }

@@ -18,6 +18,10 @@ input:-moz-placeholder {
   padding-top: 5px;
 }
 
+button {
+  border: none;
+}
+
 .input {
   border-radius: 15px;
   height: 36px;

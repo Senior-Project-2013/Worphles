@@ -1,53 +1,44 @@
-<head>
-	<title>Worphles</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <link rel=stylesheet href="webui/css/custom/base.css"/>
-  <link rel=stylesheet href="webui/css/custom/game-sidebar.css"/>
-</head>
-<body>
-  <link rel=stylesheet href="webui/css/info.css"/>
-  <script src="webui/lib/info.js"></script>
+<link rel=stylesheet href="webui/css/info.css"/>
+<script src="webui/lib/info.js"></script>
 
-  <script src="webui/lib/tinysort.min.js"></script>
+<script src="webui/lib/tinysort.min.js"></script>
 
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
 
-  <div id="ThreeJS" style="z-index: 1; position: absolute; left:0px; top:0px"></div>
-  <script src="/socket.io/socket.io.js"></script>
-  <!--<script src="/environment.js"></script>-->
-  <script src="webui/js/Scoreboard.js"></script>
-  <script src="webui/js/Worphles.js"></script>
+<div id="ThreeJS" style="z-index: 1; position: absolute; left:0px; top:0px"></div>
+<script src="/socket.io/socket.io.js"></script>
+<!--<script src="/environment.js"></script>-->
+<script src="webui/js/Scoreboard.js"></script>
+<script src="webui/js/Worphles.js"></script>
 
-  <canvas id="canvas"></canvas>
+<canvas id="canvas"></canvas>
 
-  <div class="sidebar">
-    <div id="scoreboard">
-      <span class="title">
-        SCOREBOARD
-      </span>
-      <ul id="scores">
-      </ul>
-    </div>
-    <div class="buttons">
-    </div>
+<div class="sidebar">
+  <div id="scoreboard">
+    <span class="title">
+      SCOREBOARD
+    </span>
+    <ul id="scores">
+    </ul>
   </div>
+  <div class="buttons">
+  </div>
+</div>
 
-  <div class="sidebar right-sidebar">
-    <div id="chat">
-      <span class="title">
-        CHAT
-      </span>
-      <div id="messages">
-      </div>
-      <input type="text" id="textInput">
+<div class="sidebar right-sidebar">
+  <div id="chat">
+    <span class="title">
+      CHAT
+    </span>
+    <div id="messages">
     </div>
+    <input type="text" id="textInput">
   </div>
+</div>
 
-  <div id="joinQueue"></div>
-  <div id="customGame"></div>
-  <div id="queuePopup">
-    <h1 id="queue"></h1>
-  </div>
-  <div id="currentWord"></div>
-</body>
+<div id="joinQueue"></div>
+<div id="customGame"></div>
+<div id="queuePopup">
+  <h1 id="queue"></h1>
+</div>
+<div id="currentWord"></div>

@@ -15,6 +15,7 @@
 */
 
 // the web socket where all the magic happens
+var playerName;
 var scoreboard = new Scoreboard();
 var socket;
 var container;
@@ -289,11 +290,7 @@ function setupChat() {
 }
 
 function setupButtons() {
-  var name;
-  while(!name) {
-    name = prompt('Your name?');
-  }
-  socket.emit('name', name);
+  socket.emit('name', playerName);
 
   $('#joinQueue').text('Join Queue');
   $('#customGame').text('Create Game');
@@ -353,13 +350,13 @@ function setupWebSockets() {
     console.log('hi',data);
   });
   
-  socket.on('nameFail', function(data) {
+  /*socket.on('nameFail', function(data) {
     var name;
     while(!name) {
       name = prompt('Your name?');
     }
     socket.emit('name', name);
-  });
+  });*/
 
   socket.on('gameCreated', function() {
     $('#customGame').text('Start');
@@ -540,3 +537,26 @@ function updateWordDisplay(tileNums) {
 
   $('#currentWord').text(word);
 }
+
+$(document).ready(function() {
+  var playButton = $('#playButton');
+
+  playButton.attr('disabled', true);
+  playButton.css('opacity', 0.5);
+
+  $('#nameInput').keyup(function() {
+    console.log($(this).val())
+
+    if($(this).val().length < 3) {
+      playButton.attr('disabled', true);
+      playButton.css('opacity', 0.5);
+    } else {
+      playButton.attr('disabled', false);
+      playButton.css('opacity', 1);
+    }
+  });
+
+  $('#playButton').click(function() {
+    playerName = $(this).val();
+  })
+});
