@@ -289,17 +289,25 @@ function setupChat() {
   });
 }
 
+function joinGame(id, hasPassword) {
+  if (!id) {
+    return;
+  }
+  var password = '';
+  if (hasPassword) {
+    password = prompt('Enter Password');
+  }
+  socket.emit('joinGame', {id: id, password: password});
+}
+
 function setupButtons() {
   socket.emit('name', playerName);
-
-  $('#joinQueue').text('Join Queue');
-  $('#customGame').text('Create Game');
 
   $('#joinQueue').click(function() {
     socket.emit('gameList');
   });
-  $('#customGame').click(function() {
-    if ($('#customGame').text() === 'Start') {
+  $('#createLobby').click(function() {
+    if ($('#createLobby').text() === 'Start') {
       return socket.emit('startGame');
     }
 
@@ -308,6 +316,10 @@ function setupButtons() {
       gInput = prompt('name:password:size:maxPlayers:time').split(':');
     }
     socket.emit('createGame', {name: gInput[0], password: gInput[1], size: gInput[2], maxPlayers: gInput[3], time: gInput[4]});
+  });
+
+  $('#refresh').click(function() {
+    socket.emit('gameList');
   });
 }
 
@@ -359,7 +371,7 @@ function setupWebSockets() {
   });*/
 
   socket.on('gameCreated', function() {
-    $('#customGame').text('Start');
+    $('#createLobby').text('Start');
     console.log('Game Created');
   });
 
@@ -369,9 +381,15 @@ function setupWebSockets() {
 
   socket.on('gameList', function(data) {
     var listString = "";
+    var lobbyData = [];
     for (var i = 0; i < data.length; i++) {
-      listString += i+': '+ data[i].name + (data[i].maxPlayers-data[i].currentPlayers > 0 ? '':' - Full') + (data[i].password ? ' - Password Required':'') +'\n';
+      lobbyData.push({id: data[i].id, name: data[i].name, currentPlayers: data[i].currentPlayers, maxPlayers: data[i].maxPlayers, gridSize: data[i].gridSize, password: data[i].password});
+      // listString += i+': '+ data[i].name + (data[i].maxPlayers-data[i].currentPlayers > 0 ? '':' - Full') + (data[i].password ? ' - Password Required':'') +'\n';
     }
+
+    var lobby = new MainLobby();
+    lobby.init(lobbyData);
+    return;
     var gameIndex = prompt(listString);
     if (!(gameIndex && data[gameIndex])) {
       return;
@@ -559,6 +577,7 @@ $(document).ready(function() {
 
   $('#playButton').click(function() {
     playerName = $('#nameInput').val();
+    socket.emit('name', playerName);
 
     $('#greeting').text('Welcome, ' + playerName + '!');
 
