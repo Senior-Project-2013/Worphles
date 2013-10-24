@@ -55,7 +55,7 @@ body {
   height: 100%;
   color: black;
   overflow: hidden;
-  background-color: #DDD;
+  background-image: url('../images/paper.jpg');
   font-size: 26px;
   vertical-align: text-bottom;
 }
@@ -67,18 +67,19 @@ body {
 
 .storyText {
   display: block;
-  font-size: 18px;
+  font-size: 21px;
   padding: 10px;
   height: 30%;
 }
 
 .titlePage, .finPage {
-  font-size: 36px;
+  text-align: center;
+  font-size: 48px;
 }
 
 #myBookContainer {
   position: relative;
-  text-align: center;
+  text-align: left;
   display: none;
 }
 
@@ -89,5 +90,5 @@ body {
   height: 100%;
   margin: 60px auto 0 auto;
   background-color: transparent;
-  font-family: 'Josefin Sans', sans-serif;
+  font-family: 'Libre Baskerville', serif;
 }
