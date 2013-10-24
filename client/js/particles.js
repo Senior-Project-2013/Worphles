@@ -117,12 +117,13 @@ function createParticleSystems(theScene, theCamera) {
   particleSystems.push(starSystem)
 
   $(document).mousemove(handleMouseMove);
-  $('.btn').mouseover(function() {
+  $('#graphics').mousedown(function() {
     spreadParticles();
   });
-  $('.btn').mouseleave(function() {
+  $('#graphics').mouseup(function() {
     gatherParticles();
   });
+  
   renderParticles();
 }
 
