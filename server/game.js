@@ -117,6 +117,10 @@ function Game(hostPlayer, settings) {
 
   this.players = {};
   this.players[hostPlayer.id] = hostPlayer;
+  this.players[hostPlayer.id].color = Color.randomColor(0);
+  var initialPlayer = {};
+  initialPlayer[hostPlayer.id] = hostPlayer.safeCopy();
+  this.players[hostPlayer.id].socket.emit('players', initialPlayer);
 
   this.start = function() {
     if (this.settings.maxPlayers == Object.keys(this.players).length) {
@@ -146,8 +150,14 @@ function Game(hostPlayer, settings) {
     if (this.players[player.id]) {
       return console.log('already in game');
     }
-
     this.players[player.id] = player;
+    this.players[player.id].color = Color.randomColor(Object.keys(this.players).length-1);
+
+    var playersCopy = {};
+    _.each(this.players, function(player) {
+      playersCopy[player.id] = player.safeCopy();
+    });
+    this.showEveryone('players',playersCopy);
     return true;
   }
 
@@ -205,6 +215,10 @@ function Game(hostPlayer, settings) {
   this.showPartialMove = function(tile) {
     this.showEveryone('partialMove', tile);
   }
+
+  this.chat = function(player, message) {
+    this.showEveryone('chat', {player: player, message: message});
+  };
 
   this.showEveryone = function(message, data) {
     _.each(this.players, function(player) {

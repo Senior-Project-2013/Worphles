@@ -1,0 +1,23 @@
+.scoreRow {
+  list-style: none;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  height: 5em;
+}
+
+.gameListRow {
+  list-style: none;
+}
+
+.chatRow {
+  list-style: none;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  min-height: 1em;
+}
+
+#chatBar {
+  display: none;
+}

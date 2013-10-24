@@ -1,0 +1,187 @@
+<html lang="en">
+<head>
+  <title>Worphles!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <!-- CSS Libraries -->
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link href="/client/css/sidebar.css" rel="stylesheet">
+
+  <!-- JS Libraries -->
+  <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/client/js/lib/three.min.js"></script>
+  <script type="text/javascript" src="/client/js/lib/THREEx.KeyboardState.js"></script>
+  <script type="text/javascript" src="/client/js/lib/THREEx.FullScreen.js"></script>
+  <script type="text/javascript" src="/client/js/lib/THREEx.WindowResize.js"></script>
+  <script type="text/javascript" src="/client/js/lib/OrbitControls.js"></script>
+  <script type="text/javascript" src="/client/js/lib/Stats.js"></script>
+  <script type="text/javascript" src="/client/js/lib/Detector.js"></script>
+  <script type="text/javascript" src="/client/js/lib/tinysort.min.js"></script>
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+  <!-- Custom JS -->
+  <script type="text/javascript" src="/client/js/lobby.js"></script>
+  <script type="text/javascript" src="/client/js/scoreboard.js"></script>
+  <script type="text/javascript" src="/client/js/particles.js"></script>
+  <script type="text/javascript" src="/client/js/worphles.js"></script>
+  <style>
+  .col-md-3 {
+    height: 100%;
+  }
+
+  .col-md-6 {
+    height: 100%;
+    background-color: black;
+  }
+
+  #chatInput {
+  }
+
+  #scoreboard {
+    display: none;
+  }
+
+  #lobbyButtons {
+    display: none;
+  }
+
+  #graphics {
+    position: absolute;
+    left: 25%;
+    width: 50%;
+  }
+
+  #startGameButton {
+    display: none;
+  }
+  </style>
+</head>
+<body>
+  <div class="row">
+
+    <!-- Left Sidebar -->
+    <div class="col-md-3">
+
+      <div id="startingButtons">
+        <h1>Get Started</h1>
+        <form id="nameForm" role="form" onsubmit="return chooseName();">
+          <div class="form-group">
+            <input type="text" class="form-control" id="nameInput" placeholder="Choose a Name">
+          </div>
+          <button type="submit" id="nameButton" class="btn btn-default" disabled="disabled">Get Started</button>
+        </form>
+      </div>
+
+      <div id="lobbyButtons">
+        <h1>Get Playing</h1>
+        <!-- Trigger Join Game Box -->
+        <a class="btn btn-primary" id="joinGameModalShow">Join Game</a>
+        <!-- Trigger Create Game Box -->
+        <a data-toggle="modal" href="#createGameModal" class="btn btn-primary" id="createGameModalShow">Create Game</a>
+      </div>
+
+      <button class="btn btn-primary" id="startGameButton">Start Game</button>
+
+      <!-- Join Game Dialog -->
+      <div class="modal fade" id="joinGameModal" tabindex="-1" role="dialog" aria-labelledby="joinGameModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title">Join Game</h4>
+            </div>
+            <div class="modal-body">
+              <div id="gameList"></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Create Game Dialog -->
+      <div class="modal fade" id="createGameModal" tabindex="-1" role="dialog" aria-labelledby="createGameModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title">Create Game</h4>
+            </div>
+            <div class="modal-body">
+              <form id="createGameForm" role="form" onsubmit="return createGame();">
+                <div class="form-group">
+                  <label for="gameNameInput">Name</label>
+                  <input type="text" class="form-control" id="gameNameInput" placeholder="Awesome Worphle Game">
+                  <label for="gamePasswordInput">Password</label>
+                  <input type="password" class="form-control" id="gamePasswordInput" placeholder="Optional">
+                  <label for="gameBoardSizeInput">Board Size</label>
+                  <select class="form-control" id="gameBoardSizeInput">
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                  </select>
+                  <label for="gameNumPlayersInput">Players</label>
+                  <select class="form-control" id="gameNumPlayersInput">
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                  </select>
+                  <label for="gameLengthInput">Length</label>
+                  <select class="form-control" id="gameLengthInput">
+                    <option>30 seconds</option>
+                    <option>90 seconds</option>
+                    <option>3 Minutes</option>
+                    <option>5 Minutes</option>
+                    <option>Forever</option>
+                  </select>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" id="createGameButton">Create</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="scoreboard">
+        <span class="title">
+          <h1>Scoreboard</h1>
+        </span>
+        <ul id="scores">
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Middle Area -->
+    <div class="col-md-6">
+      <!-- we should put the flipbook here -->
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="col-md-3">
+      <div id="chatBar">
+        <h1>Chat</h1>
+        <div id="chat">
+          <div id="messages">
+          </div>
+          <form role="form" onsubmit="return sendChat();">
+            <input type="text" class="form-control" id="chatInput" placeholder="Chat">
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Graphics -->
+    <div id="graphics"></div>
+  </div>
+</body>
+</html>
