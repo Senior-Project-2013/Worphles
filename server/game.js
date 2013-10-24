@@ -146,9 +146,9 @@ function Game(hostPlayer, settings) {
 
   this.gameTick = function() {
     var currentTime = new Date();
-    if ((currentTime - context.startTime) >= context.settings.roundTime) {
-      context.showEveryone('gameOver', context.safeCopy());
-      clearInterval(context.intervalId);
+    if ((currentTime - this.startTime) >= this.settings.roundTime) {
+      this.showEveryone('gameOver', this.safeCopy());
+      clearInterval(this.intervalId);
     }
   };
 
