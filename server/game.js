@@ -134,6 +134,7 @@ function Game(hostPlayer, settings) {
       return true;
     } else {
       console.log('can\'t start, not enough players');
+      return false;
     }
   };
 
@@ -159,7 +160,7 @@ function Game(hostPlayer, settings) {
     });
     this.showEveryone('players',playersCopy);
     return true;
-  }
+  };
 
   this.getPlayerScores = function() {
     var scores = {};
@@ -214,7 +215,7 @@ function Game(hostPlayer, settings) {
 
   this.showPartialMove = function(tile) {
     this.showEveryone('partialMove', tile);
-  }
+  };
 
   this.chat = function(player, message) {
     this.showEveryone('chat', {player: player, message: message});
@@ -224,7 +225,7 @@ function Game(hostPlayer, settings) {
     _.each(this.players, function(player) {
       player.socket.emit(message, data);
     });
-  }
+  };
 
   this.gameListInfo = function() {
     var info = {};
