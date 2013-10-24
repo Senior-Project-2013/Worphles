@@ -3,7 +3,6 @@ var pathValidator = require('./path_validator.js');
 var cubeGrid = require('./cube_grid').getGrid();
 var _ = require('underscore');
 
-
 /**
  * game psuedo constants
  */
@@ -13,12 +12,16 @@ var MS_PER_SEC = 1000;
 var MS_PER_MIN = MS_PER_SEC * 60;
 
 var DEFAULTS = {
-  ROUND_TIME: 240 * MS_PER_SEC,
+  ROUND_TIME: (180 * MS_PER_SEC),
   MAX_PLAYERS: 2,
   GRID_SIZE: 4,
   NAME: 'Worphles',
   PASSWORD: ''
 };
+
+var GAME_LENGTHS = [(60 * MS_PER_SEC), (180 * MS_PER_SEC), (300 * MS_PER_SEC)];
+var GRID_SIZES = [4, 6, 8];
+var MAX_PLAYERS = [2, 3, 4, 5, 6];
 
 var COLORS = {
   RED: new Color(1,0,0),
@@ -94,9 +97,9 @@ Tile.randomLetter = function() {
  * Game Settings 
  */
 function Settings(roundTime, maxPlayers, gridSize, name, password) {
-  this.roundTime = roundTime || DEFAULTS.ROUND_TIME;
-  this.maxPlayers = maxPlayers || DEFAULTS.MAX_PLAYERS;
-  this.gridSize = gridSize || DEFAULTS.GRID_SIZE;
+  this.roundTime = GAME_LENGTHS[roundTime] || DEFAULTS.ROUND_TIME;
+  this.maxPlayers = MAX_PLAYERS[maxPlayers] || DEFAULTS.MAX_PLAYERS;
+  this.gridSize = GRID_SIZES[gridSize] || DEFAULTS.GRID_SIZE;
   this.name = name || DEFAULTS.NAME;
   this.password = password || DEFAULTS.PASSWORD;
 };
