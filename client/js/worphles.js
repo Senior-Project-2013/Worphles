@@ -35,6 +35,9 @@ var gameId;
 var me;
 // all players in this game
 var players;
+// timer
+var startTime;
+var intervalId;
 
 // star field
 var starSystems;
@@ -79,6 +82,7 @@ function initGame(game) {
   $('#currentWord').fadeIn();
   $('#chatInput').fadeIn();
   $('#scoreboard').fadeIn();
+  $('#timer').fadeIn();
 
   // save game id
   gameId = game.id;
@@ -87,7 +91,7 @@ function initGame(game) {
   players = game.players;
   // scoreboard
   scoreboard.init(game.players);
-
+  startTimer(new Date(game.startTime).getTime(), game.settings.roundTime);
   addCube(game.settings, game.tiles);
 }
 
@@ -417,7 +421,7 @@ function sendChat(chat) {
 
 function showChat(player, message) {
   console.log('show chat',player,message);
-  $('#messages').append('<div class="chatRow" style='+getCSSColorFromColor(players[player].color)+'>'+players[player].name+': '+message+'</div>');
+  $('#messages').append('<div class="chatRow" style=background-color:'+getCSSColorFromColor(players[player].color)+'>'+players[player].name+': '+message+'</div>');
 }
 
 function getCSSColorFromColor(color) {
@@ -425,7 +429,7 @@ function getCSSColorFromColor(color) {
 }
 
 function getCSSColorFromRGB(r, g, b) {
-  return 'background-color:rgb('+(r*255)+','+(g*255)+','+(b*255)+')';
+  return 'rgb('+(Math.round(r*255))+','+(Math.round(g*255))+','+(Math.round(b*255))+')';
 }
 
 function showGameList(data) {
@@ -549,6 +553,10 @@ function setupWebSockets() {
     initGame(game);
   });
 
+  socket.on('gameOver', function(data) {
+    console.log("GAME OVER");
+  });
+
   socket.on('stillhere?', function(data, callback) {
     callback();
   });
@@ -648,7 +656,7 @@ function colorTile(tile, color) {
   }
   var faces = TILES[tile].faces;
   for (var i in faces) {
-    console.log('coloring tile',tile,color,i);
+    // console.log('coloring tile',tile,color,i);
     faces[i].color.setRGB(color.r,color.g,color.b);
   }
   TILES[tile].geometry.colorsNeedUpdate = true;
@@ -668,31 +676,22 @@ function updateWordDisplay(tileNums) {
   $('#currentWord').text(word);
 }
 
-$(document).ready(function() {
-  var playButton = $('#playButton');
+function startTimer(startTime, roundTime) {
+  $('#timer > #time').text((roundTime/1000) - 1);
+  //show the timer
+  intervalId = setInterval(function () {
+    currentTime = new Date().getTime();
+    if ((currentTime - startTime) >= roundTime) {
+      stopTimer();
+    } else {
+      //update the timer
+      $('#timer > #time').text(((roundTime - (currentTime - startTime))/1000) | 0);
+    }
+  }, 1000);
+}
 
-  playButton.attr('disabled', true);
-  playButton.css('opacity', 0.5);
-
-  
-
-  $('#playButton').click(function() {
-    playerName = $('#nameInput').val();
-    socket.emit('name', playerName);
-
-    $('#greeting').text('Welcome, ' + playerName + '!');
-
-    $('#askName').fadeOut();
-    $('#startingButtons').fadeIn();
-  })
-
-  $('#showLobbies').click(function() {
-    hideContentDivs();
-    $('#mainLobbyContainer').fadeIn();
-  });
-});
-
-function hideContentDivs() {
-  $('#mainLobbyContainer').attr('display', 'none');
-  $('#storyBookContainer').attr('display', 'none');
+function stopTimer() {
+  $('#timer > #time').text('GAME OVER');
+  //hide the timer
+  clearInterval(intervalId);
 }

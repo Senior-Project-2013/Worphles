@@ -40,6 +40,9 @@ var gameId;
 var me;
 // all players in this game
 var players;
+// timer
+var startTime;
+var intervalId;
 
 // star field
 var starSystems;
@@ -421,6 +424,8 @@ function setupWebSockets() {
       $('#textInput').focus();
     });
 
+    startTimer(game.startTime, game.roundTime);
+
     // initialization
     init(game);
     // animation loop / game loop
@@ -479,6 +484,10 @@ function setupWebSockets() {
       scoreboard.updateScoreDisplay(playerId, data[playerId]);
     } 
   })
+
+  socket.on('gameOver', function(data) {
+    //wat do
+  });
 };
 
 function animate() {
@@ -557,6 +566,24 @@ function updateWordDisplay(tileNums) {
   }
 
   $('#currentWord').text(word);
+}
+
+function startTimer(startTime, roundTime) {
+  //show the timer
+  intervalId = setInterval(function () {
+    currentTime = new Date();
+    if ((currentTime - startTime) >= roundTime) {
+      stopTimer();
+    } else {
+      //update the timer
+      console.log("IT IS ALIVEEEEEEE");
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  //hide the timer
+  clearInterval(intervalId);
 }
 
 $(document).ready(function() {
