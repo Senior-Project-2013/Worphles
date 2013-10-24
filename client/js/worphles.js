@@ -35,6 +35,9 @@ var gameId;
 var me;
 // all players in this game
 var players;
+// timer
+var startTime;
+var intervalId;
 
 // star field
 var starSystems;
@@ -87,7 +90,7 @@ function initGame(game) {
   players = game.players;
   // scoreboard
   scoreboard.init(game.players);
-
+  startTimer(game.startTime, game.roundTime);
   addCube(game.settings, game.tiles);
 }
 
@@ -521,6 +524,10 @@ function setupWebSockets() {
     initGame(game);
   });
 
+  socket.on('gameOver', function(data) {
+    //wat do
+  });
+
   socket.on('stillhere?', function(data, callback) {
     callback();
   });
@@ -667,4 +674,22 @@ $(document).ready(function() {
 function hideContentDivs() {
   $('#mainLobbyContainer').attr('display', 'none');
   $('#storyBookContainer').attr('display', 'none');
+}
+
+function startTimer(startTime, roundTime) {
+  //show the timer
+  intervalId = setInterval(function () {
+    currentTime = new Date();
+    if ((currentTime - startTime) >= roundTime) {
+      stopTimer();
+    } else {
+      //update the timer
+      console.log("IT IS ALIVEEEEEEE");
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  //hide the timer
+  clearInterval(intervalId);
 }

@@ -35,6 +35,9 @@ function renderParticles() {
 }
 
 function handleMouseMove(event) {
+  if (event.button == 2) {
+    return;
+  }
   var vector = new THREE.Vector3(
     (event.clientX / window.innerWidth) * 2 - 1,
     -(event.clientY / window.innerHeight) * 2 + 1,
@@ -137,7 +140,7 @@ function createWorphleParticles(xStart, yStart, xTarget, yTarget, particles) {
 
       var pX = xStart + xIncrement * p + blurFactor,
         pY = yStart + yIncrement * p + blurFactor,
-        pZ = (Math.random() * .02) + .02,
+        pZ = ((Math.random() * .02) + .02)*1000,
         particle = new THREE.Vector3(pX, pY, pZ)
 
     particle.speed = (Math.random() * settings.averageParticleSpeed) + (settings.averageParticleSpeed / 3);
@@ -152,7 +155,7 @@ function createStarParticles(particles) {
   for(var s = 0; s < settings.starCount; s++) {
     var pX = SCALE*((Math.random() * 80) - 40);
     var pY = SCALE*((Math.random() * 80) - 40);
-    var pZ = ((Math.random() * 10) - 24);
+    var pZ = SCALE*((Math.random() * 80) - 40);
     var particle = new THREE.Vector3(pX, pY, pZ)
     console.log(particle)
 
