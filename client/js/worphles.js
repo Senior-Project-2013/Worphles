@@ -82,6 +82,7 @@ function initGame(game) {
   $('#currentWord').fadeIn();
   $('#chatInput').fadeIn();
   $('#scoreboard').fadeIn();
+  $('#timer').fadeIn();
 
   // save game id
   gameId = game.id;
@@ -90,7 +91,7 @@ function initGame(game) {
   players = game.players;
   // scoreboard
   scoreboard.init(game.players);
-  startTimer(game.startTime, game.roundTime);
+  startTimer(new Date(game.startTime).getTime(), game.settings.roundTime);
   addCube(game.settings, game.tiles);
 }
 
@@ -525,7 +526,7 @@ function setupWebSockets() {
   });
 
   socket.on('gameOver', function(data) {
-    //wat do
+    console.log("GAME OVER");
   });
 
   socket.on('stillhere?', function(data, callback) {
@@ -647,49 +648,22 @@ function updateWordDisplay(tileNums) {
   $('#currentWord').text(word);
 }
 
-$(document).ready(function() {
-  var playButton = $('#playButton');
-
-  playButton.attr('disabled', true);
-  playButton.css('opacity', 0.5);
-
-  
-
-  $('#playButton').click(function() {
-    playerName = $('#nameInput').val();
-    socket.emit('name', playerName);
-
-    $('#greeting').text('Welcome, ' + playerName + '!');
-
-    $('#askName').fadeOut();
-    $('#startingButtons').fadeIn();
-  })
-
-  $('#showLobbies').click(function() {
-    hideContentDivs();
-    $('#mainLobbyContainer').fadeIn();
-  });
-});
-
-function hideContentDivs() {
-  $('#mainLobbyContainer').attr('display', 'none');
-  $('#storyBookContainer').attr('display', 'none');
-}
-
 function startTimer(startTime, roundTime) {
+  $('#timer > #time').text((roundTime/1000) - 1);
   //show the timer
   intervalId = setInterval(function () {
-    currentTime = new Date();
+    currentTime = new Date().getTime();
     if ((currentTime - startTime) >= roundTime) {
       stopTimer();
     } else {
       //update the timer
-      console.log("IT IS ALIVEEEEEEE");
+      $('#timer > #time').text(((roundTime - (currentTime - startTime))/1000) | 0);
     }
   }, 1000);
 }
 
 function stopTimer() {
+  $('#timer > #time').text('GAME OVER');
   //hide the timer
   clearInterval(intervalId);
 }
