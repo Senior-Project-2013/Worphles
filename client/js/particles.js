@@ -7,12 +7,13 @@ var settings = {
   systemCount: 3, //the number of particle systems to render, the higher the number the more particles + the more colorful
   particleCount: 20, //the number of particles used for each line.  This number is multiplied by systemCount.
   starCount: 500, //the number of background particles
-  sizeMultiplier: 2*SCALE, //size increase for spreading particles
+  sizeMultiplier: 2, //size increase for spreading particles
   averageParticleSpeed: .3, //lower for faster
   pictureBlur: .02 //higher for more blurry
 };
 
-var SCALE = 4;
+var SCALE = 5;
+var WS = 80;
 
 function renderParticles() {
   for(var ps = 0; ps < particleSystems.length; ps++) {
@@ -83,14 +84,14 @@ function createParticleSystems(theScene, theCamera) {
     var particles = new THREE.Geometry(),
       pMaterial = new THREE.ParticleBasicMaterial({
         color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
-        size: 0.02*SCALE
+        size: 0.02*WS/2
       })
 
     /* Worphle Coordinates */
-    var xStartCoordinates = [-.1825, .1825, .1825, .12, -.1825, -.12, -.1825, .1825, -.13, -.1825, -.13, .1825, .24, .15, .15, .01, .01, .06];
-    var yStartCoordinates = [-.1825, -.1825, .1825, .28, .1825, .28, -.1825, -.1825, -.13, 0, -.02, .02, .01, .16, .145, .16, .145, .06];
-    var xTargetCoordinates = [-.1825, .1825, .12, 0, -.12, 0, -.13, .13, .13, -.13, -.13, .24, .1825, .165, .165, .025, .025, .10];
-    var yTargetCoordinates = [.1825, .1825, .28, .335, .28, .335, -.13, -.13, -.13, -.02, .02, .01, .09, .145, .16, .145, .16, .06];
+    var xStartCoordinates = [-.1825*WS, .1825*WS, .1825*WS, .12*WS, -.1825*WS, -.12*WS, -.1825*WS, .1825*WS, -.13*WS, -.1825*WS, -.13*WS, .1825*WS, .24*WS, .15*WS, .15*WS, .01*WS, .01*WS, .06*WS];
+    var yStartCoordinates = [-.1825*WS, -.1825*WS, .1825*WS, .28*WS, .1825*WS, .28*WS, -.1825*WS, -.1825*WS, -.13*WS, 0*WS, -.02*WS, .02*WS, .01*WS, .16*WS, .145*WS, .16*WS, .145*WS, .06*WS];
+    var xTargetCoordinates = [-.1825*WS, .1825*WS, .12*WS, 0*WS, -.12*WS, 0*WS, -.13*WS, .13*WS, .13*WS, -.13*WS, -.13*WS, .24*WS, .1825*WS, .165*WS, .165*WS, .025*WS, .025*WS, .10*WS];
+    var yTargetCoordinates = [.1825*WS, .1825*WS, .28*WS, .335*WS, .28*WS, .335*WS, -.13*WS, -.13*WS, -.13*WS, -.02*WS, .02*WS, .01*WS, .09*WS, .145*WS, .16*WS, .145*WS, .16*WS, .06*WS];
 
     for(var i = 0; i < xStartCoordinates.length; i++)
       createWorphleParticles(xStartCoordinates[i], yStartCoordinates[i], xTargetCoordinates[i], yTargetCoordinates[i], particles);
@@ -105,7 +106,7 @@ function createParticleSystems(theScene, theCamera) {
   var particles = new THREE.Geometry,
     pMaterial = new THREE.ParticleBasicMaterial({
       color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
-      size: 0.2*SCALE
+      size: 0.2*SCALE*1.5
     })
 
   createStarParticles(particles)
@@ -116,6 +117,12 @@ function createParticleSystems(theScene, theCamera) {
   particleSystems.push(starSystem)
 
   $(document).mousemove(handleMouseMove);
+  $('.btn').mouseover(function() {
+    spreadParticles();
+  });
+  $('.btn').mouseleave(function() {
+    gatherParticles();
+  });
   renderParticles();
 }
 
@@ -125,39 +132,33 @@ function createWorphleParticles(xStart, yStart, xTarget, yTarget, particles) {
 
   for(var p = 1; p < settings.particleCount; p++) {
       var blurFactor = (Math.random() * settings.pictureBlur) - settings.pictureBlur;
+      blurFactor *= WS;
 
       var pX = xStart + xIncrement * p + blurFactor,
         pY = yStart + yIncrement * p + blurFactor,
         pZ = (Math.random() * .02) + .02,
         particle = new THREE.Vector3(pX, pY, pZ)
 
-    particle.speed = (Math.random() * settings.averageParticleSpeed) + (settings.averageParticleSpeed / 3)
-    particle.originalX = pX
-    particle.originalY = pY
-    particle.spread = true
-    particles.vertices.push(particle)
+    particle.speed = (Math.random() * settings.averageParticleSpeed) + (settings.averageParticleSpeed / 3);
+    particle.originalX = pX;
+    particle.originalY = pY;
+    particle.spread = true;
+    particles.vertices.push(particle);
   }
 }
 
 function createStarParticles(particles) {
   for(var s = 0; s < settings.starCount; s++) {
-    var pX = (Math.random() * 40) - 20,
-      pY = (Math.random() * 20) - 10,
-      pZ = (Math.random() * 10) - 24,
-      particle = new THREE.Vector3(pX, pY, pZ)
+    var pX = SCALE*((Math.random() * 80) - 40);
+    var pY = SCALE*((Math.random() * 80) - 40);
+    var pZ = ((Math.random() * 10) - 24);
+    var particle = new THREE.Vector3(pX, pY, pZ)
+    console.log(particle)
 
-    particle.speed = (Math.random() * 0.6) + .03
-    particle.originalX = pX
-    particle.originalY = pY
-    particle.spread = false
-    particles.vertices.push(particle)
+    particle.speed = (Math.random() * 0.6) + .03;
+    particle.originalX = pX;
+    particle.originalY = pY;
+    particle.spread = false;
+    particles.vertices.push(particle);
   }
 }
-
-$('.button').mouseover(function() {
-  spreadParticles();
-});
-
-$('.button').mouseleave(function() {
-  gatherParticles();
-});
