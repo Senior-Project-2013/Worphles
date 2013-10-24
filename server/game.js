@@ -107,6 +107,7 @@ function Settings(roundTime, maxPlayers, gridSize, name, password) {
  */
 function Game(hostPlayer, settings) {
   this.started = false;
+  this.startTime = null;
   this.id = hostPlayer.id;
   this.settings = settings || new Settings();
 
@@ -124,6 +125,7 @@ function Game(hostPlayer, settings) {
 
   this.start = function() {
     if (this.settings.maxPlayers == Object.keys(this.players).length) {
+      this.startTime = new Date();
       var i = 0;
       _.each(this.players, function(player) {
         player.color = Color.randomColor(i);
@@ -131,6 +133,13 @@ function Game(hostPlayer, settings) {
       });
       this.started = true;
       this.showEveryone('start', this.safeCopy());
+      this.intervalId = setInterval(function () {
+        var currentTime = new Date();
+        if ((currentTime - this.startTime) >= this.settings.roundTime) {
+          this.showEveryone('gameOver', this.safeCopy());
+          clearInterval(this.intervalId);
+        }
+      }, 1000)
       return true;
     } else {
       console.log('can\'t start, not enough players');
