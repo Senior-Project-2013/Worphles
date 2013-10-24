@@ -106,7 +106,7 @@ function createParticleSystems(theScene, theCamera) {
   var particles = new THREE.Geometry,
     pMaterial = new THREE.ParticleBasicMaterial({
       color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
-      size: 0.2*SCALE
+      size: 0.2*SCALE*1.5
     })
 
   createStarParticles(particles)
@@ -149,7 +149,7 @@ function createWorphleParticles(xStart, yStart, xTarget, yTarget, particles) {
 
 function createStarParticles(particles) {
   for(var s = 0; s < settings.starCount; s++) {
-    var pX = SCALE*((Math.random() * 40) - 20);
+    var pX = SCALE*((Math.random() * 80) - 40);
     var pY = SCALE*((Math.random() * 80) - 40);
     var pZ = ((Math.random() * 10) - 24);
     var particle = new THREE.Vector3(pX, pY, pZ)
