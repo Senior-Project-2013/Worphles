@@ -627,7 +627,7 @@ function colorTile(tile, color) {
   }
   var faces = TILES[tile].faces;
   for (var i in faces) {
-    console.log('coloring tile',tile,color,i);
+    // console.log('coloring tile',tile,color,i);
     faces[i].color.setRGB(color.r,color.g,color.b);
   }
   TILES[tile].geometry.colorsNeedUpdate = true;
