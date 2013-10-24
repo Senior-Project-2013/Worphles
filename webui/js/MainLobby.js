@@ -1,3 +1,4 @@
+/*
 var testLobbies = [
 {
   id: 1,
@@ -14,9 +15,10 @@ var testLobbies = [
   gridSize: 2
 }
 ];
-
+*/
 function MainLobby() {
   this.init = function(lobbies) {
+    $('#gameLobbies').empty();
     this.lobbies = lobbies ? lobbies : [];
 
     
@@ -52,64 +54,4 @@ function MainLobby() {
 
 
   }
-  /* creates a lobby row */
-  //id    Name    4x4    2/6 players  
-  /*this.createLobbyRow = function(lobby) {
-    $('<tr/>', {
-      id: lobby.id,
-      class: 'gameLobbyRow'
-    
-      $('<td/>',{
-        $('<button/>',{
-          text: 'Join',
-          class: 'gameJoinButton gameJoinButton'
-        }).appendTo($('#'+lobby.id));
-      }).appendTo($('#' + lobby.id));
-
-      $('<td/>', {
-        text: lobby.name,
-        class: 'gameName',
-      }).appendTo($('#' + lobby.id));
-
-      $('<td/>', {
-        text: lobby.currentPlayers + '/'+lobby.maxPlayers + ' Players',
-        class: 'gamePlayers',
-      }).appendTo($('#' + lobby.id));
-
-      $('<td/>', {
-        text: lobby.gridSize +'x'+lobby.gridSize,
-        class: 'gameGridSize',
-      }).appendTo($('#'+lobby.id));
-
-    }).appendTo($('#gameLobbies'));
-}*/
-
-  /*this.createLobbyRow = function(lobby) {
-    $('<li/>', {
-      id: lobby.id,
-      class: 'gameLobbyRow'
-    }).appendTo($('#gameLobbies'));
-
-    $('<button/>',{
-      text: 'Join',
-      class: 'gameJoinButton gameJoinButton-Blue'
-    }).appendTo($('#'+lobby.id));
-
-    $('<span/>', {
-      text: lobby.name,
-      class: 'gameName',
-    }).appendTo($('#' + lobby.id));
-
-    $('<span/>', {
-      text: lobby.currentPlayers + '/'+lobby.maxPlayers + ' Players',
-      class: 'gamePlayers',
-    }).appendTo($('#' + lobby.id));
-
-    $('<span/>', {
-      text: lobby.gridSize +'x'+lobby.gridSize,
-      class: 'gameGridSize',
-    }).appendTo($('#' + lobby.id));
-
-    
-}*/
 }

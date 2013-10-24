@@ -20,11 +20,12 @@ io.configure(function () {
 
 // serve all webui contents statically
 app.use('/webui', express.static(__dirname + '/webui'));
+app.use('/client', express.static(__dirname + '/client'));
 
 // serve the main game html file
-app.get('/', function(req, res) { res.sendfile(__dirname+'/webui/Home.html'); });
+app.get('/play', function(req, res) { res.sendfile(__dirname+'/client/worphles.html'); });
 
-app.get('/play', function(req, res) { res.sendfile(__dirname+'/webui/WorphleWorld.html'); });
+app.get('/', function(req, res) { res.sendfile(__dirname+'/webui/Home.html'); });
 
 // set the max number of players
 app.get('/maxPlayers/:num', function(req, res) {
@@ -59,42 +60,6 @@ io.sockets.on('connection', function(socket) {
       socket.emit('hi', name);
     } else {
       socket.emit('nameFail','youFail');
-    }
-  });
-
-  socket.on('joinQueue', function() {
-    // heroku's kinda slow... probably shouldn't do multiple games
-    if (process.env.LIMIT_ONE_GAME && Object.keys(games).length > 0) {
-      socket.emit('full');
-      return;
-    }
-
-    socket.on('disconnect', function() {
-      console.log(socket.id,'disconnected');
-      _.each(waitingPlayers, function(player, i) {
-        if (player.id == socket.id) {
-          waitingPlayers.splice(i,1);
-        }
-      });
-      showQueueUpdate();
-    });
-
-    waitingPlayers.push(new Game.Player(socket.id, socket, Game.Player.randomColor(waitingPlayers.length), "Player " + waitingPlayers.length));
-
-    if (waitingPlayers.length == PLAYERS_TO_START) {
-      showEveryone(null, 'queue',{almostReady:true});
-      checkEveryoneStillHere(function(theyreStillHere) {
-        if (theyreStillHere) {
-          var newGameId = waitingPlayers[0].id;
-          games[newGameId] = new Game.Game(newGameId, waitingPlayers, new Game.Settings(null, PLAYERS_TO_START, null));
-          games[newGameId].start();
-          waitingPlayers.length = 0;
-        } else {
-          showQueueUpdate();
-        }
-      });
-    } else {
-      showQueueUpdate();
     }
   });
 
@@ -135,7 +100,7 @@ io.sockets.on('connection', function(socket) {
     var game = new Game.Game(thisPlayer, gameSettings);
     games[game.id] = game;
 
-    socket.emit('gameCreated');
+    socket.emit('gameCreated', {id: game.id});
   });
 
   socket.on('startGame', function(data) {
@@ -152,7 +117,7 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('moveComplete', function(data) { games[data.game].validateWord(socket.id, data.tiles); });
   socket.on('partialMove', function(data) { games[data.game].showPartialMove(data); });
-  socket.on('chat', function(data) { showEveryone(data.game, 'chat', {player:socket.id, message:data.message})});
+  socket.on('chat', function(data) { games[data.game].chat(socket.id, data.message); });
 });
 
 // tell all waiting players the queue status

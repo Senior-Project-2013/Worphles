@@ -1,9 +1,4 @@
 /*
-  Adapted from Three.js "tutorials by example"
-  (Original Author: Lee Stemkoski
-  Date: July 2013 (three.js v59dev))
-
-
   By: Senior Project Worphle Group
   - Caleb Gomer
   - Jeremy Dye
@@ -23,7 +18,7 @@ var scene;
 var camera;
 var renderer;
 var controls;
-var stats;
+// var stats;
 var keyboard = new THREEx.KeyboardState();
 var clock = new THREE.Clock();
 // the Worphle World Cube
@@ -66,8 +61,10 @@ $(function() {
   // only start the game if the browser/graphics card support WebGL
   if (Detector.webgl) {
     setupWebSockets();
-    setupButtons();
-    setupChat();
+    setupUI();
+    // init the graphics, start animations
+    initGraphics();
+    animate();
   } else {
     alert(ABSOLUTE_FAIL);
   }
@@ -75,21 +72,36 @@ $(function() {
 
 /**
   Start up the game
-*/     
-function init(game)  {
+*/
+function initGame(game) {
+  $('#lobbyButtons').fadeOut();
+  $('#startGameButton').fadeOut();
+  $('#currentWord').fadeIn();
+  $('#chatInput').fadeIn();
+  $('#scoreboard').fadeIn();
+
   // save game id
   gameId = game.id;
   // players
   me = socket.socket.sessionid;
   players = game.players;
+  // scoreboard
+  scoreboard.init(game.players);
 
+  addCube(game.settings, game.tiles);
+}
+
+/**
+  Start up the graphics
+*/     
+function initGraphics()  {
   // scene
   scene = new THREE.Scene();
 
   var SCREEN_WIDTH = window.innerWidth;
   var SCREEN_HEIGHT = window.innerHeight; 
   var VIEW_ANGLE = 45;
-  var ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT;
+  var ASPECT = (SCREEN_WIDTH/2) / SCREEN_HEIGHT;
   var NEAR = 0.1;
   var FAR = 20000;
 
@@ -101,24 +113,22 @@ function init(game)  {
 
   // renderer and container
   renderer = new THREE.WebGLRenderer( {antialias:true} );
-  renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-  container = document.getElementById( 'ThreeJS' );
+  renderer.setSize(SCREEN_WIDTH/2, SCREEN_HEIGHT);
+  container = document.getElementById('graphics');
   container.appendChild( renderer.domElement );
 
   // automatically resize renderer
   THREEx.WindowResize(renderer, camera);
-  // toggle full-screen on given key press
-  // THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
 
   // set up mouse controls
   controls = new THREE.OrbitControls( camera, renderer.domElement );
   
   // some stats
-  stats = new Stats();
-  stats.domElement.style.position = 'absolute';
-  stats.domElement.style.bottom = '0px';
-  stats.domElement.style.zIndex = 100;
-  container.appendChild( stats.domElement );
+  // stats = new Stats();
+  // stats.domElement.style.position = 'absolute';
+  // stats.domElement.style.bottom = '0px';
+  // stats.domElement.style.zIndex = 100;
+  // container.appendChild( stats.domElement );
   
   // create a light
   var light = new THREE.PointLight(0xffffff);
@@ -126,9 +136,18 @@ function init(game)  {
   scene.add(light);
   var ambientLight = new THREE.AmbientLight(0x111111);
   scene.add(ambientLight);
+
+  createParticleSystems(scene, camera);
   
+  // initialize object to perform world/screen calculations
+  projector = new THREE.Projector();
+
+  document.addEventListener( 'mousedown', mouseDown, false );
+  document.addEventListener( 'mousemove', mouseMove, false );
+}
+
+function addCube(settings, tiles) {
   // the cube magic
-  var settings = game.settings;
   // graphics settings
   var cubeSize = 80;
   var tilesPerRow = settings.gridSize;
@@ -154,16 +173,10 @@ function init(game)  {
           _side = -1;
           _axis = X_AXIS;
         }
-        makeTile(_side, _axis, col, row, tileNum, game.tiles[tileNum].letter, gSettings);
+        makeTile(_side, _axis, col, row, tileNum, tiles[tileNum].letter, gSettings);
       }
     }
   }
-  
-  // initialize object to perform world/screen calculations
-  projector = new THREE.Projector();
-
-  document.addEventListener( 'mousedown', mouseDown, false );
-  document.addEventListener( 'mousemove', mouseMove, false );
 }
 
 function TileGraphicsSettings(tilesPerRow, tileSize) {
@@ -176,7 +189,7 @@ function TileGraphicsSettings(tilesPerRow, tileSize) {
 
   var cubeGeometry = new THREE.CubeGeometry(79.9, 79.9, 79.9, 4, 4, 4);
 
-  var cubeTexture = new THREE.ImageUtils.loadTexture('webui/images/tile.png');
+  var cubeTexture = new THREE.ImageUtils.loadTexture('client/images/tile.png');
   cubeTexture.wrapS = cubeTexture.wrapT = THREE.RepeatWrapping;
   cubeTexture.repeat.set(this.tilesPerRow, this.tilesPerRow);
   var cubeMaterial = new THREE.MeshBasicMaterial({map:cubeTexture});
@@ -184,7 +197,7 @@ function TileGraphicsSettings(tilesPerRow, tileSize) {
   cube.position.set(0, 0, 0);
   scene.add(cube);    
 
-  var floorTexture = new THREE.ImageUtils.loadTexture( 'webui/images/tile.png' );
+  var floorTexture = new THREE.ImageUtils.loadTexture( 'client/images/tile.png' );
   floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
   floorTexture.repeat.set( 1, 1 );
   this.tileMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } );
@@ -278,15 +291,13 @@ function mouseUp(event) {
 function updateMouse(event) {
   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
   mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-}
 
-function setupChat() {
-  $('#textInput').keyup(function(e) {
-    if (e.which == 13 /*enter*/) {
-      sendChat($('#textInput').val());
-      $('#textInput').val('');
-    }
-  });
+  // mouse is outside of graphics box
+  if (mouse.x < -0.5 || mouse.x > 0.5) {
+    mouse.x = -2;
+  } else {
+    mouse.x *= 2;
+  }
 }
 
 function joinGame(id, hasPassword) {
@@ -300,12 +311,41 @@ function joinGame(id, hasPassword) {
   socket.emit('joinGame', {id: id, password: password});
 }
 
-function setupButtons() {
-  socket.emit('name', playerName);
+function setupUI() {
+  var nameButton = $('#nameButton');
+  var nameInput = $('#nameInput');
+  nameInput.keyup(function() {
+    if(nameInput.val().length < 3) {
+      nameButton.attr('disabled', 'disabled');
+    } else {
+      nameButton.removeAttr('disabled');
+    }
+  });
+  $('#nameButton').click(chooseName);
 
-  $('#joinQueue').click(function() {
+  var createGameButton = $('#createGameButton');
+  var gameNameInput = $('#gameNameInput');
+  var gamePasswordInput = $('#gamePasswordInput');
+  var gameBoardSizeInput = $('#gameBoardSizeInput');
+  var gameNumPlayersInput = $('#gameNumPlayersInput');
+  var gameLengthInput = $('#gameLengthInput');
+  gameNameInput.keyup(function() {
+    if (gameNameInput.val().length >= 3) {
+      createGameButton.removeAttr('disabled');
+    } else {
+      createGameButton.attr('disabled', 'disabled');
+    }
+  });
+  $('#createGameButton').click(createGame);
+
+  $('#joinGameModalShow').click(function() {
     socket.emit('gameList');
   });
+
+  $('#startGameButton').click(function() {
+    socket.emit('startGame');
+  });
+
   $('#createLobby').click(function() {
     if ($('#createLobby').text() === 'Start') {
       return socket.emit('startGame');
@@ -323,33 +363,112 @@ function setupButtons() {
   });
 }
 
-function hideButtons() {
-  $('#customGame').fadeOut();
-  $('#joinQueue').fadeOut();
-}
-
 function showButtons() {
   $('#customGame').fadeIn();
   $('#joinQueue').fadeIn(); 
 }
 
-function sendChat(chat) {
-  if (chat && chat !== '') {
-    socket.emit('chat', {game:gameId, message:chat});
+function chooseName() {
+  var name = $('#nameInput').val();
+  if (name && name.length >= 3) {
+    socket.emit('name', name);
+    $('#nameInput').val('');
+    $('#nameButton').attr('disabled', 'disabled');
   }
+  // stops the form from submitting if being called from HTML form
+  return false;
+}
+
+function createGame() {
+  var gameNameInput = $('#gameNameInput');
+  var gamePasswordInput = $('#gamePasswordInput');
+  var gameBoardSizeInput = $('#gameBoardSizeInput');
+  var gameNumPlayersInput = $('#gameNumPlayersInput');
+  var gameLengthInput = $('#gameLengthInput');
+
+  var name = gameNameInput.val();
+  var password = gamePasswordInput.val();
+  var size = gameBoardSizeInput.val();
+  var players = gameNumPlayersInput.val();
+  var length = gameNumPlayersInput.val();
+
+  if (name && size && players && length) {
+    var newGame = {name: name, password: password, size: size, maxPlayers: players, time: length};
+    console.log(newGame);
+    socket.emit('createGame', newGame);
+  }
+  // stops the form from submitting if being called from HTML form
+  return false;
+}
+
+function sendChat(chat) {
+  if (chat) {
+    socket.emit('chat', {game:gameId, message:chat});
+  } else if (chat === undefined) {
+    chat = $('#chatInput').val();
+    if (chat) {
+      socket.emit('chat', {game:gameId, message:chat});
+    }
+  }
+  $('#chatInput').val('');
+  // stops the form from submitting if being called from HTML form
+  return false;
 }
 
 function showChat(player, message) {
-  console.log(player,message);
+  console.log('show chat',player,message);
+  $('#messages').append('<div class="chatRow" style='+getCSSColorFromColor(players[player].color)+'>'+players[player].name+': '+message+'</div>');
+}
 
-  var color = {
-    r: (players[player].color.r * 255),
-    g: (players[player].color.g * 255),
-    b: (players[player].color.b * 255)
+function getCSSColorFromColor(color) {
+  return getCSSColorFromRGB(color.r, color.g, color.b);
+}
+
+function getCSSColorFromRGB(r, g, b) {
+  return 'background-color:rgb('+(r*255)+','+(g*255)+','+(b*255)+')';
+}
+
+function showGameList(data) {
+  var games = [];
+  for (var i = 0; i < data.length; i++) {
+    games.push({id: data[i].id, name: data[i].name, currentPlayers: data[i].currentPlayers, maxPlayers: data[i].maxPlayers, gridSize: data[i].gridSize, password: data[i].password});
   }
-  var colorString = 'background-color:rgb('+color.r+','+color.g+','+color.b+')';
+  if (games.length) {
+    var gameListDiv = $('#gameList').empty();
+    for (var i = 0; i < games.length; i++) {
+      var game = games[i];
+      $('<li/>', {
+        id: 'join'+game.id,
+        class: 'gameListRow'
+      }).appendTo(gameListDiv);
 
-  $('#messages').append('<div style='+colorString+'>'+players[player].name+': '+message+'</div>');
+      var thisGame = $('#join'+game.id);
+
+      $('<button/>',{
+        text: 'Join',
+        class: 'btn btn-primary',
+        onclick: 'joinGame(\''+game.id+'\', '+game.password+');'
+      }).appendTo(thisGame);
+
+      $('<span/>', {
+        text: ' '+game.name,
+        class: 'gameName',
+      }).appendTo(thisGame);
+
+      $('<span/>', {
+        text: ' ---- '+(game.currentPlayers + '/'+game.maxPlayers + ' Players'),
+        class: 'gamePlayers',
+      }).appendTo(thisGame);
+
+      $('<span/>', {
+        text: ' ---- '+game.gridSize +'x'+game.gridSize,
+        class: 'gameGridSize',
+      }).appendTo(thisGame);
+    }
+    $('#joinGameModal').modal('show');
+  } else {
+    alert('Sorry, there are no games. Please create one.');
+  }
 }
 
 function setupWebSockets() {
@@ -359,91 +478,47 @@ function setupWebSockets() {
   });
 
   socket.on('hi', function(data) {
-    console.log('hi',data);
+    $('#startingButtons').fadeOut(function() {
+      $('#lobbyButtons').fadeIn();
+    });
   });
   
-  /*socket.on('nameFail', function(data) {
-    var name;
-    while(!name) {
-      name = prompt('Your name?');
-    }
-    socket.emit('name', name);
-  });*/
+  socket.on('nameFail', function(data) {
+    $('#nameForm').fadeIn();
+  });
 
-  socket.on('gameCreated', function() {
-    $('#createLobby').text('Start');
-    console.log('Game Created');
+  socket.on('gameCreated', function(data) {
+    gameId = data && data.id;
+    $('#createGameModal').modal('hide');
+    $('#lobbyButtons').fadeOut();
+    $('#startGameButton').fadeIn();
+    $('#chatBar').fadeIn();
   });
 
   socket.on('startFail', function(data) {
     alert('can\'t start because '+data.message);
   });
 
-  socket.on('gameList', function(data) {
-    var listString = "";
-    var lobbyData = [];
-    for (var i = 0; i < data.length; i++) {
-      lobbyData.push({id: data[i].id, name: data[i].name, currentPlayers: data[i].currentPlayers, maxPlayers: data[i].maxPlayers, gridSize: data[i].gridSize, password: data[i].password});
-      // listString += i+': '+ data[i].name + (data[i].maxPlayers-data[i].currentPlayers > 0 ? '':' - Full') + (data[i].password ? ' - Password Required':'') +'\n';
-    }
-
-    var lobby = new MainLobby();
-    lobby.init(lobbyData);
-    return;
-    var gameIndex = prompt(listString);
-    if (!(gameIndex && data[gameIndex])) {
-      return;
-    }
-    var password = '';
-    if (gameIndex && data[gameIndex].password) {
-      password = prompt('password');
-    }
-    socket.emit('joinGame', {id: data[gameIndex].id, password: password});
-  });
+  socket.on('gameList', showGameList);
 
   socket.on('joinedGame', function(data) {
-    alert("Joined Game: "+JSON.stringify(data));
+    gameId = data && data.id;
+    $('#joinGameModal').modal('hide');
+    $('#lobbyButtons').fadeOut();
+    $('#chatBar').fadeIn();
   });
 
   socket.on('deniedGame', function(data) {
-    alert("Denied Game: "+JSON.stringify(data));
+    alert("Couldn't Join");
+  });
+
+  socket.on('players', function(thePlayers) {
+    me = socket.socket.sessionid;
+    players = thePlayers;
   });
 
   socket.on('start', function(game) {
-    hideButtons();
-    // add scoreboard
-    scoreboard.init(game.players);
-    // hide popups
-    $('.sidebar').fadeIn();
-    $('#currentWord').fadeIn();
-    $('#queuePopup').fadeOut();
-    $('#textInput').fadeIn(function() {
-      $('#textInput').focus();
-    });
-
-    // initialization
-    init(game);
-    // animation loop / game loop
-    animate();
-  });
-
-  socket.on('queue', function(data) {
-    if (data.almostReady) {
-      $('#queue').text('Starting...');
-    } else {
-      var queueText = '';
-      for (var i = 0; i < data.currentPlayers; i++) {
-        queueText+='1.';
-      }
-      for (var i = data.currentPlayers; i < data.neededPlayers; i++) {
-        queueText+='0';
-        if (i+1 != data.neededPlayers) {
-          queueText+='.';
-        }
-      }
-      $('#queue').text(queueText);
-      console.log('have',data.currentPlayers,'need',data.neededPlayers);
-    }
+    initGame(game);
   });
 
   socket.on('stillhere?', function(data, callback) {
@@ -470,20 +545,24 @@ function setupWebSockets() {
 
 
   socket.on('chat', function(data) {
+    console.log('got chat');
     showChat(data.player, data.message);
   });
 
   socket.on('scoreboardUpdate', function(data) {
     for(var i = 0; i < Object.keys(data).length; i++) {
+      console.log(data);
       var playerId = Object.keys(data)[i];
+      players[playerId].score = data[playerId].score;
       scoreboard.updateScoreDisplay(playerId, data[playerId]);
-    } 
-  })
+    }
+  });
 };
 
 function animate() {
   requestAnimationFrame(animate);
-  render();   
+  renderParticles();
+  render();
   update();
 }
 
@@ -491,25 +570,27 @@ function update() {
   // delta = change in time since last call (in seconds)
   var delta = clock.getDelta(); 
 
-  var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
-  projector.unprojectVector( vector, camera );
-  var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+  if (mouse.x !== -2) {
+    var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+    projector.unprojectVector( vector, camera );
+    var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
 
-  var intersects = ray.intersectObjects( targetList );
+    var intersects = ray.intersectObjects( targetList );
 
-  if ( intersects.length > 0) {
-    var tile = intersects[0].object.__tile_data.num;
-    if (mouse.lClicked && !mouse.rClicked && tile != lastTile) {
-      socket.emit('partialMove', {game:gameId, tile:tile, player:me});
-      colorTile(tile, players[me].color);
-      currentTiles.push(tile);
-      updateWordDisplay(currentTiles);
-      lastTile = tile;
+    if ( intersects.length > 0) {
+      var tile = intersects[0].object.__tile_data.num;
+      if (mouse.lClicked && !mouse.rClicked && tile != lastTile) {
+        socket.emit('partialMove', {game:gameId, tile:tile, player:me});
+        colorTile(tile, players[me].color);
+        currentTiles.push(tile);
+        updateWordDisplay(currentTiles);
+        lastTile = tile;
+      }
     }
   }
     
   controls.update();
-  stats.update();
+  // stats.update();
 }
 
 function updateTile(tile, letter, owner) {
@@ -565,15 +646,7 @@ $(document).ready(function() {
   playButton.attr('disabled', true);
   playButton.css('opacity', 0.5);
 
-  $('#nameInput').keyup(function() {
-    if($(this).val().length < 3) {
-      playButton.attr('disabled', true);
-      playButton.css('opacity', 0.5);
-    } else {
-      playButton.attr('disabled', false);
-      playButton.css('opacity', 1);
-    }
-  });
+  
 
   $('#playButton').click(function() {
     playerName = $('#nameInput').val();
@@ -582,7 +655,7 @@ $(document).ready(function() {
     $('#greeting').text('Welcome, ' + playerName + '!');
 
     $('#askName').fadeOut();
-    $('#lobbyButtons').fadeIn();
+    $('#startingButtons').fadeIn();
   })
 
   $('#showLobbies').click(function() {
