@@ -133,17 +133,19 @@ function Game(hostPlayer, settings) {
       });
       this.started = true;
       this.showEveryone('start', this.safeCopy());
-      this.intervalId = setInterval(function () {
-        var currentTime = new Date();
-        if ((currentTime - this.startTime) >= this.settings.roundTime) {
-          this.showEveryone('gameOver', this.safeCopy());
-          clearInterval(this.intervalId);
-        }
-      }, 1000)
+      this.intervalId = setInterval(function(self) {return function() { return self.gameTick; };}(this), 1000);
       return true;
     } else {
       console.log('can\'t start, not enough players');
       return false;
+    }
+  };
+
+  this.gameTick = function() {
+    var currentTime = new Date();
+    if ((currentTime - context.startTime) >= context.settings.roundTime) {
+      context.showEveryone('gameOver', context.safeCopy());
+      clearInterval(context.intervalId);
     }
   };
 
