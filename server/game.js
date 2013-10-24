@@ -24,12 +24,12 @@ var GRID_SIZES = [4, 6, 8];
 var MAX_PLAYERS = [2, 3, 4, 5, 6];
 
 var COLORS = {
-  RED: new Color(1,0,0),
-  BLUE: new Color(0,0,1),
-  GREEN: new Color(0,1,0),
-  YELLOW: new Color(1,1,0),
-  MAGENTA: new Color(1,0,1),
-  CYAN: new Color(0,1,1)
+  TURQUOISE: new Color(110/255, 177/255, 146),
+  ORANGE: new Color(231/255, 127/255, 89/255),
+  PURPLE: new Color(125/255, 144/255, 189),
+  PINK: new Color(206/255, 127/255, 184/255),
+  GREEN: new Color(166/255, 201/255, 71/255),
+  YELLOW: new Color(249/255, 206/255, 55/255)
 };
 
 

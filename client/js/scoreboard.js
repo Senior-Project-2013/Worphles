@@ -18,12 +18,13 @@ function Scoreboard() {
       b: (player.color.b * 255)
     }
     console.log('creating player',num,player);
+    console.log('color',getCSSColorFromColor(player.color));
 
     $('<li/>', {
       id: 'score'+player.id,
       class: 'scoreRow',
       score: player.score
-    }).css('background-color', 'rgb('+color.r+','+color.g+','+color.b+')').appendTo('#scores');
+    }).css('background-color', getCSSColorFromColor(player.color)).appendTo('#scores');
 
     $('<h1/>', {
       text: player.name,

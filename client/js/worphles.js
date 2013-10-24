@@ -421,7 +421,7 @@ function sendChat(chat) {
 
 function showChat(player, message) {
   console.log('show chat',player,message);
-  $('#messages').append('<div class="chatRow" style='+getCSSColorFromColor(players[player].color)+'>'+players[player].name+': '+message+'</div>');
+  $('#messages').append('<div class="chatRow" style=background-color:'+getCSSColorFromColor(players[player].color)+'>'+players[player].name+': '+message+'</div>');
 }
 
 function getCSSColorFromColor(color) {
@@ -429,7 +429,7 @@ function getCSSColorFromColor(color) {
 }
 
 function getCSSColorFromRGB(r, g, b) {
-  return 'background-color:rgb('+(r*255)+','+(g*255)+','+(b*255)+')';
+  return 'rgb('+(Math.round(r*255))+','+(Math.round(g*255))+','+(Math.round(b*255))+')';
 }
 
 function showGameList(data) {
