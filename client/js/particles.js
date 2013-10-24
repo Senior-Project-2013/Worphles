@@ -119,7 +119,6 @@ function createParticleSystems(theScene, theCamera) {
   scene.add(starSystem)
   particleSystems.push(starSystem)
 
-  $(document).mousemove(handleMouseMove);
   $('#graphics').mousedown(function() {
     spreadParticles();
   });
@@ -157,7 +156,6 @@ function createStarParticles(particles) {
     var pY = SCALE*((Math.random() * 80) - 40);
     var pZ = SCALE*((Math.random() * 80) - 40);
     var particle = new THREE.Vector3(pX, pY, pZ)
-    console.log(particle)
 
     particle.speed = (Math.random() * 0.6) + .03;
     particle.originalX = pX;
