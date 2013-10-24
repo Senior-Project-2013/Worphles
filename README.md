@@ -2,4 +2,4 @@ Worphles!
 ============
 
 
-![Woppy](/webui/resources/storyImages/wop1.png)
+![Woppy](/webui/resources/storyImages/worph1b.png)

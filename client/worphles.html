@@ -8,6 +8,7 @@
 
   <!-- Custom CSS -->
   <link href="/client/css/sidebar.css" rel="stylesheet">
+  <link href="/client/css/lobby.css" rel="stylesheet">
 
   <!-- JS Libraries -->
   <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
@@ -94,7 +95,9 @@
               <h4 class="modal-title">Join Game</h4>
             </div>
             <div class="modal-body">
-              <div id="gameList"></div>
+              <table id="gameList">
+                <tbody id="gameListBody" class="gameListBody"></tbody>
+              </table>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

@@ -434,36 +434,64 @@ function showGameList(data) {
     games.push({id: data[i].id, name: data[i].name, currentPlayers: data[i].currentPlayers, maxPlayers: data[i].maxPlayers, gridSize: data[i].gridSize, password: data[i].password});
   }
   if (games.length) {
-    var gameListDiv = $('#gameList').empty();
+    var gameListDiv = $('#gameListBody').empty();
     for (var i = 0; i < games.length; i++) {
       var game = games[i];
-      $('<li/>', {
-        id: 'join'+game.id,
-        class: 'gameListRow'
-      }).appendTo(gameListDiv);
+      
+      $('<tr/>', {
+      id: game.id,
+      class: 'gameLobbyRow'
+    }).appendTo($('#gameListBody'));
 
-      var thisGame = $('#join'+game.id);
 
-      $('<button/>',{
-        text: 'Join',
-        class: 'btn btn-primary',
-        onclick: 'joinGame(\''+game.id+'\', '+game.password+');'
-      }).appendTo(thisGame);
+      var thisGame = $('#'+game.id);
 
-      $('<span/>', {
-        text: ' '+game.name,
-        class: 'gameName',
-      }).appendTo(thisGame);
+    $('<button/>',{
+      text: 'Join',
+      class: 'btn btn-primary',
+      onclick: 'joinGame(\''+game.id+'\', '+game.password+');'
+    }).appendTo($(thisGame));
 
-      $('<span/>', {
-        text: ' ---- '+(game.currentPlayers + '/'+game.maxPlayers + ' Players'),
-        class: 'gamePlayers',
-      }).appendTo(thisGame);
+    $('<td/>',{
+      text: game.name,
+      class: 'gameName'
+    }).appendTo($(thisGame));
+    $('<td/>', {
+      text: game.gridSize +'x'+game.gridSize,
+      class: 'gameGridSize',
+    }).appendTo($(thisGame));
+    $('<td/>', {
+      text: game.currentPlayers + '/'+game.maxPlayers + ' Players',
+      class: 'gamePlayers',
+    }).appendTo($(thisGame));
 
-      $('<span/>', {
-        text: ' ---- '+game.gridSize +'x'+game.gridSize,
-        class: 'gameGridSize',
-      }).appendTo(thisGame);
+      // $('<li/>', {
+      //   id: 'join'+game.id,
+      //   class: 'gameListRow'
+      // }).appendTo(gameListDiv);
+
+      // var thisGame = $('#join'+game.id);
+
+      // $('<button/>',{
+      //   text: 'Join',
+      //   class: 'btn btn-primary',
+      //   onclick: 'joinGame(\''+game.id+'\', '+game.password+');'
+      // }).appendTo(thisGame);
+
+      // $('<span/>', {
+      //   text: ' '+game.name,
+      //   class: 'gameName',
+      // }).appendTo(thisGame);
+
+      // $('<span/>', {
+      //   text: ' ---- '+(game.currentPlayers + '/'+game.maxPlayers + ' Players'),
+      //   class: 'gamePlayers',
+      // }).appendTo(thisGame);
+
+      // $('<span/>', {
+      //   text: ' ---- '+game.gridSize +'x'+game.gridSize,
+      //   class: 'gameGridSize',
+      // }).appendTo(thisGame);
     }
     $('#joinGameModal').modal('show');
   } else {
