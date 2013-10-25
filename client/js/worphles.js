@@ -554,6 +554,7 @@ function setupWebSockets() {
   });
 
   socket.on('gameOver', function(data) {
+    $('#timer').fadeOut();
     console.log("GAME OVER");
   });
 
@@ -678,20 +679,17 @@ function updateWordDisplay(tileNums) {
 
 function startTimer(startTime, roundTime) {
   $('#timer > #time').text((roundTime/1000) - 1);
-  //show the timer
   intervalId = setInterval(function () {
     currentTime = new Date().getTime();
     if ((currentTime - startTime) >= roundTime) {
       stopTimer();
     } else {
-      //update the timer
       $('#timer > #time').text(((roundTime - (currentTime - startTime))/1000) | 0);
     }
   }, 1000);
 }
 
 function stopTimer() {
-  $('#timer > #time').text('GAME OVER');
-  //hide the timer
+  $('#timer').fadeOut();
   clearInterval(intervalId);
 }

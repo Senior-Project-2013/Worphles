@@ -7,6 +7,10 @@
   padding: 5%;
 }
 
+.scoreText {
+  margin: auto;
+}
+
 .gameListRow {
   list-style: none;
 }

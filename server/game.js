@@ -24,7 +24,7 @@ var GRID_SIZES = [4, 6, 8];
 var MAX_PLAYERS = [2, 3, 4, 5, 6];
 
 var COLORS = {
-  TURQUOISE: new Color(110/255, 177/255, 146),
+  TURQUOISE: new Color(110/255, 177/255, 146/255),
   ORANGE: new Color(231/255, 127/255, 89/255),
   PURPLE: new Color(125/255, 144/255, 189),
   PINK: new Color(206/255, 127/255, 184/255),
@@ -136,19 +136,18 @@ function Game(hostPlayer, settings) {
       });
       this.started = true;
       this.showEveryone('start', this.safeCopy());
-      this.intervalId = setInterval(function(self) {return function() { return self.gameTick; };}(this), 1000);
+      var thisAlias = this;
+      this.intervalId = setInterval(function() {
+        var currentTime = new Date();
+        if ((currentTime - thisAlias.startTime) >= thisAlias.settings.roundTime) {
+          thisAlias.showEveryone('gameOver', thisAlias.safeCopy());
+          clearInterval(thisAlias.intervalId);
+        }
+      }, 1000);
       return true;
     } else {
       console.log('can\'t start, not enough players');
       return false;
-    }
-  };
-
-  this.gameTick = function() {
-    var currentTime = new Date();
-    if ((currentTime - this.startTime) >= this.settings.roundTime) {
-      this.showEveryone('gameOver', this.safeCopy());
-      clearInterval(this.intervalId);
     }
   };
 

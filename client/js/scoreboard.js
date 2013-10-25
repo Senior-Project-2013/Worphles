@@ -28,12 +28,12 @@ function Scoreboard() {
 
     $('<h1/>', {
       text: player.name,
-      class: 'pull-left'
+      class: 'pull-left scoreText'
     }).appendTo('#score'+player.id);
 
     $('<h1/>', {
       text: player.score,
-      class: 'pull-right scoreValue'
+      class: 'pull-right scoreValue scoreText'
     }).appendTo('#score'+player.id);
   }
 
