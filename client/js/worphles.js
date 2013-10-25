@@ -5,29 +5,28 @@ var Z_AXIS = new THREE.Vector3(0,0,1);
 var NINETY_DEG = 90*Math.PI/180;
 var ABSOLUTE_FAIL = 'Sorry, your browser does not support WebGL...\nYou won\'t be able to play this game :(';
 
-var playerName;
+// game logic and communication
+var socket;           // the socket.io socket for communicating with the server
+var gameId;           // the ID of the current game we're in
+var me;               // the current player's ID
+var players;          // the players in this game
+var startTime;        // the time this game started
+var timerIntervalId;  // so we can stop the timer
 var scoreboard = new Scoreboard();
-var socket;
-var container;
-var scene;
-var camera;
-var renderer;
-var controls;
-var keyboard = new THREEx.KeyboardState();
-var clock = new THREE.Clock();
-var cube;
-var targetList = [];
-var projector;
-var mouse = { x: 0, y: 0 ,lClicked: false, rClicked: false};
-var INTERSECTED;
-var tiles;
-var gameId;
-var me;
-var players;
-var startTime;
-var intervalId;
-var currentTiles = [];
-var lastTile;
+
+// graphics
+var scene;              // the threejs scene
+var camera;             // the threejs camera
+var renderer;           // the threejs renderer
+var projector;          // the threejs projector
+var clock;              // the threejs clock
+var controls;           // the threejs controls
+var mouse;              // our handy mouse state object
+var cube;               // our cube world mesh
+var tiles;              // the list of tile meshes and data about them
+var targetList = [];    // the list of tile hit targets for intersecting with mouse
+var currentTiles = [];  // the currently selected tiles
+var lastTile;           // the last tile that was selected
 
 $(function() {
   if (Detector.webgl) {
@@ -39,6 +38,40 @@ $(function() {
     alert(ABSOLUTE_FAIL);
   }
 });
+ 
+function initGraphics()  {
+  var GAME_WIDTH = window.innerWidth/2;
+  var GAME_HEIGHT = window.innerHeight; 
+  var ASPECT = GAME_WIDTH / GAME_HEIGHT;
+  var VIEW_ANGLE = 45;
+  var NEAR = 0.1;
+  var FAR = 20000;
+
+  mouse = { x: 0, y: 0, lClicked: false, rClicked: false};
+  scene = new THREE.Scene();
+  projector = new THREE.Projector();
+  clock = new THREE.Clock();
+  camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+  camera.position.set(0,150,400);
+  camera.lookAt(scene.position);
+  scene.add(camera);
+  renderer = new THREE.WebGLRenderer( {antialias:true} );
+  renderer.setSize(GAME_WIDTH, GAME_HEIGHT);
+  document.getElementById('graphics').appendChild(renderer.domElement);
+  THREEx.WindowResize(renderer, camera);
+  controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+  var light = new THREE.PointLight(0xffffff);
+  light.position.set(0,250,0);
+  scene.add(light);
+  var ambientLight = new THREE.AmbientLight(0x111111);
+  scene.add(ambientLight);
+
+  createParticleSystems(scene, camera);
+
+  document.addEventListener( 'mousedown', mouseDown, false );
+  document.addEventListener( 'mousemove', mouseMove, false );
+}
 
 function initGame(game) {
   $('#lobbyButtons').fadeOut();
@@ -54,39 +87,6 @@ function initGame(game) {
   scoreboard.update(game.players);
   startTimer(new Date(game.startTime).getTime(), game.settings.roundTime);
   addCube(game.settings, game.tiles);
-}
- 
-function initGraphics()  {
-  var GAME_WIDTH = window.innerWidth/2;
-  var GAME_HEIGHT = window.innerHeight; 
-  var ASPECT = GAME_WIDTH / GAME_HEIGHT;
-  var VIEW_ANGLE = 45;
-  var NEAR = 0.1;
-  var FAR = 20000;
-
-  scene = new THREE.Scene();
-  projector = new THREE.Projector();
-  camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
-  camera.position.set(0,150,400);
-  camera.lookAt(scene.position);
-  scene.add(camera);
-  renderer = new THREE.WebGLRenderer( {antialias:true} );
-  renderer.setSize(GAME_WIDTH, GAME_HEIGHT);
-  container = document.getElementById('graphics');
-  container.appendChild( renderer.domElement );
-  THREEx.WindowResize(renderer, camera);
-  controls = new THREE.OrbitControls( camera, renderer.domElement );
-
-  var light = new THREE.PointLight(0xffffff);
-  light.position.set(0,250,0);
-  scene.add(light);
-  var ambientLight = new THREE.AmbientLight(0x111111);
-  scene.add(ambientLight);
-
-  createParticleSystems(scene, camera);
-
-  document.addEventListener( 'mousedown', mouseDown, false );
-  document.addEventListener( 'mousemove', mouseMove, false );
 }
 
 function addCube(settings, inputTiles) {
@@ -195,7 +195,8 @@ function mouseMove(event)  {
 function mouseDown(event)  {
   if (event.button == 1) {
     return;
-  } if (event.button == 2) {
+  }
+  if (event.button == 2) {
     mouse.rClicked = true;
     document.addEventListener( 'mouseup', mouseUp, false );
     return;
@@ -208,7 +209,8 @@ function mouseDown(event)  {
 function mouseUp(event) {
   if (event.button == 1) {
     return;
-  } if (event.button == 2) {
+  }
+  if (event.button == 2) {
     mouse.rClicked = false;
     return;
   }
@@ -375,59 +377,30 @@ function showGameList(data) {
       var game = games[i];
       
       $('<tr/>', {
-      id: game.id,
-      class: 'gameLobbyRow'
-    }).appendTo($('#gameListBody'));
-
+        id: game.id,
+        class: 'gameLobbyRow'
+      }).appendTo($('#gameListBody'));
 
       var thisGame = $('#'+game.id);
 
-    $('<button/>',{
-      text: 'Join',
-      class: 'btn btn-primary',
-      onclick: 'joinGame(\''+game.id+'\', '+game.password+');'
-    }).appendTo($(thisGame));
+      $('<button/>',{
+        text: 'Join',
+        class: 'btn btn-primary',
+        onclick: 'joinGame(\''+game.id+'\', '+game.password+');'
+      }).appendTo(thisGame);
 
-    $('<td/>',{
-      text: game.name,
-      class: 'gameName'
-    }).appendTo($(thisGame));
-    $('<td/>', {
-      text: game.gridSize +'x'+game.gridSize,
-      class: 'gameGridSize',
-    }).appendTo($(thisGame));
-    $('<td/>', {
-      text: game.currentPlayers + '/'+game.maxPlayers + ' Players',
-      class: 'gamePlayers',
-    }).appendTo($(thisGame));
-
-      // $('<li/>', {
-      //   id: 'join'+game.id,
-      //   class: 'gameListRow'
-      // }).appendTo(gameListDiv);
-
-      // var thisGame = $('#join'+game.id);
-
-      // $('<button/>',{
-      //   text: 'Join',
-      //   class: 'btn btn-primary',
-      //   onclick: 'joinGame(\''+game.id+'\', '+game.password+');'
-      // }).appendTo(thisGame);
-
-      // $('<span/>', {
-      //   text: ' '+game.name,
-      //   class: 'gameName',
-      // }).appendTo(thisGame);
-
-      // $('<span/>', {
-      //   text: ' ---- '+(game.currentPlayers + '/'+game.maxPlayers + ' Players'),
-      //   class: 'gamePlayers',
-      // }).appendTo(thisGame);
-
-      // $('<span/>', {
-      //   text: ' ---- '+game.gridSize +'x'+game.gridSize,
-      //   class: 'gameGridSize',
-      // }).appendTo(thisGame);
+      $('<td/>',{
+        text: game.name,
+        class: 'gameName'
+      }).appendTo(thisGame);
+      $('<td/>', {
+        text: game.gridSize +'x'+game.gridSize,
+        class: 'gameGridSize',
+      }).appendTo(thisGame);
+      $('<td/>', {
+        text: game.currentPlayers + '/'+game.maxPlayers + ' Players',
+        class: 'gamePlayers',
+      }).appendTo(thisGame);
     }
     $('#joinGameModal').modal('show');
   } else {
@@ -538,21 +511,17 @@ function setupWebSockets() {
 function animate() {
   requestAnimationFrame(animate);
   renderParticles();
-  render();
+  renderer.render(scene, camera);
   update();
 }
 
 function update() {
-  // delta = change in time since last call (in seconds)
   var delta = clock.getDelta(); 
-
   if (mouse.x !== -2) {
     var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
     projector.unprojectVector( vector, camera );
     var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
-
     var intersects = ray.intersectObjects( targetList );
-
     if ( intersects.length > 0) {
       var tile = intersects[0].object.__tile_data.num;
       if (mouse.lClicked && !mouse.rClicked && tile != lastTile) {
@@ -564,9 +533,7 @@ function update() {
       }
     }
   }
-    
   controls.update();
-  // stats.update();
 }
 
 function updateTile(tile, letter, owner) {
@@ -596,14 +563,9 @@ function colorTile(tile, color) {
   }
   var faces = tiles[tile].faces;
   for (var i in faces) {
-    // console.log('coloring tile',tile,color,i);
     faces[i].color.setRGB(color.r,color.g,color.b);
   }
   tiles[tile].geometry.colorsNeedUpdate = true;
-}
-
-function render() { 
-  renderer.render( scene, camera );
 }
 
 function updateWordDisplay(tileNums) {
@@ -618,7 +580,7 @@ function updateWordDisplay(tileNums) {
 
 function startTimer(startTime, roundTime) {
   $('#timer > #time').text((roundTime/1000) - 1);
-  intervalId = setInterval(function () {
+  timerIntervalId = setInterval(function () {
     currentTime = new Date().getTime();
     if ((currentTime - startTime) >= roundTime) {
       stopTimer();
@@ -631,5 +593,5 @@ function startTimer(startTime, roundTime) {
 function stopTimer() {
   //hide the timer
   $('#timer').fadeOut();
-  clearInterval(intervalId);
+  clearInterval(timerIntervalId);
 }
