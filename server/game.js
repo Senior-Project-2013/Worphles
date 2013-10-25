@@ -36,7 +36,7 @@ var AWARD_NAMES = {
   worsttiles: "Least Tiles",
   worstacquisitions: "Dora the Explorer",
   worststeals: "Cop",
-  worstlosses: "Passifist",
+  worstlosses: "Pacifist",
   worstreinforcements : "Traitor",
   worstlongestWord: "Shorty"
 };
