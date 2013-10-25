@@ -197,9 +197,9 @@ function TileGraphicsSettings(tilesPerRow, tileSize) {
   cubeTexture.wrapS = cubeTexture.wrapT = THREE.RepeatWrapping;
   cubeTexture.repeat.set(this.tilesPerRow, this.tilesPerRow);
   var cubeMaterial = new THREE.MeshBasicMaterial({map:cubeTexture});
-  var cube = new THREE.Mesh(cubeGeometry.clone(), cubeMaterial);
+  cube = new THREE.Mesh(cubeGeometry.clone(), cubeMaterial);
   cube.position.set(0, 0, 0);
-  scene.add(cube);    
+  scene.add(cube);
 
   var floorTexture = new THREE.ImageUtils.loadTexture( 'client/images/tile.png' );
   floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
@@ -394,7 +394,7 @@ function createGame() {
   var password = gamePasswordInput.val();
   var size = gameBoardSizeInput.val();
   var players = gameNumPlayersInput.val();
-  var length = gameNumPlayersInput.val();
+  var length = gameLengthInput.val();
 
   if (name && size && players && length) {
     var newGame = {name: name, password: password, size: size, maxPlayers: players, time: length};
@@ -554,8 +554,12 @@ function setupWebSockets() {
   });
 
   socket.on('gameOver', function(data) {
+    scene.remove(cube);
     $('#timer').fadeOut();
     console.log("GAME OVER");
+    for (var i = 0; i < targetList.length; i++) {
+      scene.remove(targetList[i]);
+    };
   });
 
   socket.on('stillhere?', function(data, callback) {
