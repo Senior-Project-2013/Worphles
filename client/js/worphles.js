@@ -22,9 +22,7 @@ $(function() {
     animate();
   } else {
     $('body').css('backgroundImage','url(/client/images/failure.jpg)');
-    $('#everything').fadeOut(function() {
-      alert('Sorry, your computer isn\'t shiny enough so you can\'t play this game');
-    });
+    $('#everything').fadeOut();
   }
 });
 
