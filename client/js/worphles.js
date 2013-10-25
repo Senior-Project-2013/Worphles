@@ -3,7 +3,6 @@ var X_AXIS = new THREE.Vector3(1,0,0);
 var Y_AXIS = new THREE.Vector3(0,1,0);
 var Z_AXIS = new THREE.Vector3(0,0,1);
 var NINETY_DEG = 90*Math.PI/180;
-var ABSOLUTE_FAIL = 'Sorry, your browser does not support WebGL...\nYou won\'t be able to play this game :(';
 
 // game logic and communication
 var socket;           // the socket.io socket for communicating with the server
@@ -35,7 +34,10 @@ $(function() {
     initGraphics();
     animate();
   } else {
-    alert(ABSOLUTE_FAIL);
+    $('body').css('backgroundImage','url(/client/images/failure.jpg)');
+    $('#everything').fadeOut(function() {
+      alert('Sorry, your computer isn\'t shiny enough so you can\'t play this game');
+    });
   }
 });
  
