@@ -3,14 +3,9 @@ var pathValidator = require('./path_validator.js');
 var cubeGrid = require('./cube_grid').getGrid();
 var _ = require('underscore');
 
-/**
- * game psuedo constants
- */
-
 // all time is in milliseconds
 var MS_PER_SEC = 1000;
 var MS_PER_MIN = MS_PER_SEC * 60;
-
 var DEFAULTS = {
   ROUND_TIME: (180 * MS_PER_SEC),
   MAX_PLAYERS: 2,
@@ -18,7 +13,6 @@ var DEFAULTS = {
   NAME: 'Worphles',
   PASSWORD: ''
 };
-
 var GAME_LENGTHS = [(60 * MS_PER_SEC), (180 * MS_PER_SEC), (300 * MS_PER_SEC)];
 var GRID_SIZES = [4, 6, 8];
 var MAX_PLAYERS = [2, 3, 4, 5, 6];
@@ -32,27 +26,15 @@ var COLORS = {
   YELLOW: new Color(249/255, 206/255, 55/255)
 };
 
-
-/**
- * Create a new Color
- */
 function Color(r,g,b) {
   this.r = r;
   this.g = g;
   this.b = b;
 };
-
-/**
- * Returns a 'random' color
- */
 Color.randomColor = function(i) {
   return COLORS[Object.keys(COLORS)[i%Object.keys(COLORS).length]];
 };
 
-
-/**
- * Our Player object
- */
 function Player(id, socket, name, color, score, safe) {
   this.id = id;
   this.socket = socket;
@@ -67,35 +49,18 @@ function Player(id, socket, name, color, score, safe) {
   }
 };
 
-
-/**
- * Create a new tile 
- */
 function Tile(letter) {
   this.letter = letter;
   this.owner = null;
-  this.strength = null; //not needed yet
-  
-  /**
-   * Randomize this tile's letter.
-   */
+  this.strength = null;
   this.randomize = function() {
     this.letter = Tile.randomLetter();
   };
 };
-
-
-/**
- * Returns a random letter.
- */
 Tile.randomLetter = function() {
   return dictionary.makeLetter();
 };
 
-
-/**
- * Game Settings 
- */
 function Settings(roundTime, maxPlayers, gridSize, name, password) {
   this.roundTime = GAME_LENGTHS[roundTime] || DEFAULTS.ROUND_TIME;
   this.maxPlayers = MAX_PLAYERS[maxPlayers] || DEFAULTS.MAX_PLAYERS;
@@ -104,16 +69,11 @@ function Settings(roundTime, maxPlayers, gridSize, name, password) {
   this.password = password || DEFAULTS.PASSWORD;
 };
 
-
-/**
- * Instance of a Game
- */
 function Game(hostPlayer, settings) {
   this.started = false;
   this.startTime = null;
   this.id = hostPlayer.id;
   this.settings = settings || new Settings();
-
   this.tiles = [];
   for (var i = 0; i < this.settings.gridSize * this.settings.gridSize * 6; i++) {
     this.tiles.push(new Tile(Tile.randomLetter()));
@@ -251,22 +211,6 @@ function Game(hostPlayer, settings) {
     info.roundTime = this.settings.roundTime;
     return info;
   };
-};
-
-
-/**
- * Public game constructor
- */
-module.exports.newGame = function(players, settings) {
-  return new Game(players, settings);
-};
-
-
-/**
- * Default Game Settings
- */
-module.exports.defaultSettings = function() {
-  return new Settings();
 };
 
 module.exports.Settings = Settings;
