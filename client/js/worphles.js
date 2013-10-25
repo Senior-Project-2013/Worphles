@@ -1,15 +1,10 @@
-/*
-  By: Senior Project Worphle Group
-  - Caleb Gomer
-  - Jeremy Dye
-  - Alex Chau
-  - Erik Kremer
-  - Jordon Biondo
+// constants
+var X_AXIS = new THREE.Vector3(1,0,0);
+var Y_AXIS = new THREE.Vector3(0,1,0);
+var Z_AXIS = new THREE.Vector3(0,0,1);
+var NINETY_DEG = 90*Math.PI/180;
+var ABSOLUTE_FAIL = 'Sorry, your browser does not support WebGL...\nYou won\'t be able to play this game :(';
 
-  Date: September-December 2013
-*/
-
-// the web socket where all the magic happens
 var playerName;
 var scoreboard = new Scoreboard();
 var socket;
@@ -18,54 +13,26 @@ var scene;
 var camera;
 var renderer;
 var controls;
-// var stats;
 var keyboard = new THREEx.KeyboardState();
 var clock = new THREE.Clock();
-// the Worphle World Cube
 var cube;
-// the list of 'hittable' objects for raycasting - currently just tile hitboxes
 var targetList = [];
 var projector;
 var mouse = { x: 0, y: 0 ,lClicked: false, rClicked: false};
 var INTERSECTED;
-var TILES;
-// current game's id
+var tiles;
 var gameId;
-// current player's id
 var me;
-// all players in this game
 var players;
-// timer
 var startTime;
 var intervalId;
-
-// star field
-var starSystems;
-var starSettings = {
-  starCount: 500, //the number of background particles
-  averageParticleSpeed: .3, //lower for faster
-};
-
-// a place to put the currently selected tiles
 var currentTiles = [];
-// the last selected tile
 var lastTile;
 
-// constants
-var X_AXIS = new THREE.Vector3(1,0,0);
-var Y_AXIS = new THREE.Vector3(0,1,0);
-var Z_AXIS = new THREE.Vector3(0,0,1);
-var NINETY_DEG = 90*Math.PI/180;
-
-var ABSOLUTE_FAIL = 'Sorry, your browser does not support WebGL...\nYou won\'t be able to play this game :(';
-
-// startup
 $(function() {
-  // only start the game if the browser/graphics card support WebGL
   if (Detector.webgl) {
     setupWebSockets();
     setupUI();
-    // init the graphics, start animations
     initGraphics();
     animate();
   } else {
@@ -73,9 +40,6 @@ $(function() {
   }
 });
 
-/**
-  Start up the game
-*/
 function initGame(game) {
   $('#lobbyButtons').fadeOut();
   $('#startGameButton').fadeOut();
@@ -84,57 +48,35 @@ function initGame(game) {
   $('#timer').fadeIn();
   $('#myBookContainer').fadeOut();
 
-  // save game id
   gameId = game.id;
-  // players
   me = socket.socket.sessionid;
   players = game.players;
-  // scoreboard
   scoreboard.update(game.players);
   startTimer(new Date(game.startTime).getTime(), game.settings.roundTime);
   addCube(game.settings, game.tiles);
 }
-
-/**
-  Start up the graphics
-*/     
+ 
 function initGraphics()  {
-  // scene
-  scene = new THREE.Scene();
-
-  var SCREEN_WIDTH = window.innerWidth;
-  var SCREEN_HEIGHT = window.innerHeight; 
+  var GAME_WIDTH = window.innerWidth/2;
+  var GAME_HEIGHT = window.innerHeight; 
+  var ASPECT = GAME_WIDTH / GAME_HEIGHT;
   var VIEW_ANGLE = 45;
-  var ASPECT = (SCREEN_WIDTH/2) / SCREEN_HEIGHT;
   var NEAR = 0.1;
   var FAR = 20000;
 
-  // camera
+  scene = new THREE.Scene();
+  projector = new THREE.Projector();
   camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
-  scene.add(camera);
   camera.position.set(0,150,400);
-  camera.lookAt(scene.position);  
-
-  // renderer and container
+  camera.lookAt(scene.position);
+  scene.add(camera);
   renderer = new THREE.WebGLRenderer( {antialias:true} );
-  renderer.setSize(SCREEN_WIDTH/2, SCREEN_HEIGHT);
+  renderer.setSize(GAME_WIDTH, GAME_HEIGHT);
   container = document.getElementById('graphics');
   container.appendChild( renderer.domElement );
-
-  // automatically resize renderer
   THREEx.WindowResize(renderer, camera);
-
-  // set up mouse controls
   controls = new THREE.OrbitControls( camera, renderer.domElement );
-  
-  // some stats
-  // stats = new Stats();
-  // stats.domElement.style.position = 'absolute';
-  // stats.domElement.style.bottom = '0px';
-  // stats.domElement.style.zIndex = 100;
-  // container.appendChild( stats.domElement );
-  
-  // create a light
+
   var light = new THREE.PointLight(0xffffff);
   light.position.set(0,250,0);
   scene.add(light);
@@ -142,32 +84,31 @@ function initGraphics()  {
   scene.add(ambientLight);
 
   createParticleSystems(scene, camera);
-  
-  // initialize object to perform world/screen calculations
-  projector = new THREE.Projector();
 
   document.addEventListener( 'mousedown', mouseDown, false );
   document.addEventListener( 'mousemove', mouseMove, false );
 }
 
-function addCube(settings, tiles) {
-  // the cube magic
-  // graphics settings
+function addCube(settings, inputTiles) {
   var cubeSize = 80;
   var tilesPerRow = settings.gridSize;
   var tileSize = cubeSize / tilesPerRow;
   var gSettings = new TileGraphicsSettings(tilesPerRow, tileSize);
 
-  TILES = new Array(gSettings.tilesPerSide*6);
+  var cubeGeometry = new THREE.CubeGeometry(79.9, 79.9, 79.9, 4, 4, 4);
+  var cubeTexture = new THREE.ImageUtils.loadTexture('client/images/tile.png');
+  cubeTexture.wrapS = cubeTexture.wrapT = THREE.RepeatWrapping;
+  cubeTexture.repeat.set(gSettings.tilesPerRow, gSettings.tilesPerRow);
+  var cubeMaterial = new THREE.MeshBasicMaterial({map:cubeTexture});
+  cube = new THREE.Mesh(cubeGeometry.clone(), cubeMaterial);
+  cube.position.set(0, 0, 0);
+  scene.add(cube);
 
-  // new tiles stuffs!
+  tiles = new Array(gSettings.tilesPerSide*6);
   for (var side = 0; side < 6; side++) {
-    // console.log('side',side);
     for (var row = 0; row < gSettings.tilesPerRow; row++) {
-      // console.log('row',row);
       for (var col = 0; col < gSettings.tilesPerRow; col++) {
         var tileNum = side*gSettings.tilesPerSide + row*gSettings.tilesPerRow + col;
-        // console.log(tileNum);
         var _side = side;
         var _axis = Y_AXIS;
         if (side == 4) {
@@ -177,7 +118,7 @@ function addCube(settings, tiles) {
           _side = -1;
           _axis = X_AXIS;
         }
-        makeTile(_side, _axis, col, row, tileNum, tiles[tileNum].letter, gSettings);
+        makeTile(_side, _axis, col, row, tileNum, inputTiles[tileNum].letter, gSettings);
       }
     }
   }
@@ -189,17 +130,7 @@ function TileGraphicsSettings(tilesPerRow, tileSize) {
   this.tileSize = tileSize,
   this.tilePadding = tileSize*0.25,
   this.hitBoxSize = tileSize*0.75,
-  this.hitBoxStart = 0.5*tileSize*(tilesPerRow%2+1*((tilesPerRow%2)?-1:1)) + Math.floor((tilesPerRow-0.5)/2)*tileSize
-
-  var cubeGeometry = new THREE.CubeGeometry(79.9, 79.9, 79.9, 4, 4, 4);
-
-  var cubeTexture = new THREE.ImageUtils.loadTexture('client/images/tile.png');
-  cubeTexture.wrapS = cubeTexture.wrapT = THREE.RepeatWrapping;
-  cubeTexture.repeat.set(this.tilesPerRow, this.tilesPerRow);
-  var cubeMaterial = new THREE.MeshBasicMaterial({map:cubeTexture});
-  cube = new THREE.Mesh(cubeGeometry.clone(), cubeMaterial);
-  cube.position.set(0, 0, 0);
-  scene.add(cube);
+  this.hitBoxStart = 0.5*tileSize*(tilesPerRow%2+1*((tilesPerRow%2)?-1:1)) + Math.floor((tilesPerRow-0.5)/2)*tileSize;
 
   var floorTexture = new THREE.ImageUtils.loadTexture( 'client/images/tile.png' );
   floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
@@ -254,7 +185,7 @@ function makeTile(side, axis, x, y, num, letter, gSettings) {
 
   var thisTile = new Tile(num, letter, {canvasHeight: canvas.height, canvasWidth: canvas.width, letterContext: context, letterTexture: texture}, null, thisGeometry, thisMaterial);
   tile.__tile_data = thisTile;
-  TILES[num] = thisTile;
+  tiles[num] = thisTile;
 }
 
 function mouseMove(event)  {
@@ -645,30 +576,30 @@ function updateTile(tile, letter, owner) {
 }
 
 function updateTileOwner(tile, owner) {
-  TILES[tile].owner = owner;
+  tiles[tile].owner = owner;
 }
 
 function changeTileLetter(tile, letter) {
-  TILES[tile].letterResources.letterContext.clearRect ( 0,0, TILES[tile].letterResources.canvasWidth, TILES[tile].letterResources.canvasHeight);
-  TILES[tile].letterResources.letterContext.fillText(letter||'0', 100, 130);
-  TILES[tile].letterResources.letterTexture.needsUpdate = true;
-  TILES[tile].letter = letter;
+  tiles[tile].letterResources.letterContext.clearRect ( 0,0, tiles[tile].letterResources.canvasWidth, tiles[tile].letterResources.canvasHeight);
+  tiles[tile].letterResources.letterContext.fillText(letter||'0', 100, 130);
+  tiles[tile].letterResources.letterTexture.needsUpdate = true;
+  tiles[tile].letter = letter;
 }
 
 function colorTile(tile, color) {
   if (!color) {
-    if (TILES[tile].owner) {
-      color = players[TILES[tile].owner].color;
+    if (tiles[tile].owner) {
+      color = players[tiles[tile].owner].color;
     } else {
       color = {r:1,g:1,b:1};
     }
   }
-  var faces = TILES[tile].faces;
+  var faces = tiles[tile].faces;
   for (var i in faces) {
     // console.log('coloring tile',tile,color,i);
     faces[i].color.setRGB(color.r,color.g,color.b);
   }
-  TILES[tile].geometry.colorsNeedUpdate = true;
+  tiles[tile].geometry.colorsNeedUpdate = true;
 }
 
 function render() { 
@@ -679,7 +610,7 @@ function updateWordDisplay(tileNums) {
   var word = '';
 
   for(var i = 0; i < tileNums.length; i++) {
-    word += TILES[tileNums[i]].letter;
+    word += tiles[tileNums[i]].letter;
   }
 
   $('#currentWord').text(word);
