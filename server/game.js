@@ -87,14 +87,14 @@ function Game(hostPlayer, settings) {
   this.players[hostPlayer.id].socket.emit('players', initialPlayer);
 
   this.start = function() {
-    if (this.settings.maxPlayers == Object.keys(this.players).length) {
+    if (this.settings.maxPlayers === Object.keys(this.players).length) {
+      this.started = true;
       this.startTime = new Date();
       var i = 0;
       _.each(this.players, function(player) {
         player.color = Color.randomColor(i);
         i++;
       });
-      this.started = true;
       this.showEveryone('start', this.safeCopy());
       var thisAlias = this;
       this.intervalId = setInterval(function() {

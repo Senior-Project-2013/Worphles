@@ -83,7 +83,8 @@ io.sockets.on('connection', function(socket) {
     if (!games[thisPlayer.id]) {
       return socket.emit('startFail', {message: 'You can\'t start a game unless you\'re the host'});
     }
-    if (!games[thisPlayer.id].start()) {
+    games[thisPlayer.id].start();
+    if (!games[thisPlayer.id].started) {
       return socket.emit('startFail', {message: 'Not enough players to start'});
     }
   });
