@@ -12,7 +12,7 @@ function Scoreboard() {
     $('<li/>', {
       id: 'score'+player.id,
       class: 'scoreRow',
-      score: player.score
+      score: player.score.tiles
     }).css('background-color', getCSSColorFromColor(player.color)).appendTo('#scores');
 
     $('<h1/>', {
@@ -21,15 +21,14 @@ function Scoreboard() {
     }).appendTo('#score'+player.id);
 
     $('<h1/>', {
-      text: player.score,
+      text: player.score.tiles,
       class: 'pull-right scoreValue scoreText'
     }).appendTo('#score'+player.id);
   }
 
   this.updateScoreDisplay = function(id, score) {
-    console.log('updating score display');
-    $("#score" + id + " .scoreValue").text(score);
-    $("#score" + id).attr({score: score});
+    $("#score" + id + " .scoreValue").text(score.tiles);
+    $("#score" + id).attr({score: score.tiles});
     this.resort();
   }
 

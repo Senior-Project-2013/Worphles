@@ -136,7 +136,6 @@ function createGame() {
 
   if (name && size && players && length) {
     var newGame = {name: name, password: password, size: size, maxPlayers: players, time: length};
-    console.log(newGame);
     socket.emit('createGame', newGame);
   }
   // stops the form from submitting if being called from HTML form

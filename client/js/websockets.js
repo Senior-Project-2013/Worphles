@@ -59,12 +59,41 @@ function initWebsockets() {
   });
 
   socket.on('gameOver', function(data) {
-    scene.remove(cube);
     $('#timer').fadeOut();
-    console.log("GAME OVER");
+    scene.remove(cube);
     for (var i = 0; i < targetList.length; i++) {
       scene.remove(targetList[i]);
     };
+    for(var i = 0; i < Object.keys(data.scores).length; i++) {
+      var playerId = Object.keys(data.scores)[i];
+      players[playerId].score = data.scores[playerId];
+      scoreboard.updateScoreDisplay(playerId, data.scores[playerId]);
+    }
+    var awardsBody = $('#awardsBody');
+    awardsBody.empty();
+    for (var i = 0; i < Object.keys(data.awards).length; i++) {
+      var key = Object.keys(data.awards)[i];
+      var award = data.awards[key];
+      
+      $('<tr/>', {
+        id: key,
+        class: 'awardRow'
+      }).appendTo(awardsBody);
+      var thisAward = $('#'+key);
+      $('<td/>',{
+        text: award.name,
+        class: 'awardName'
+      }).appendTo(thisAward);
+      // $('<td/>', {
+      //   text: award.value,
+      //   class: 'awardValue'
+      // }).appendTo(thisAward);
+      $('<td/>', {
+        text: players[award.player].name,
+        class: 'awardPlayer'
+      }).appendTo(thisAward);
+    }
+    $('#endGameModal').modal('show');
   });
 
   socket.on('stillhere?', function(data, callback) {
@@ -72,14 +101,12 @@ function initWebsockets() {
   });
 
   socket.on('successfulMove', function(data) {
-    console.log('successfulMove',data);
     for (var i in data) {
       updateTile(i, data[i].letter, data[i].owner);
     }
   });
 
   socket.on('unsuccessfulMove', function(data) {
-    console.log('unsuccessfulMove',data);
     for (var i in data) {
       colorTile(data[i]);
     }
@@ -89,18 +116,16 @@ function initWebsockets() {
     colorTile(data.tile, players[data.player].color);
   });
 
-
   socket.on('chat', function(data) {
     console.log('got chat');
     showChat(data.player, data.message);
   });
 
-  socket.on('scoreboardUpdate', function(data) {
-    for(var i = 0; i < Object.keys(data).length; i++) {
-      console.log(data);
-      var playerId = Object.keys(data)[i];
-      players[playerId].score = data[playerId].score;
-      scoreboard.updateScoreDisplay(playerId, data[playerId]);
+  socket.on('scoreboardUpdate', function(scores) {
+    for(var i = 0; i < Object.keys(scores).length; i++) {
+      var playerId = Object.keys(scores)[i];
+      players[playerId].score = scores[playerId];
+      scoreboard.updateScoreDisplay(playerId, scores[playerId]);
     }
   });
 }

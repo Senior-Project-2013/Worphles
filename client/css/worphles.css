@@ -103,3 +103,7 @@ body {
   color: white;
   z-index: 5;
 }
+
+#awardName {
+  padding-right: 1em;
+}

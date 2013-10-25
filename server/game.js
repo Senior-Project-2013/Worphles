@@ -26,6 +26,21 @@ var COLORS = {
   YELLOW: new Color(249/255, 206/255, 55/255)
 };
 
+var AWARD_NAMES = {
+  tiles: "Most Tiles",
+  acquisitions: "Colonialist",
+  steals: "Thief",
+  losses: "Loser",
+  reinforcements : "Hermit",
+  longestWord: "Longfellow",
+  worsttiles: "Least Tiles",
+  worstacquisitions: "Dora the Explorer",
+  worststeals: "Cop",
+  worstlosses: "Passifist",
+  worstreinforcements : "Traitor",
+  worstlongestWord: "Shorty"
+};
+
 function Color(r,g,b) {
   this.r = r;
   this.g = g;
@@ -35,12 +50,21 @@ Color.randomColor = function(i) {
   return COLORS[Object.keys(COLORS)[i%Object.keys(COLORS).length]];
 };
 
+function Score(tiles, acquisitions, steals, losses, reinforcements, longestWord) {
+  this.tiles = tiles || 0;
+  this.acquisitions = acquisitions || 0;
+  this.steals = steals || 0;
+  this.losses = losses || 0;
+  this.reinforcements = reinforcements || 0;
+  this.longestWord = longestWord || -1;
+};
+
 function Player(id, socket, name, color, score, safe) {
   this.id = id;
   this.socket = socket;
   this.color = color;
   this.name = name;
-  this.score = score || 0;
+  this.score = score || new Score();
 
   if (!safe) {
     this.safeCopy = function() {
@@ -100,29 +124,28 @@ function Game(hostPlayer, settings) {
       this.intervalId = setInterval(function() {
         var currentTime = new Date();
         if ((currentTime - thisAlias.startTime) >= thisAlias.settings.roundTime) {
-          thisAlias.showEveryone('gameOver', thisAlias.safeCopy());
+          thisAlias.showEveryone('gameOver', {scores: thisAlias.getPlayerScores(), awards: thisAlias.getEndingAwards()});
           clearInterval(thisAlias.intervalId);
         }
       }, 1000);
       return true;
     } else {
-      console.log('can\'t start, not enough players');
       return false;
     }
   };
 
   this.addPlayer = function(player, password) {
     if (this.settings.password !== password) {
-      return console.log('wrong password');
+      return false;
     }
     if (Object.keys(this.players).length >= this.settings.maxPlayers) {
-      return console.log('game already full');
+      return false;
     } 
     if (this.started) {
-      return console.log('game already started');
+      return false;
     }
     if (this.players[player.id]) {
-      return console.log('already in game');
+      return false;
     }
     this.players[player.id] = player;
     this.players[player.id].color = Color.randomColor(Object.keys(this.players).length-1);
@@ -143,22 +166,61 @@ function Game(hostPlayer, settings) {
     return scores;
   };
 
+  this.getEndingAwards = function() {
+    var awards = {};
+    _.each(this.players, function(player) {
+      _.each(player.score, function(value, key) {
+        if (!awards[key]) {
+          awards[key] = {player: player.id, value: value};
+        } else if (value > awards[key].value) {
+          awards[key].player = player.id;
+          awards[key].value = value;
+        }
+        if (!awards["worst"+key]) {
+          awards["worst"+key] = {player: player.id, value: value};
+        } else if (value < awards[key].value) {
+          awards["worst"+key].player = player.id;
+          awards["worst"+key].value = value;
+        }
+      });
+    });
+    _.each(awards, function(award, key) {
+      award.name = AWARD_NAMES[key];
+    });
+    return awards;
+  };
+
   this.tileUpdate = function(id, tiles) {
+    var newOwner = this.players[id];
+    if (newOwner.score.longestWord < tiles.length) {
+      newOwner.score.longestWord = tiles.length;
+    }
     var newTiles = {};
     for (var i = 0; i < tiles.length; i++) {
       var newLetter = Tile.randomLetter();
       var tileToUpdate = this.tiles[tiles[i]];
+
       var oldOwner = this.players[tileToUpdate.owner];
-      var newOwner = this.players[id];
+      if (oldOwner && oldOwner.id) {
+        if (oldOwner.id === newOwner.id) {
+          // used your own tile
+          // increase tile strength if we implement that
+          newOwner.score.reinforcements++;
+        } else {
+          // stole a tile
+          oldOwner.score.tiles--;
+          newOwner.score.tiles++;
+          oldOwner.score.losses++;
+          newOwner.score.steals++;
+        }
+      } else {
+        // got an unused tile
+        newOwner.score.tiles++;
+        newOwner.score.acquisitions++;
+      }
       tileToUpdate.owner = id;
-
-      if(oldOwner)
-        oldOwner.score--;
-      if(newOwner)
-        newOwner.score++;
-
       tileToUpdate.letter = newLetter;
-      newTiles[tiles[i]] = {letter: newLetter, owner: id};
+      newTiles[tiles[i]] = {owner: id, letter: newLetter};
     }
     return newTiles;
   };
