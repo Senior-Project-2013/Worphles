@@ -83,6 +83,7 @@ function initGame(game) {
   $('#chatInput').fadeIn();
   $('#scoreboard').fadeIn();
   $('#timer').fadeIn();
+  $('#myBookContainer').fadeOut();
 
   // save game id
   gameId = game.id;
@@ -690,6 +691,7 @@ function startTimer(startTime, roundTime) {
 }
 
 function stopTimer() {
+  //hide the timer
   $('#timer').fadeOut();
   clearInterval(intervalId);
 }
