@@ -23,9 +23,9 @@ app.use('/webui', express.static(__dirname + '/webui'));
 app.use('/client', express.static(__dirname + '/client'));
 
 // serve the main game html file
-app.get('/play', function(req, res) { res.sendfile(__dirname+'/client/worphles.html'); });
+app.get('/', function(req, res) { res.sendfile(__dirname+'/client/worphles.html'); });
 
-app.get('/', function(req, res) { res.sendfile(__dirname+'/webui/Home.html'); });
+app.get('/play', function(req, res) { res.sendfile(__dirname+'/webui/Home.html'); });
 
 // set the max number of players
 app.get('/maxPlayers/:num', function(req, res) {
@@ -89,6 +89,7 @@ io.sockets.on('connection', function(socket) {
     if (!thisPlayer) {
       return socket.emit('nameFail');
     }
+    console.log(data);
 
     var name = data && data.name;
     var password = data && data.password;

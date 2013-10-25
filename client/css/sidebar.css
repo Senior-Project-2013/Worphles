@@ -19,8 +19,8 @@
 .chatRow {
   list-style: none;
   border-radius: 5px;
-  border-style: solid;
-  border-width: 1px;
+  /*border-style: solid;
+  border-width: 1px;*/
   min-height: 1em;
 }
 
