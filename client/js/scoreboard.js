@@ -1,6 +1,8 @@
 function Scoreboard() {
 
-  this.init = function(players) {
+  this.update = function(players) {
+    $('#scores').empty();
+
     this.players = players ? players : {};
 
     for(var i = 0; i < Object.keys(players).length; i++) {

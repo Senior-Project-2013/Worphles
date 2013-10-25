@@ -5,6 +5,7 @@
   border-width: 1px;
   height: 5em;
   padding: 5%;
+  word-wrap: break-word;
 }
 
 .scoreText {
@@ -25,4 +26,9 @@
 
 #chatBar {
   display: none;
+}
+
+#messages {
+  height: 80%;
+  overflow-y: auto;
 }

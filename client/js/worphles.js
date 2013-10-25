@@ -81,7 +81,6 @@ function initGame(game) {
   $('#startGameButton').fadeOut();
   $('#currentWord').fadeIn();
   $('#chatInput').fadeIn();
-  $('#scoreboard').fadeIn();
   $('#timer').fadeIn();
   $('#myBookContainer').fadeOut();
 
@@ -91,7 +90,7 @@ function initGame(game) {
   me = socket.socket.sessionid;
   players = game.players;
   // scoreboard
-  scoreboard.init(game.players);
+  scoreboard.update(game.players);
   startTimer(new Date(game.startTime).getTime(), game.settings.roundTime);
   addCube(game.settings, game.tiles);
 }
@@ -423,6 +422,7 @@ function sendChat(chat) {
 function showChat(player, message) {
   console.log('show chat',player,message);
   $('#messages').append('<div class="chatRow" style=background-color:'+getCSSColorFromColor(players[player].color)+'>'+players[player].name+': '+message+'</div>');
+  $('#messages').scrollTop($('#messages')[0].scrollHeight);
 }
 
 function getCSSColorFromColor(color) {
@@ -526,6 +526,7 @@ function setupWebSockets() {
     $('#lobbyButtons').fadeOut();
     $('#startGameButton').fadeIn();
     $('#chatBar').fadeIn();
+    $('#scoreboard').fadeIn();
   });
 
   socket.on('startFail', function(data) {
@@ -539,6 +540,7 @@ function setupWebSockets() {
     $('#joinGameModal').modal('hide');
     $('#lobbyButtons').fadeOut();
     $('#chatBar').fadeIn();
+    $('#scoreboard').fadeIn();
   });
 
   socket.on('deniedGame', function(data) {
@@ -548,6 +550,7 @@ function setupWebSockets() {
   socket.on('players', function(thePlayers) {
     me = socket.socket.sessionid;
     players = thePlayers;
+    scoreboard.update(thePlayers);
   });
 
   socket.on('start', function(game) {
