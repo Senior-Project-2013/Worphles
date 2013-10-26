@@ -276,7 +276,12 @@ function Game(hostPlayer, settings) {
   };
 };
 
-module.exports.Settings = Settings;
-module.exports.Game = Game;
-module.exports.Player = Player;
-module.exports.DEFAULTS = DEFAULTS;
+/**
+ * Exports
+ */
+module.exports = {
+  Settings: Settings,
+  Game: Game,
+  Player: Player,
+  DEFAULTS: DEFAULTS
+};
