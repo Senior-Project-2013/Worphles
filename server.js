@@ -60,11 +60,13 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('createGame', function(data) {
     if (!thisPlayer) {
-      return socket.emit('createFail', {message: 'Please refresh your browser'});
+      socket.emit('createFail', {message: 'Please refresh your browser'});
+      return;
     }
     var name = data && data.name;
     if (!name) {
-      return socket.emit('createFail', {message: 'The game needs a name'});
+      socket.emit('createFail', {message: 'The game needs a name'});
+      return;
     }
     var password = data && data.password;
     var size = data && data.size;
@@ -79,14 +81,17 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('startGame', function(data) {
     if (!(thisPlayer && thisPlayer.id)) {
-      return socket.emit('fail');
+      socket.emit('fail');
+      return;
     }
     if (!games[thisPlayer.id]) {
-      return socket.emit('startFail', {message: 'You can\'t start a game unless you\'re the host'});
+      socket.emit('startFail', {message: 'You can\'t start a game unless you\'re the host'});
+      return;
     }
     games[thisPlayer.id].start();
     if (!games[thisPlayer.id].started) {
-      return socket.emit('startFail', {message: 'Not enough players to start'});
+      socket.emit('startFail', {message: 'Not enough players to start'});
+      return;
     }
   });
 
