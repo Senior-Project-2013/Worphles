@@ -127,15 +127,17 @@ function createGame() {
   var gameBoardSizeInput = $('#gameBoardSizeInput');
   var gameNumPlayersInput = $('#gameNumPlayersInput');
   var gameLengthInput = $('#gameLengthInput');
+  var gameAllowHackingInput = $('#allowHackingInput');
 
   var name = gameNameInput.val();
   var password = gamePasswordInput.val();
   var size = gameBoardSizeInput.val();
   var players = gameNumPlayersInput.val();
   var length = gameLengthInput.val();
+  var hackable = gameAllowHackingInput.prop('checked');
 
   if (name && size && players && length) {
-    var newGame = {name: name, password: password, size: size, maxPlayers: players, time: length};
+    var newGame = {name: name, password: password, size: size, maxPlayers: players, time: length, hackable: hackable};
     socket.emit('createGame', newGame);
   }
   // stops the form from submitting if being called from HTML form

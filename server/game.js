@@ -11,11 +11,12 @@ var DEFAULTS = {
   MAX_PLAYERS: 2,
   GRID_SIZE: 4,
   NAME: 'Worphles',
-  PASSWORD: ''
+  PASSWORD: '',
+  HACKABLE: false
 };
 var GAME_LENGTHS = [(60 * MS_PER_SEC), (180 * MS_PER_SEC), (300 * MS_PER_SEC)];
-var GRID_SIZES = [4, 5, 10];
-var MAX_PLAYERS = [2, 3, 4, 5, 20];
+var GRID_SIZES = [4, 5, 6, 7, 8];
+var MAX_PLAYERS = [2, 3, 4, 5, 6, 25];
 
 var COLORS = {
   TURQUOISE: new Color(110/255, 177/255, 146/255),
@@ -85,12 +86,13 @@ Tile.randomLetter = function() {
   return dictionary.makeLetter();
 };
 
-function Settings(roundTime, maxPlayers, gridSize, name, password) {
+function Settings(roundTime, maxPlayers, gridSize, name, password, hackable) {
   this.roundTime = GAME_LENGTHS[roundTime] || DEFAULTS.ROUND_TIME;
   this.maxPlayers = MAX_PLAYERS[maxPlayers] || DEFAULTS.MAX_PLAYERS;
   this.gridSize = GRID_SIZES[gridSize] || DEFAULTS.GRID_SIZE;
   this.name = name || DEFAULTS.NAME;
   this.password = password || DEFAULTS.PASSWORD;
+  this.hackable = hackable || DEFAULTS.HACKABLE;
 };
 
 function Game(hostPlayer, settings) {
@@ -111,27 +113,23 @@ function Game(hostPlayer, settings) {
   this.players[hostPlayer.id].socket.emit('players', initialPlayer);
 
   this.start = function() {
-    // if (this.settings.maxPlayers === Object.keys(this.players).length) {
-      this.started = true;
-      this.startTime = new Date();
-      var i = 0;
-      _.each(this.players, function(player) {
-        player.color = Color.randomColor(i);
-        i++;
-      });
-      this.showEveryone('start', this.safeCopy());
-      var thisAlias = this;
-      this.intervalId = setInterval(function() {
-        var currentTime = new Date();
-        if ((currentTime - thisAlias.startTime) >= thisAlias.settings.roundTime) {
-          thisAlias.showEveryone('gameOver', {scores: thisAlias.getPlayerScores(), awards: thisAlias.getEndingAwards()});
-          clearInterval(thisAlias.intervalId);
-        }
-      }, 1000);
-      return true;
-    // } else {
-    //   return false;
-    // }
+    this.started = true;
+    this.startTime = new Date();
+    var i = 0;
+    _.each(this.players, function(player) {
+      player.color = Color.randomColor(i);
+      i++;
+    });
+    this.showEveryone('start', this.safeCopy());
+    var thisAlias = this;
+    this.intervalId = setInterval(function() {
+      var currentTime = new Date();
+      if ((currentTime - thisAlias.startTime) >= thisAlias.settings.roundTime) {
+        thisAlias.showEveryone('gameOver', {scores: thisAlias.getPlayerScores(), awards: thisAlias.getEndingAwards()});
+        clearInterval(thisAlias.intervalId);
+      }
+    }, 1000);
+    return true;
   };
 
   this.addPlayer = function(player, password) {
@@ -253,6 +251,9 @@ function Game(hostPlayer, settings) {
   };
 
   this.chat = function(player, message) {
+    if (!this.settings.hackable && JSON.stringify(message).indexOf('<script>') !== -1) {
+      message = 'Just tried to hack everyone. Shame them.';
+    }
     this.showEveryone('chat', {player: player, message: message});
   };
 

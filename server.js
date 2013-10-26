@@ -70,7 +70,8 @@ io.sockets.on('connection', function(socket) {
     var size = data && data.size;
     var maxPlayers = data && data.maxPlayers;
     var time = data && data.time;
-    var gameSettings = new Game.Settings(time, maxPlayers, size, name, password);
+    var hackable = data && data.hackable;
+    var gameSettings = new Game.Settings(time, maxPlayers, size, name, password, hackable);
     var game = new Game.Game(thisPlayer, gameSettings);
     games[game.id] = game;
     socket.emit('gameCreated', {id: game.id});
@@ -91,5 +92,5 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('moveComplete', function(data) { games[data.game].validateWord(socket.id, data.tiles); });
   socket.on('partialMove', function(data) { games[data.game].showPartialMove(data); });
-  socket.on('chat', function(data) { games[data.game].chat(socket.id, JSON.stringify(data.message)); });
+  socket.on('chat', function(data) { games[data.game].chat(socket.id, data.message); });
 });
