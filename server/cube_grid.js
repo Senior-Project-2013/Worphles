@@ -291,6 +291,22 @@ function autogenerateRelationsFile(size, filename, min) {
 	       });
 }
 
+/**
+ * Precomputed cube grids
+ */
+var singleGrids = [];
+
+/**
+ * Get precomputed grid
+ */
+function getGrid(size) {
+  if (singleGrids[size]) {
+    return singleGrids[size];
+  } else {
+    singleGrids[size] = new CubeGrid(size);
+    return singleGrids[size];
+  }
+};
 
 
 /**
@@ -305,15 +321,8 @@ module.exports = {
   CubeGrid: CubeGrid,
   applyTransform: applyTransform,
   autogenerateRelations: autogenerateRelations,
-  autogenerateRelationsFile: autogenerateRelationsFile
+  autogenerateRelationsFile: autogenerateRelationsFile,
+  getGrid: getGrid
 };
 
-var singleGrids = [];
-module.exports.getGrid = function(size) {
-  if (singleGrids[size]) {
-    return singleGrids[size];
-  } else {
-    singleGrids[size] = new CubeGrid(size);
-    return singleGrids[size];
-  }
-};
+
