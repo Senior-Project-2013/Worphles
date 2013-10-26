@@ -145,13 +145,13 @@ function createGame() {
 }
 
 function sendChat(chat) {
-  if (chat) {
-    socket.emit('chat', {game:gameId, message:chat});
-  } else if (chat === undefined) {
+  if (chat === undefined) {
     chat = $('#chatInput').val();
-    if (chat) {
-      socket.emit('chat', {game:gameId, message:chat});
-    }
+  }
+  if (chat) {
+    chat = chat.replace('nyan','<img src="http://wiki.teamfortress.com/w/images/c/cf/User_Nyan_Cat.gif?t=20110606144207"></img>');
+    chat = chat.replace('fox','<img src="http://2-ps.googleusercontent.com/x/www.thehollywoodgossip.com/images.thehollywoodgossip.com/iu/t_medium_l/v1378552561/what-does-the-fox-say.gif.pagespeed.ce.MDGrwTOrNe.gif"></img>');
+    socket.emit('chat', {game:gameId, message:chat});
   }
   $('#chatInput').val('');
   // stops the form from submitting if being called from HTML form
