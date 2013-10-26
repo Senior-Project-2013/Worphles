@@ -14,8 +14,8 @@ var DEFAULTS = {
   PASSWORD: ''
 };
 var GAME_LENGTHS = [(60 * MS_PER_SEC), (180 * MS_PER_SEC), (300 * MS_PER_SEC)];
-var GRID_SIZES = [4, 6, 8];
-var MAX_PLAYERS = [2, 3, 4, 5, 6];
+var GRID_SIZES = [4, 5, 10];
+var MAX_PLAYERS = [2, 3, 4, 5, 20];
 
 var COLORS = {
   TURQUOISE: new Color(110/255, 177/255, 146/255),
@@ -111,7 +111,7 @@ function Game(hostPlayer, settings) {
   this.players[hostPlayer.id].socket.emit('players', initialPlayer);
 
   this.start = function() {
-    if (this.settings.maxPlayers === Object.keys(this.players).length) {
+    // if (this.settings.maxPlayers === Object.keys(this.players).length) {
       this.started = true;
       this.startTime = new Date();
       var i = 0;
@@ -129,9 +129,9 @@ function Game(hostPlayer, settings) {
         }
       }, 1000);
       return true;
-    } else {
-      return false;
-    }
+    // } else {
+    //   return false;
+    // }
   };
 
   this.addPlayer = function(player, password) {
