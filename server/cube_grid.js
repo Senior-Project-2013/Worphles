@@ -291,37 +291,7 @@ function autogenerateRelationsFile(size, filename, min) {
 	       });
 }
 
-// function autogenerateRelationsFileSafe(size, filename) {
-//   var cg = new CubeGrid(size);
-//   filename = (filename == undefined) ? 'tile-auto-relations-'+size+'.json' : filename;
 
-//   var fs = require('fs');
-//   var stream = fs.createWriteStream(filename);
-  
-//   stream.once('open', function(fd) {
-//     var tileCount = cg.size*cg.size*6;
-//     stream.write("{");
-//     var i = 0;
-//     var ok = true;
-//     stream.on("drain", function(fd) {
-//       if (i == tileCount) {
-// 	stream.write("}");
-// 	stream.end();
-//       }
-//     });
-//     generate();
-//     function generate() {
-//       while(i < tileCount) {
-// 	ok = stream.write(JSON.stringify(i.toString())+ ":" + JSON.stringify(cg.tileNeighbors(i)));
-// 	i++;
-// 	if (!ok && i != tileCount) {
-// 	  process.nextTick(generate);
-// 	}
-//       }
-      
-//     }
-//   });
-// }
 
 /**
  * Exports
