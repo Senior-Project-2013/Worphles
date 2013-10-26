@@ -153,7 +153,7 @@ exports.makeLetter = function() {
 
 exports.isAWord = function (word) {
   return word.length > 2 && dictionary[word];
-}
+};
 
 exports.getWordScore = function(letters) {
   var wordScore = 0;
@@ -163,4 +163,4 @@ exports.getWordScore = function(letters) {
   }
 
   return wordScore;
-}
+};
