@@ -8,7 +8,7 @@ function Scoreboard() {
 
   this.hidePopover = function(domId) {
     var domElem = $('#'+domId);
-    domElem.attr('data-content', word);
+    domElem.attr('data-content');
     domElem.popover('hide');
   };
 
