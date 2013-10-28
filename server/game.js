@@ -138,7 +138,7 @@ function Game(hostPlayer, settings) {
     }
     if (Object.keys(this.players).length >= this.settings.maxPlayers) {
       return false;
-    } 
+    }
     if (this.started) {
       return false;
     }

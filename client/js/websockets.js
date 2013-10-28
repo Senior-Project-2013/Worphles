@@ -12,7 +12,7 @@ function initWebsockets() {
       $('#lobbyButtons').fadeIn();
     });
   });
-  
+
   socket.on('nameFail', function(data) {
     $('#nameForm').fadeIn();
   });
@@ -74,7 +74,7 @@ function initWebsockets() {
     for (var i = 0; i < Object.keys(data.awards).length; i++) {
       var key = Object.keys(data.awards)[i];
       var award = data.awards[key];
-      
+
       $('<tr/>', {
         id: key,
         class: 'awardRow'
