@@ -1,4 +1,17 @@
 function Scoreboard() {
+
+  this.showPopover = function(domId, word) {
+    var domElem = $('#'+domId);
+    domElem.attr('data-content', word);
+    domElem.popover('show');
+  }
+
+  this.hidePopover = function(domId) {
+    var domElem = $('#'+domId);
+    domElem.attr('data-content', word);
+    domElem.popover('hide');
+  }
+
   this.update = function(players) {
     $('#scores').empty();
     this.players = players ? players : {};
@@ -6,13 +19,21 @@ function Scoreboard() {
       this.createScoreRow(i, players[Object.keys(players)[i]]);
     }
     this.resort();
+
+    $('.scoreRow').popover({
+      trigger: 'manual',
+      placement: 'right',
+      container: 'body'
+    });
   }
 
   this.createScoreRow = function(num, player) {
     $('<li/>', {
       id: 'score'+player.id,
       class: 'scoreRow',
-      score: player.score.tiles
+      score: player.score.tiles,
+      'data-toggle': 'popover',
+      'data-content': 'hello'
     }).css('background-color', getCSSColorFromColor(player.color)).appendTo('#scores');
 
     $('<h1/>', {

@@ -31,7 +31,7 @@ function initGame(game) {
   $('#startGameButton').fadeOut();
   $('#currentWord').fadeIn();
   $('#chatInput').fadeIn();
-  $('#timer').fadeIn();
+  $('#gameStatus').fadeIn();
   $('#myBookContainer').fadeOut();
 
   gameId = game.id;
@@ -229,18 +229,18 @@ function updateWordDisplay(tileNums) {
 }
 
 function startTimer(startTime, roundTime) {
-  $('#timer > #time').text((roundTime/1000) - 1);
+  $('#gameStatus > #timer > #time').text((roundTime/1000) - 1);
   timerIntervalId = setInterval(function () {
     currentTime = new Date().getTime();
     if ((currentTime - startTime) >= roundTime) {
       stopTimer();
     } else {
-      $('#timer > #time').text(((roundTime - (currentTime - startTime))/1000) | 0);
+      $('#gameStatus > #timer > #time').text(((roundTime - (currentTime - startTime))/1000) | 0);
     }
   }, 1000);
 }
 
 function stopTimer() {
   clearInterval(timerIntervalId);
-  $('#timer').fadeOut();
+  $('#gameStatus').fadeOut();
 }

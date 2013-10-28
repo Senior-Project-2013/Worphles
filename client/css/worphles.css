@@ -95,13 +95,23 @@ body {
   font-family: 'Libre Baskerville', serif;
 }
 
-#timer {
+#gameStatus {
   display: none;
   position: absolute;
-  right: 5%;
-  font-size: 42px;
-  color: white;
-  z-index: 5;
+  bottom: 5%;
+  width: 90%;
+}
+
+#timer {
+  font-size: 36px;
+  text-align: center;
+}
+
+#currentWord {
+  font-size: 20px;
+  text-align: center;
+  width: 100%;
+  direction: rtl;
 }
 
 #awardName {

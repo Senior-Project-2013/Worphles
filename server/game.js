@@ -240,7 +240,13 @@ function Game(hostPlayer, settings) {
 
     if (dictionary.isAWord(word) && pathValidator.isAPath(inputTiles, this.settings.gridSize)) {
       this.showEveryone('successfulMove', this.tileUpdate(player, inputTiles));
-      this.showEveryone('scoreboardUpdate', this.getPlayerScores());
+      this.showEveryone('scoreboardUpdate', {
+        player: {
+          id: player.id,
+          word: word
+        },
+        scores: this.getPlayerScores();
+      });
     } else {
       this.showEveryone('unsuccessfulMove', inputTiles);
     }

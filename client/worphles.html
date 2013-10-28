@@ -144,6 +144,14 @@
         </div>
       </div>
 
+      <div id="gameStatus">
+        <span id="currentWord"></span>
+        <div id="timer">
+          <span id="timeLabel">Time Left: </span>
+          <span id="time"></span>
+        </div>
+      </div>
+
       <button class="btn btn-primary" id="startGameButton">Start Game</button>
     </div>
 
@@ -221,11 +229,6 @@
           $('#myBookContainer').fadeIn();
         });
       </script>
-
-      <div id="timer">
-        <span id="timeLabel">Time Left: </span>
-        <span id="time"></span>
-      </div>
 
       <!-- End Game Awards Dialog -->
       <div class="modal fade" id="endGameModal" tabindex="-1" role="dialog" aria-labelledby="endGameModalLabel" aria-hidden="true">
