@@ -245,7 +245,7 @@ function Game(hostPlayer, settings) {
           id: player.id,
           word: word
         },
-        scores: this.getPlayerScores();
+        scores: this.getPlayerScores()
       });
     } else {
       this.showEveryone('unsuccessfulMove', inputTiles);
