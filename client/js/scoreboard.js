@@ -4,13 +4,13 @@ function Scoreboard() {
     var domElem = $('#'+domId);
     domElem.attr('data-content', word);
     domElem.popover('show');
-  }
+  };
 
   this.hidePopover = function(domId) {
     var domElem = $('#'+domId);
     domElem.attr('data-content', word);
     domElem.popover('hide');
-  }
+  };
 
   this.update = function(players) {
     $('#scores').empty();
@@ -25,7 +25,7 @@ function Scoreboard() {
       placement: 'right',
       container: 'body'
     });
-  }
+  };
 
   this.createScoreRow = function(num, player) {
     $('<li/>', {
@@ -45,15 +45,15 @@ function Scoreboard() {
       text: player.score.tiles,
       class: 'pull-right scoreValue scoreText'
     }).appendTo('#score'+player.id);
-  }
+  };
 
   this.updateScoreDisplay = function(id, score) {
     $("#score" + id + " .scoreValue").text(score.tiles);
     $("#score" + id).attr({score: score.tiles});
     this.resort();
-  }
+  };
 
   this.resort = function() {
     return $('#scores > li').tsort({ order: 'desc', attr: 'score' });
-  }
+  };
 }
