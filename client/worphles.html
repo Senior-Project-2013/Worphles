@@ -48,18 +48,18 @@
           <div class="form-group">
             <input type="text" class="form-control" id="nameInput" placeholder="Enter a Name">
           </div>
-          <button type="submit" id="nameButton" class="btn btn-primary" disabled="disabled">Get Started</button>
+          <button type="submit" id="nameButton" class="btn btn-primary" disabled="disabled"><i class="fa fa-check"></i> Get Started</button>
         </form>
-        <button type="button" id="viewBookBtn" class="btn btn-info"><i class="fa-book"></i>Storybook</button>
-        <button type="button" class="btn btn-info"><i class="fa-question-circle"></i>Tutorial</button>
+        <button type="button" id="viewBookBtn" class="btn btn-info"><i class="fa fa-book"></i> Storybook</button>
+        <button type="button" class="btn btn-info"><i class="fa fa-question-circle"></i> Tutorial</button>
       </div>
 
       <div id="lobbyButtons">
         <h1>Get Playing</h1>
         <!-- Trigger Join Game Box -->
-        <a class="btn btn-primary" id="joinGameModalShow">Join Game</a>
+        <a class="btn btn-primary" id="joinGameModalShow"><i class="fa fa-sign-in"></i> Join Game</a>
         <!-- Trigger Create Game Box -->
-        <a data-toggle="modal" href="#createGameModal" class="btn btn-primary" id="createGameModalShow">Create Game</a>
+        <a data-toggle="modal" href="#createGameModal" class="btn btn-primary" id="createGameModalShow"><i class="fa fa-plus-circle"></i> Create Game</a>
       </div>
 
       <!-- Join Game Dialog -->
@@ -68,7 +68,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title">Join Game</h4>
+              <h4 class="modal-title"><i class="fa fa-sign-in"></i> Join Game</h4>
             </div>
             <div class="modal-body">
               <table id="gameList">
@@ -76,7 +76,7 @@
               </table>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa-ban"></i> Cancel</button>
             </div>
           </div>
         </div>
@@ -129,8 +129,8 @@
               </form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-              <button type="button" class="btn btn-primary" id="createGameButton">Create</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-ban"></i> Cancel</button>
+              <button type="button" class="btn btn-primary" id="createGameButton"><i class="fa fa-plus-circle"></i> Create</button>
             </div>
           </div>
         </div>
@@ -152,7 +152,7 @@
         </div>
       </div>
 
-      <button class="btn btn-primary" id="startGameButton">Start Game</button>
+      <button class="btn btn-primary" id="startGameButton"><i class="fa fa-play-circle"></i> Start Game</button>
     </div>
 
     <!-- Middle Area -->
