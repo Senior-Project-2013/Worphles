@@ -138,7 +138,7 @@ function Game(hostPlayer, settings) {
     }
     if (Object.keys(this.players).length >= this.settings.maxPlayers) {
       return false;
-    } 
+    }
     if (this.started) {
       return false;
     }
@@ -242,7 +242,7 @@ function Game(hostPlayer, settings) {
       this.showEveryone('successfulMove', this.tileUpdate(player, inputTiles));
       this.showEveryone('scoreboardUpdate', {
         player: {
-          id: player.id,
+          id: player,
           word: word
         },
         scores: this.getPlayerScores()

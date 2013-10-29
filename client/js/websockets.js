@@ -12,7 +12,7 @@ function initWebsockets() {
       $('#lobbyButtons').fadeIn();
     });
   });
-  
+
   socket.on('nameFail', function(data) {
     $('#nameForm').fadeIn();
   });
@@ -74,7 +74,7 @@ function initWebsockets() {
     for (var i = 0; i < Object.keys(data.awards).length; i++) {
       var key = Object.keys(data.awards)[i];
       var award = data.awards[key];
-      
+
       $('<tr/>', {
         id: key,
         class: 'awardRow'
@@ -124,17 +124,17 @@ function initWebsockets() {
   socket.on('scoreboardUpdate', function(update) {
     var player = update.player;
     var scores = update.scores;
-    var scoreId = 'score'+player.id;
-
-    scoreboard.showPopover(scoreId, player.word);
-    setTimeout(function() {
-      scoreboard.hidePopover(scoreId);
-    }, 1000);
+    var popoverId = 'score'+player.id;
 
     for(var i = 0; i < Object.keys(scores).length; i++) {
       var playerId = Object.keys(scores)[i];
       players[playerId].score = scores[playerId];
       scoreboard.updateScoreDisplay(playerId, scores[playerId]);
     }
+
+    scoreboard.showPopover(popoverId, player.word);
+    setTimeout(function() {
+      scoreboard.hidePopover(popoverId);
+    }, 1000);
   });
 }
