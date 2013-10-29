@@ -54,6 +54,14 @@ function joinGame(id, hasPassword) {
 }
 
 function setupUI() {
+  // disable right click on sidebars and background
+  $('body').bind('contextmenu', function(e) {
+      return false;
+  });
+  $('.col-md-3').bind('contextmenu', function(e) {
+      return false;
+  });
+
   var nameButton = $('#nameButton');
   var nameInput = $('#nameInput');
   nameInput.keyup(function() {
