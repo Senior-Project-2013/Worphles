@@ -59,7 +59,7 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('leaveGame', function(data) {
-    removePlayer(thisPlayer);
+    games[data.gameId].removePlayer(thisPlayer);
   });
 
   socket.on('createGame', function(data) {

@@ -28,7 +28,7 @@ $(function() {
 
 function initGame(game) {
   $('#lobbyButtons').fadeOut();
-  $('#startGameButton').fadeOut();
+  $('#gameButtons').fadeOut();
   $('#currentWord').fadeIn();
   $('#chatInput').fadeIn();
   $('#gameStatus').fadeIn();
@@ -72,9 +72,6 @@ function setupUI() {
     }
   });
   $('#nameButton').click(chooseName);
-  $('#leaveGameButton').click(function() {
-    socket.emit('leaveGame');
-  });
 
   var createGameButton = $('#createGameButton');
   var gameNameInput = $('#gameNameInput');
@@ -97,6 +94,10 @@ function setupUI() {
 
   $('#startGameButton').click(function() {
     socket.emit('startGame');
+  });
+
+  $('#leaveGameButton').click(function() {
+    socket.emit('leaveGame');
   });
 
   $('#createLobby').click(function() {
@@ -156,7 +157,7 @@ function createGame() {
 }
 
 function leaveGame() {
-  socket.emit('leaveGame');
+  socket.emit('leaveGame', { gameId: gameId });
 }
 
 function sendChat(chat) {

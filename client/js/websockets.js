@@ -21,7 +21,7 @@ function initWebsockets() {
     gameId = data && data.id;
     $('#createGameModal').modal('hide');
     $('#lobbyButtons').fadeOut();
-    $('#startGameButton').fadeIn();
+    $('#gameButtons').fadeIn();
     $('#chatBar').fadeIn();
     $('#scoreboard').fadeIn();
   });

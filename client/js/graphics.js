@@ -335,8 +335,7 @@ function createParticleSystems() {
         "client/resources/starImages/star-white.png"
       ),
       blending: THREE.AdditiveBlending,
-      transparent: true,
-      depthWrite: false
+      transparent: true
     });
 
     /* Worphle Coordinates */
@@ -365,8 +364,7 @@ function createParticleSystems() {
       "client/resources/starImages/star-white.png"
     ),
     blending: THREE.AdditiveBlending,
-    transparent: true,
-    depthWrite: false
+    transparent: true
   });
 
   createStarParticles(particles);
