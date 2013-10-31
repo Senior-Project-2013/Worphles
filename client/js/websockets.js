@@ -135,6 +135,6 @@ function initWebsockets() {
     scoreboard.showPopover(popoverId, player.word);
     setTimeout(function() {
       scoreboard.hidePopover(popoverId);
-    }, 1000);
+    }, 1800);
   });
 }

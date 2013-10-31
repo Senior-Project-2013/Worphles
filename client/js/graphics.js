@@ -353,7 +353,12 @@ function createParticleSystems() {
   var particles = new THREE.Geometry;
   var pMaterial = new THREE.ParticleBasicMaterial({
     color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
-    size: 0.2*SCALE*1.5
+    size: 0.3*SCALE,
+    map: THREE.ImageUtils.loadTexture(
+      "client/resources/starImages/star-white.png"
+    ),
+    blending: THREE.AdditiveBlending,
+    transparent: true
   });
 
   createStarParticles(particles);
