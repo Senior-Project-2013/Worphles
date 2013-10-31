@@ -8,6 +8,7 @@ var mouse;              // our handy mouse state object
 var cube;               // our cube world mesh
 var tiles;              // the list of tile meshes and data about them
 var targetList = [];    // the list of tile hit targets for intersecting with mouse
+var letterList = [];    // the list of letter meshes so we can remove them later
 var currentTiles = [];  // the currently selected tiles
 var lastTile;           // the last tile that was selected
 
@@ -165,6 +166,7 @@ function makeTile(side, axis, x, y, num, letter, gSettings) {
   letterMesh.position.set(tileCoordX, tileCoordY, 40.01);
   letterMesh.position.applyMatrix4(rotation_matrix);
   letterMesh.rotateOnAxis( axis, NINETY_DEG*side);
+  letterList.push(letterMesh);
   scene.add(letterMesh);
 
   var thisTile = new Tile(num, letter, {canvasHeight: canvas.height, canvasWidth: canvas.width, letterContext: context, letterTexture: texture}, null, thisGeometry, thisMaterial);

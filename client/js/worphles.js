@@ -164,8 +164,8 @@ function sendChat(chat) {
     chat = $('#chatInput').val();
   }
   if (chat) {
-    chat = chat.replace('nyan','<img src="http://wiki.teamfortress.com/w/images/c/cf/User_Nyan_Cat.gif?t=20110606144207"></img>');
-    chat = chat.replace('fox','<img src="http://2-ps.googleusercontent.com/x/www.thehollywoodgossip.com/images.thehollywoodgossip.com/iu/t_medium_l/v1378552561/what-does-the-fox-say.gif.pagespeed.ce.MDGrwTOrNe.gif"></img>');
+    chat = chat.replace(/nyan/g,'<img src="http://wiki.teamfortress.com/w/images/c/cf/User_Nyan_Cat.gif?t=20110606144207"></img>');
+    chat = chat.replace(/fox/g,'<img src="http://2-ps.googleusercontent.com/x/www.thehollywoodgossip.com/images.thehollywoodgossip.com/iu/t_medium_l/v1378552561/what-does-the-fox-say.gif.pagespeed.ce.MDGrwTOrNe.gif"></img>');
     socket.emit('chat', {game:gameId, message:chat});
   }
   $('#chatInput').val('');
