@@ -175,9 +175,19 @@ function sendChat(chat) {
 
 function showChat(player, message) {
   console.log('show chat',player,message);
-  $('#messages').append('<div class="chatRow" style=background-color:'+getCSSColorFromColor(players[player].color)+'>'+players[player].name+': '+message+'</div>');
+  $('#messages').append('<div class="chatRow" style=background-color:' + 
+    getCSSColorFromColor(players[player].color) + '>' +
+    players[player].name + ': '+ 
+    escapeHtml(message) +'</div>'
+  );
   $('#messages').scrollTop($('#messages')[0].scrollHeight);
 }
+
+function escapeHtml(string) {
+  var div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+};
 
 function getCSSColorFromColor(color) {
   return getCSSColorFromRGB(color.r, color.g, color.b);
