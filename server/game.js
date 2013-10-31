@@ -110,7 +110,10 @@ function Game(hostPlayer, settings) {
   this.players[hostPlayer.id].color = Color.randomColor(0);
   var initialPlayer = {};
   initialPlayer[hostPlayer.id] = hostPlayer.safeCopy();
-  this.players[hostPlayer.id].socket.emit('players', initialPlayer);
+  this.players[hostPlayer.id].socket.emit('players', {
+    host: this.id,
+    players: initialPlayer
+  });
 
   this.start = function() {
     this.started = true;
@@ -148,14 +151,20 @@ function Game(hostPlayer, settings) {
     this.players[player.id] = player;
     this.players[player.id].color = Color.randomColor(Object.keys(this.players).length-1);
 
-    this.showEveryone('players', this.getPlayersCopy());
+    this.showEveryone('players', {
+      host: this.id,
+      players: this.getPlayersCopy()
+    });
     return true;
   };
 
   this.removePlayer = function(player) {
     delete this.players[player.id];
 
-    this.showEveryone('players', this.getPlayersCopy());
+    this.showEveryone('players', {
+      host: this.id,
+      players: this.getPlayersCopy()
+    });
   }
 
   this.getPlayersCopy = function() {

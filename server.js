@@ -60,11 +60,13 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('disconnect', function() {
-    games[thisGameId].removePlayer(thisPlayer);
+    if(games[thisGameId])
+      games[thisGameId].removePlayer(thisPlayer);
   });
 
   socket.on('leaveGame', function() {
-    games[thisGameId].removePlayer(thisPlayer);
+    if(games[thisGameId])
+      games[thisGameId].removePlayer(thisPlayer);
   });
 
   socket.on('createGame', function(data) {
