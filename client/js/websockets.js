@@ -64,11 +64,14 @@ function initWebsockets() {
     for (var i = 0; i < targetList.length; i++) {
       scene.remove(targetList[i]);
     };
+    for (var i = 0; i < letterList.length; i++) {
+      scene.remove(letterList[i]);
+    };
     for(var i = 0; i < Object.keys(data.scores).length; i++) {
       var playerId = Object.keys(data.scores)[i];
       players[playerId].score = data.scores[playerId];
       scoreboard.updateScoreDisplay(playerId, data.scores[playerId]);
-    }
+    };
     var awardsBody = $('#awardsBody');
     awardsBody.empty();
     for (var i = 0; i < Object.keys(data.awards).length; i++) {
