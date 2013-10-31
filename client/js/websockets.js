@@ -62,13 +62,7 @@ function initWebsockets() {
 
   socket.on('gameOver', function(data) {
     $('#timer').fadeOut();
-    scene.remove(cube);
-    for (var i = 0; i < targetList.length; i++) {
-      scene.remove(targetList[i]);
-    };
-    for (var i = 0; i < letterList.length; i++) {
-      scene.remove(letterList[i]);
-    };
+    removeCube();
     for(var i = 0; i < Object.keys(data.scores).length; i++) {
       var playerId = Object.keys(data.scores)[i];
       players[playerId].score = data.scores[playerId];

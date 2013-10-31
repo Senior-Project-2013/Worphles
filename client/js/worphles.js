@@ -28,7 +28,7 @@ $(function() {
 
 function initGame(game) {
   $('#lobbyButtons').fadeOut();
-  $('#gameButtons').fadeOut();
+  $('#startGameButton').fadeOut();
   $('#currentWord').fadeIn();
   $('#chatInput').fadeIn();
   $('#gameStatus').fadeIn();
@@ -99,6 +99,7 @@ function setupUI() {
   $('#leaveGameButton').click(function() {
     socket.emit('leaveGame', { gameId: gameId });
     hideAllDivs();
+    removeCube();
     $('#lobbyButtons').fadeIn();
   });
 

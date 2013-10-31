@@ -123,6 +123,15 @@ function addCube(inputSettings, inputTiles) {
     }
   }
 }
+function removeCube(){
+  scene.remove(cube);
+  for (var i = 0; i < targetList.length; i++) {
+    scene.remove(targetList[i]);
+  };
+  for (var i = 0; i < letterList.length; i++) {
+    scene.remove(letterList[i]);
+  };
+}
 
 function Tile(num, letter, letterResources, color, geometry, material) {
   this.num = num;
@@ -332,12 +341,13 @@ function createParticleSystems() {
     var particles = new THREE.Geometry();
     var pMaterial = new THREE.ParticleBasicMaterial({
       color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
-      size: 0.06*WS/2,
+      size: 0.04*WS/2,
       map: THREE.ImageUtils.loadTexture(
         "client/resources/starImages/star-white.png"
       ),
       blending: THREE.AdditiveBlending,
-      transparent: true
+      transparent: true,
+      depthWrite: false
     });
 
     /* Worphle Coordinates */
@@ -351,8 +361,8 @@ function createParticleSystems() {
     }
 
     particleSystem = new THREE.ParticleSystem(particles, pMaterial);
-    particleSystem.sortParticles = true;
     particleSystem.position.set(0, 0, 0);
+    particleSystem.sortParticles = true;
     scene.add(particleSystem);
     particleSystems.push(particleSystem);
   }
@@ -366,14 +376,15 @@ function createParticleSystems() {
       "client/resources/starImages/star-white.png"
     ),
     blending: THREE.AdditiveBlending,
-    transparent: true
+    transparent: true,
+    depthWrite: false
   });
 
   createStarParticles(particles);
 
   var starSystem = new THREE.ParticleSystem(particles, pMaterial);
-  starSystem.sortParticles = true;
   starSystem.position.set(0, 0, 0);
+  starSystem.sortParticles = true;
   scene.add(starSystem);
   particleSystems.push(starSystem);
 
@@ -395,7 +406,7 @@ function createWorphleParticles(xStart, yStart, xTarget, yTarget, particles) {
     var blurFactor = ((Math.random() * particleSettings.pictureBlur) - particleSettings.pictureBlur)*WS;
     var pX = xStart + xIncrement * p + blurFactor;
     var pY = yStart + yIncrement * p + blurFactor;
-    var pZ = ((Math.random() * .02) + .02) * 2000;
+    var pZ = ((Math.random() * .02) + .02) * 1000;
     var particle = new THREE.Vector3(pX, pY, pZ);
     particle.speed = (Math.random() * particleSettings.averageParticleSpeed) + (particleSettings.averageParticleSpeed / 3);
     particle.originalX = pX;
