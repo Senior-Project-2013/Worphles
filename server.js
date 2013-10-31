@@ -26,7 +26,7 @@ server.listen(process.env.PORT || 3000);
 
 // handle each new player that connects
 io.sockets.on('connection', function(socket) {
-  var thisPlayer;
+  var thisPlayer, thisGameId;
   socket.on('name', function(name) {
     if (name) {
       thisPlayer = new Game.Player(socket.id, socket, name);
@@ -49,6 +49,7 @@ io.sockets.on('connection', function(socket) {
   socket.on('joinGame', function(data) {
     var gameId = data && data.id;
     var password = data && data.password;
+    thisGameId = gameId;
     if (gameId && games[gameId]) {
       if (games[gameId].addPlayer(thisPlayer, password)) {
         socket.emit('joinedGame', data);
@@ -58,8 +59,12 @@ io.sockets.on('connection', function(socket) {
     }
   });
 
-  socket.on('leaveGame', function(data) {
-    games[data.gameId].removePlayer(thisPlayer);
+  socket.on('disconnect', function() {
+    games[thisGameId].removePlayer(thisPlayer);
+  });
+
+  socket.on('leaveGame', function() {
+    games[thisGameId].removePlayer(thisPlayer);
   });
 
   socket.on('createGame', function(data) {
@@ -80,6 +85,7 @@ io.sockets.on('connection', function(socket) {
     var gameSettings = new Game.Settings(time, maxPlayers, size, name, password, hackable);
     var game = new Game.Game(thisPlayer, gameSettings);
     games[game.id] = game;
+    thisGameId = game.id;
     socket.emit('gameCreated', {id: game.id});
   });
 

@@ -97,7 +97,7 @@ function setupUI() {
   });
 
   $('#leaveGameButton').click(function() {
-    socket.emit('leaveGame', { gameId: gameId });
+    socket.emit('leaveGame');
     hideAllDivs();
     removeCube();
     $('#lobbyButtons').fadeIn();
