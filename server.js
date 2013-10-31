@@ -58,6 +58,10 @@ io.sockets.on('connection', function(socket) {
     }
   });
 
+  socket.on('leaveGame', function(data) {
+    removePlayer(thisPlayer);
+  });
+
   socket.on('createGame', function(data) {
     if (!thisPlayer) {
       socket.emit('createFail', {message: 'Please refresh your browser'});

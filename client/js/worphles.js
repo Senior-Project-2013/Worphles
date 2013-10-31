@@ -72,6 +72,9 @@ function setupUI() {
     }
   });
   $('#nameButton').click(chooseName);
+  $('#leaveGameButton').click(function() {
+    socket.emit('leaveGame');
+  });
 
   var createGameButton = $('#createGameButton');
   var gameNameInput = $('#gameNameInput');
@@ -150,6 +153,10 @@ function createGame() {
   }
   // stops the form from submitting if being called from HTML form
   return false;
+}
+
+function leaveGame() {
+  socket.emit('leaveGame');
 }
 
 function sendChat(chat) {

@@ -148,13 +148,24 @@ function Game(hostPlayer, settings) {
     this.players[player.id] = player;
     this.players[player.id].color = Color.randomColor(Object.keys(this.players).length-1);
 
+    this.showEveryone('players', this.getPlayersCopy());
+    return true;
+  };
+
+  this.removePlayer = function(player) {
+    delete this.players[player.id];
+
+    this.showEveryone('players', this.getPlayersCopy());
+  }
+
+  this.getPlayersCopy = function() {
     var playersCopy = {};
     _.each(this.players, function(player) {
       playersCopy[player.id] = player.safeCopy();
     });
-    this.showEveryone('players',playersCopy);
-    return true;
-  };
+
+    return playersCopy;
+  }
 
   this.getPlayerScores = function() {
     var scores = {};
