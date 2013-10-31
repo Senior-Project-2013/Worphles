@@ -21,7 +21,8 @@ function initWebsockets() {
     gameId = data && data.id;
     $('#createGameModal').modal('hide');
     $('#lobbyButtons').fadeOut();
-    $('#gameButtons').fadeIn();
+    $('#startGameButton').fadeIn();
+    $('#leaveGameButton').fadeIn();
     $('#chatBar').fadeIn();
     $('#scoreboard').fadeIn();
   });
@@ -42,6 +43,7 @@ function initWebsockets() {
     $('#lobbyButtons').fadeOut();
     $('#chatBar').fadeIn();
     $('#scoreboard').fadeIn();
+    $('#leaveGameButton').fadeIn();
   });
 
   socket.on('deniedGame', function(data) {

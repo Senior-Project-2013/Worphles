@@ -39,7 +39,7 @@ body {
   width: 50%;
 }
 
-#gameButtons {
+#startGameButton, #leaveGameButton {
   display: none;
 }
 

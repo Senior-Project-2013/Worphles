@@ -97,7 +97,9 @@ function setupUI() {
   });
 
   $('#leaveGameButton').click(function() {
-    socket.emit('leaveGame');
+    socket.emit('leaveGame', { gameId: gameId });
+    hideAllDivs();
+    $('#lobbyButtons').fadeIn();
   });
 
   $('#createLobby').click(function() {
@@ -154,10 +156,6 @@ function createGame() {
   }
   // stops the form from submitting if being called from HTML form
   return false;
-}
-
-function leaveGame() {
-  socket.emit('leaveGame', { gameId: gameId });
 }
 
 function sendChat(chat) {
@@ -259,4 +257,14 @@ function startTimer(startTime, roundTime) {
 function stopTimer() {
   clearInterval(timerIntervalId);
   $('#gameStatus').fadeOut();
+}
+
+function hideAllDivs() {
+$('#startingButtons').fadeOut();
+$('#lobbyButtons').fadeOut();
+$('#scoreboard').fadeOut();
+$('#gameStatus').fadeOut();
+$('#startGameButton').fadeOut();
+$('#leaveGameButton').fadeOut();
+$('#chatBar').fadeOut();
 }
