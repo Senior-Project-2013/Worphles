@@ -330,7 +330,12 @@ function createParticleSystems() {
     var particles = new THREE.Geometry();
     var pMaterial = new THREE.ParticleBasicMaterial({
       color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
-      size: 0.02*WS/2
+      size: 0.04*WS/2,
+      map: THREE.ImageUtils.loadTexture(
+        "client/resources/starImages/star-white.png"
+      ),
+      blending: THREE.AdditiveBlending,
+      transparent: true
     });
 
     /* Worphle Coordinates */
@@ -353,7 +358,7 @@ function createParticleSystems() {
   var particles = new THREE.Geometry;
   var pMaterial = new THREE.ParticleBasicMaterial({
     color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
-    size: 0.3*SCALE,
+    size: 0.5*SCALE,
     map: THREE.ImageUtils.loadTexture(
       "client/resources/starImages/star-white.png"
     ),
