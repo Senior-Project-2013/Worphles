@@ -335,7 +335,8 @@ function createParticleSystems() {
         "client/resources/starImages/star-white.png"
       ),
       blending: THREE.AdditiveBlending,
-      transparent: true
+      transparent: true,
+      depthWrite: false
     });
 
     /* Worphle Coordinates */
@@ -349,6 +350,7 @@ function createParticleSystems() {
     }
 
     particleSystem = new THREE.ParticleSystem(particles, pMaterial);
+    particleSystem.sortParticles = true;
     particleSystem.position.set(0, 0, 0);
     scene.add(particleSystem);
     particleSystems.push(particleSystem);
@@ -363,12 +365,14 @@ function createParticleSystems() {
       "client/resources/starImages/star-white.png"
     ),
     blending: THREE.AdditiveBlending,
-    transparent: true
+    transparent: true,
+    depthWrite: false
   });
 
   createStarParticles(particles);
 
   var starSystem = new THREE.ParticleSystem(particles, pMaterial);
+  starSystem.sortParticles = true;
   starSystem.position.set(0, 0, 0);
   scene.add(starSystem);
   particleSystems.push(starSystem);
