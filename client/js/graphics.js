@@ -24,7 +24,7 @@ function initGraphics()  {
   projector = new THREE.Projector();
   clock = new THREE.Clock();
   camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
-  camera.position.set(0,150,400);
+  camera.position.set(0,0,400);
   camera.lookAt(scene.position);
   scene.add(camera);
   renderer = new THREE.WebGLRenderer( {antialias:true} );
@@ -255,7 +255,7 @@ var particleSettings = {
   starCount: 1000, //the number of background particles
   sizeMultiplier: 2, //size increase for spreading particles
   averageParticleSpeed: .4, //lower for faster
-  pictureBlur: .03 //higher for more blurry
+  pictureBlur: .02 //higher for more blurry
 };
 
 var SCALE = 5;

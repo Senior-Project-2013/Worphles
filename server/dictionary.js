@@ -1,7 +1,11 @@
 var fs = require('fs');
 
 var text = fs.readFileSync(__dirname+'/words.txt', "utf-8");
-var wordList = text.split("\n");
+
+if(process.platform =='win32')
+  var wordList = text.split("\r\n");
+else
+  var wordList = text.split("\n");
 
 var dictionary = {};
 
