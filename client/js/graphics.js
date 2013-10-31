@@ -330,7 +330,7 @@ function createParticleSystems() {
     var particles = new THREE.Geometry();
     var pMaterial = new THREE.ParticleBasicMaterial({
       color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
-      size: 0.08*WS/2,
+      size: 0.06*WS/2,
       map: THREE.ImageUtils.loadTexture(
         "client/resources/starImages/star-white.png"
       ),
@@ -360,7 +360,7 @@ function createParticleSystems() {
   var particles = new THREE.Geometry;
   var pMaterial = new THREE.ParticleBasicMaterial({
     color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
-    size: 0.5*SCALE,
+    size: 0.6*SCALE,
     map: THREE.ImageUtils.loadTexture(
       "client/resources/starImages/star-white.png"
     ),
