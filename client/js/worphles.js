@@ -185,7 +185,7 @@ function showChat(player, message) {
 
 function escapeHtml(string) {
   var div = document.createElement('div');
-  div.appendChild(document.createTextNode(str));
+  div.appendChild(document.createTextNode(string));
   return div.innerHTML;
 };
 
