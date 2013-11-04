@@ -35,7 +35,9 @@ function initWebsockets() {
     alert('can\'t start because '+data.message);
   });
 
-  socket.on('gameList', showGameList);
+  socket.on('gameList', function(data) {
+    mainLobby.update(data);
+  });
 
   socket.on('joinedGame', function(data) {
     gameId = data && data.id;
@@ -47,7 +49,7 @@ function initWebsockets() {
   });
 
   socket.on('deniedGame', function(data) {
-    alert("Couldn't Join");
+    alert("Couldn't join game: " + data);
   });
 
   socket.on('players', function(thePlayers) {

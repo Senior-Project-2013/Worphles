@@ -12,6 +12,7 @@ var players;          // the players in this game
 var startTime;        // the time this game started
 var timerIntervalId;  // so we can stop the timer
 var scoreboard = new Scoreboard();
+var mainLobby = new MainLobby();
 
 // document ready function
 $(function() {
@@ -90,6 +91,7 @@ function setupUI() {
 
   $('#joinGameModalShow').click(function() {
     socket.emit('gameList');
+    $('#joinGameModal').modal('show');
   });
 
   $('#startGameButton').click(function() {
@@ -197,47 +199,6 @@ function getCSSColorFromRGB(r, g, b) {
   return 'rgb('+(Math.round(r*255))+','+(Math.round(g*255))+','+(Math.round(b*255))+')';
 }
 
-function showGameList(data) {
-  var games = [];
-  for (var i = 0; i < data.length; i++) {
-    games.push({id: data[i].id, name: data[i].name, currentPlayers: data[i].currentPlayers, maxPlayers: data[i].maxPlayers, gridSize: data[i].gridSize, password: data[i].password});
-  }
-  if (games.length) {
-    var gameListDiv = $('#gameListBody').empty();
-    for (var i = 0; i < games.length; i++) {
-      var game = games[i];
-      
-      $('<tr/>', {
-        id: game.id,
-        class: 'gameLobbyRow'
-      }).appendTo($('#gameListBody'));
-
-      var thisGame = $('#'+game.id);
-
-      $('<button/>',{
-        text: 'Join',
-        class: 'btn btn-primary',
-        onclick: 'joinGame(\''+game.id+'\', '+game.password+');'
-      }).appendTo(thisGame);
-
-      $('<td/>',{
-        text: game.name,
-        class: 'gameName'
-      }).appendTo(thisGame);
-      $('<td/>', {
-        text: game.gridSize +'x'+game.gridSize,
-        class: 'gameGridSize',
-      }).appendTo(thisGame);
-      $('<td/>', {
-        text: game.currentPlayers + '/'+game.maxPlayers + ' Players',
-        class: 'gamePlayers',
-      }).appendTo(thisGame);
-    }
-    $('#joinGameModal').modal('show');
-  } else {
-    alert('Sorry, there are no games. Please create one.');
-  }
-}
 
 function updateTile(tile, letter, owner) {
   updateTileOwner(tile, owner);

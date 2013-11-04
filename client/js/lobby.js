@@ -1,42 +1,45 @@
 function MainLobby() {
-  this.init = function(lobbies) {
-    $('#gameLobbies').empty();
-    this.lobbies = lobbies ? lobbies : [];
 
-    for(var i = 0; i < lobbies.length; i++) {
-      this.createLobbyRow(lobbies[i]);
+  this.update = function(data) {
+    var gameListDiv = $('#gameListBody').empty();
+    if (data.length === 0) {
+      alert("There are no games to join, please create one!");
+    } else {
+      var self = this;
+      $.each(data, function(i, game) {
+	self.createLobbyRow(game);
+      });
     }
-  }
+  };
+
 
   /* creates a lobby row */
-  //id    Name    4x4    2/6 players  
+  //id    Name    4x4    2/6 players
   this.createLobbyRow = function(game) {
-    $('<li/>', {
+    $('<tr/>', {
       id: game.id,
       class: 'gameLobbyRow'
-    }).appendTo($('#gameLobbies'));
+    }).appendTo($('#gameListBody'));
+
+    var thisGame = $('#'+game.id);
 
     $('<button/>',{
       text: 'Join',
-      class: 'gameJoinButton gameJoinButton-Blue',
+      class: 'btn btn-primary',
       onclick: 'joinGame(\''+game.id+'\', '+game.password+');'
-    }).appendTo($('#'+game.id));
+    }).appendTo(thisGame);
 
-    $('<span/>', {
+    $('<td/>',{
       text: game.name,
-      class: 'gameName',
-    }).appendTo($('#' + game.id));
-
-    $('<span/>', {
-      text: game.currentPlayers + '/'+game.maxPlayers + ' Players',
-      class: 'gamePlayers',
-    }).appendTo($('#' + game.id));
-
-    $('<span/>', {
+      class: 'gameName'
+    }).appendTo(thisGame);
+    $('<td/>', {
       text: game.gridSize +'x'+game.gridSize,
       class: 'gameGridSize',
-    }).appendTo($('#' + game.id));
-
-    
-  }
+    }).appendTo(thisGame);
+    $('<td/>', {
+      text: game.currentPlayers + '/'+game.maxPlayers + ' Players',
+      class: 'gamePlayers',
+    }).appendTo(thisGame);
+  };
 }
