@@ -38,7 +38,10 @@ function initGame(game) {
   gameId = game.id;
   me = socket.socket.sessionid;
   players = game.players;
-  scoreboard.update(game.players);
+  scoreboard.update({
+    players: game.players,
+    host: game.hostId
+  });
   startTimer(new Date(game.startTime).getTime(), game.settings.roundTime);
   addCube(game.settings, game.tiles);
 }
@@ -95,7 +98,10 @@ function setupUI() {
   });
 
   $('#startGameButton').click(function() {
-    socket.emit('startGame');
+    socket.emit('startGame', {
+      gameId: gameId,
+      playerId: me
+    });
   });
 
   $('#leaveGameButton').click(function() {
@@ -114,7 +120,12 @@ function setupUI() {
     while(!(gInput && gInput.length == 5)) {
       gInput = prompt('name:password:size:maxPlayers:time').split(':');
     }
-    socket.emit('createGame', {name: gInput[0], password: gInput[1], size: gInput[2], maxPlayers: gInput[3], time: gInput[4]});
+    return socket.emit('createGame', {
+      name: gInput[0],
+      password: gInput[1],
+      size: gInput[2],
+      maxPlayers: gInput[3],
+      time: gInput[4]});
   });
 
   $('#refresh').click(function() {
@@ -124,7 +135,7 @@ function setupUI() {
 
 function showButtons() {
   $('#customGame').fadeIn();
-  $('#joinQueue').fadeIn(); 
+  $('#joinQueue').fadeIn();
 }
 
 function chooseName() {
@@ -177,9 +188,9 @@ function sendChat(chat) {
 
 function showChat(player, message) {
   console.log('show chat',player,message);
-  $('#messages').append('<div class="chatRow" style=background-color:' + 
+  $('#messages').append('<div class="chatRow" style=background-color:' +
     getCSSColorFromColor(players[player].color) + '>' +
-    players[player].name + ': '+ 
+    players[player].name + ': '+
     escapeHtml(message) +'</div>'
   );
   $('#messages').scrollTop($('#messages')[0].scrollHeight);
@@ -232,11 +243,11 @@ function stopTimer() {
 }
 
 function hideAllDivs() {
-$('#startingButtons').fadeOut();
-$('#lobbyButtons').fadeOut();
-$('#scoreboard').fadeOut();
-$('#gameStatus').fadeOut();
-$('#startGameButton').fadeOut();
-$('#leaveGameButton').fadeOut();
-$('#chatBar').fadeOut();
+  $('#startingButtons').fadeOut();
+  $('#lobbyButtons').fadeOut();
+  $('#scoreboard').fadeOut();
+  $('#gameStatus').fadeOut();
+  $('#startGameButton').fadeOut();
+  $('#leaveGameButton').fadeOut();
+  $('#chatBar').fadeOut();
 }
