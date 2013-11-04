@@ -2,6 +2,7 @@ var dictionary = require('./dictionary');
 var pathValidator = require('./path_validator.js');
 var cubeGrid = require('./cube_grid').getGrid();
 var _ = require('underscore');
+var uuid = require('node-uuid');
 
 // all time is in milliseconds
 var MS_PER_SEC = 1000;
@@ -96,9 +97,10 @@ function Settings(roundTime, maxPlayers, gridSize, name, password, hackable) {
 };
 
 function Game(hostPlayer, settings) {
+  this.hostId = hostPlayer.id;
   this.started = false;
   this.startTime = null;
-  this.id = hostPlayer.id;
+  this.id = uuid.v4();
   this.settings = settings || new Settings();
   this.tiles = [];
   for (var i = 0; i < this.settings.gridSize * this.settings.gridSize * 6; i++) {
@@ -110,62 +112,68 @@ function Game(hostPlayer, settings) {
   this.players[hostPlayer.id].color = Color.randomColor(0);
   var initialPlayer = {};
   initialPlayer[hostPlayer.id] = hostPlayer.safeCopy();
+
   this.players[hostPlayer.id].socket.emit('players', {
-    host: this.id,
+    host: this.hostId,
     players: initialPlayer
   });
 
-  this.start = function() {
-    this.started = true;
-    this.startTime = new Date();
-    var i = 0;
-    _.each(this.players, function(player) {
-      player.color = Color.randomColor(i);
-      i++;
-    });
-    this.showEveryone('start', this.safeCopy());
-    var thisAlias = this;
-    this.intervalId = setInterval(function() {
-      var currentTime = new Date();
-      if ((currentTime - thisAlias.startTime) >= thisAlias.settings.roundTime) {
-        thisAlias.showEveryone('gameOver', {scores: thisAlias.getPlayerScores(), awards: thisAlias.getEndingAwards()});
-        clearInterval(thisAlias.intervalId);
-      }
-    }, 1000);
-    return true;
+  this.start = function(playerId) {
+    if (playerId !== this.hostId) {
+      return false;
+    } else {
+      this.started = true;
+      this.startTime = new Date();
+      var i = 0;
+      _.each(this.players, function(player) {
+	player.color = Color.randomColor(i);
+	i++;
+      });
+      this.showEveryone('start', this.safeCopy());
+      var thisAlias = this;
+      this.intervalId = setInterval(function() {
+	var currentTime = new Date();
+	if ((currentTime - thisAlias.startTime) >= thisAlias.settings.roundTime) {
+          thisAlias.showEveryone('gameOver', {
+	    scores: thisAlias.getPlayerScores(),
+	    awards: thisAlias.getEndingAwards()
+	  });
+          clearInterval(thisAlias.intervalId);
+	}
+      }, 1000);
+      return true;
+    }
   };
 
-  this.addPlayer = function(player, password) {
-    if (this.settings.password !== password) {
-      return false;
-    }
+  this.addPlayer = function(player, password, callback) {
+    var error = null;
     if (Object.keys(this.players).length >= this.settings.maxPlayers) {
-      return false;
+      error = "Game is full";
+    } else if (this.started) {
+      error = "Game has already begun";
+    } else if (this.settings.password !== password) {
+      error = "Incorrect password";
+    } else if (this.players[player.id]) {
+      error = "You are already in this game";
     }
-    if (this.started) {
-      return false;
-    }
-    if (this.players[player.id]) {
-      return false;
-    }
-    this.players[player.id] = player;
-    this.players[player.id].color = Color.randomColor(Object.keys(this.players).length-1);
 
-    this.showEveryone('players', {
-      host: this.id,
-      players: this.getPlayersCopy()
-    });
-    return true;
+    if (error) {
+      return callback(error);
+    } else {
+      this.players[player.id] = player;
+      this.players[player.id].color = Color.randomColor(Object.keys(this.players).length-1);
+      this.showPlayerList();
+      return callback();
+    }
   };
 
   this.removePlayer = function(player) {
     delete this.players[player.id];
-
-    this.showEveryone('players', {
-      host: this.id,
-      players: this.getPlayersCopy()
-    });
-  }
+    if (player.id === this.hostId && this.players.length !== 0) {
+      this.hostId = this.players[0];
+    }
+    this.showPlayerList();
+  };
 
   this.getPlayersCopy = function() {
     var playersCopy = {};
@@ -174,7 +182,7 @@ function Game(hostPlayer, settings) {
     });
 
     return playersCopy;
-  }
+  };
 
   this.getPlayerScores = function() {
     var scores = {};
@@ -287,6 +295,14 @@ function Game(hostPlayer, settings) {
     _.each(this.players, function(player) {
       player.socket.emit(message, data);
     });
+  };
+
+  this.showPlayerList = function() {
+    var data = {
+      host: this.hostId,
+      players: this.getPlayersCopy()
+    };
+    this.showEveryone('players', data);
   };
 
   this.gameListInfo = function() {
