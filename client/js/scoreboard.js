@@ -16,7 +16,7 @@ function Scoreboard() {
     var host = playerInfo.host;
 
     $('#scores').empty();
-    this.players = players ? players : {};
+    players = players ? players : {};
     for(var i = 0; i < Object.keys(players).length; i++) {
       this.createScoreRow(i, players[Object.keys(players)[i]], host);
     }
@@ -43,7 +43,7 @@ function Scoreboard() {
       class: 'pull-left scoreText'
     }).appendTo('#score'+player.id);
 
-    console.log(host)
+    console.log(host);
     if(host === player.id) {
       $('<i/>', {
         class: 'fa fa-star'
