@@ -65,6 +65,7 @@ function update() {
       if (mouse.lClicked && !mouse.rClicked && tile != lastTile) {
         socket.emit('partialMove', {game:gameId, tile:tile, player:me});
         colorTile(tile, scaledColor(players[me].color, 1.5));
+        $('#bloop').play();
         currentTiles.push(tile);
         updateWordDisplay(currentTiles);
         lastTile = tile;
