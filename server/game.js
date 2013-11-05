@@ -40,7 +40,7 @@ var AWARD_NAMES = {
   },
   worstattempts: {
     title: "Try Hard",
-    description: "They made up %d% of their words to no avail."
+    description: "Only %d% of their submitted words were real."
   },
   
   acquisitions: {
@@ -271,7 +271,7 @@ function Game(hostPlayer, settings) {
     var awards = {};
     _.each(this.players, function(player) {
       
-      player.score.attempts = player.score.words / player.score.attempts;
+      player.score.attempts = Math.round(player.score.words / player.score.attempts * 100);
       
       _.each(player.score, function(value, key) {
         if (!awards[key]) {
