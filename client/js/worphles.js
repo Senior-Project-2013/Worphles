@@ -220,6 +220,15 @@ function getCSSColorFromRGB(r, g, b) {
   return 'rgb('+(Math.round(r*255))+','+(Math.round(g*255))+','+(Math.round(b*255))+')';
 }
 
+function scaledColor(color, scale) {
+  var x =  {
+    r: (Math.round(color.r * 255) * scale) / 255,
+    g: (Math.round(color.g * 255) * scale) / 255, 
+    b: (Math.round(color.b * 255) * scale) / 255 
+};
+  return x;
+}
+
 
 function updateTile(tile, letter, owner) {
   updateTileOwner(tile, owner);
