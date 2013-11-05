@@ -3,6 +3,7 @@ var pathValidator = require('./path_validator.js');
 var cubeGrid = require('./cube_grid').getGrid();
 var _ = require('underscore');
 var uuid = require('node-uuid');
+var util = require('util');
 
 // all time is in milliseconds
 var MS_PER_SEC = 1000;
@@ -289,7 +290,8 @@ function Game(hostPlayer, settings) {
     });
     _.each(awards, function(award, key) {
       award.name = AWARD_NAMES[key].title;
-      award.description = AWARD_NAMES[key].description;
+      award.description = util.format(AWARD_NAMES[key].description, award.value);
+				      
     });
     return awards;
   };
