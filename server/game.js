@@ -31,51 +31,59 @@ var COLORS = {
 var AWARD_NAMES = {
   tiles: {
     title: "Most Tiles",
-    description: "The winner and greatest speller in the universe."
+    description: "The winner and greatest speller in the universe with {0} tiles."
   },
   acquisitions: {
     title: "Colonialist",
-    description: "Modern day Christopher Columbus, except with tiles."
+    description: "Modern day Christopher Columbus, explored {0} tiles."
   },
   steals: {
-    title: "Thief",
-    description: "Took the most tiles."
+    title: "Smooth Criminal",
+    description: "Stole {0} tiles away from other players"
   },
   losses: {
-    title: "Loser",
-    description: "Had the most tiles stolen :("
+    title: "Clueless Victim",
+    description: "Had {0}  tiles stolen away from them"
   },
   reinforcements: {
-    title: "Hermit",
-    description: "Likes to use what they own." 
+    title: "Turtle",
+    description: "\"I like {0} turtles\""
+  },
+  bestwords: {
+    title: "Most Words",
+    description: "Found {0} words"
+  },
+  words: {
+    title: "Least Words",
+    description: "Found {0} words"
   },
   longestWord: {
     title: "Longfellow",
-    description: "The walking dictionary."
+    description: "The walking dictionary who found a {0} letter word."
   },
   worsttiles: {
-    title: "Least Tiles",
-    description: "Gave it their best try and failed."
+    title: "Participant",
+    description: "They tried so hard to get their measly {0} tiles."
   },
   worstacquisitions: {
     title: "Dora the Explorer",
-    description: "Doesn't explore the board well."
+    description: "Literally the worst expolorer ever, only explored {0} tiles"
   },
   worststeals: {
-    title: "Cop",
-    description: "Doesn't steal from others."
+    title: "Pacifist",
+    description: "Just let players walk all over them and steal {0} tiles."
   },
   worstlosses: {
-    title: "Pacifist",
-    description: "No one messes with this person's tiles."
+    title: "Untouchable",
+    description: "Nobody dares steal their tiles; they only lost {0} tiles to others."
   },
   worstreinforcements: {
-    title: "Traitor",
-    description: "Doesn't re-use their own tiles."
+    title: "Berserker",
+    description: "Who needs reinforcements anyway; They only reinforced {0} tiles."
   },
   worstlongestWord: {
     title: "Shorty",
-    description: "Can't spell long words."
+    description: "Their longest word was only an embarassing {0} characters"
   }
 };
 
