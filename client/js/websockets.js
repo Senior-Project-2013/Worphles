@@ -36,13 +36,7 @@ function initWebsockets() {
   });
 
   socket.on('gameList', function(data) {
-    mainLobby.update(data.gameList);
-
-    if(!data.autoUpdate && data.gameList.length > 0) {
-      $('#joinGameModal').modal('show');
-    } else if(!data.autoUpdate && data.gameList.length === 0) {
-      alert("There are no games to join, please create one!");
-    }
+    mainLobby.update(data);
   });
 
   socket.on('joinedGame', function(data) {

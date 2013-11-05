@@ -2,8 +2,23 @@ function MainLobby() {
 
   this.update = function(data) {
     var gameListDiv = $('#gameListBody').empty();
-    
+
     var self = this;
+
+    if(!data || data.length === 0) {
+      $('<tr/>', {
+        id: 'noGamesRow'
+      }).appendTo($('#gameListBody'));
+
+      $('<td/>', {
+        id: 'noGamesCol'
+      }).appendTo($('#noGamesRow'));
+
+      $('<h3/>', {
+        text: 'There are no games. Please create a game!'
+      }).appendTo($('#noGamesCol'));
+    }
+
     $.each(data, function(i, game) {
       self.createLobbyRow(game);
     });

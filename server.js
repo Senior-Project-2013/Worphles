@@ -62,10 +62,7 @@ io.sockets.on('connection', function(socket) {
   };
 
   socket.on('gameList', function(data) {
-    socket.emit('gameList', {
-      gameList: connection.gameListData(),
-      autoUpdate: false
-    });
+    socket.emit('gameList', connection.gameListData());
   });
 
   socket.on('joinGame', function(data) {
@@ -79,10 +76,7 @@ io.sockets.on('connection', function(socket) {
         } else {
           delete lobbyists[thisPlayer.id];
           socket.emit('joinedGame', data);
-          connection.showLobbyists('gameList', {
-            gameList: connection.gameListData(),
-            autoUpdate: true
-          });
+          connection.showLobbyists('gameList', connection.gameListData());
         }
       });
     }
@@ -100,10 +94,7 @@ io.sockets.on('connection', function(socket) {
     if (game && thisPlayer) {
       game.removePlayer(thisPlayer);
       connection.deleteGameIfEmpty(game);
-      connection.showLobbyists('gameList', {
-        gameList: connection.gameListData(),
-        autoUpdate: true
-      });
+      connection.showLobbyists('gameList', connection.gameListData());
 
       delete lobbyists[thisPlayer.id];
     }
@@ -114,10 +105,7 @@ io.sockets.on('connection', function(socket) {
     if (game && thisPlayer) {
       game.removePlayer(thisPlayer);
       connection.deleteGameIfEmpty(game);
-      connection.showLobbyists('gameList', {
-        gameList: connection.gameListData(),
-        autoUpdate: true
-      });
+      connection.showLobbyists('gameList', connection.gameListData());
 
       lobbyists[thisPlayer.id] = thisPlayer;
     }
@@ -143,10 +131,7 @@ io.sockets.on('connection', function(socket) {
     games[game.id] = game;
     delete lobbyists[thisPlayer.id];
     thisGameId = game.id;
-    connection.showLobbyists('gameList', {
-      gameList: connection.gameListData(),
-      autoUpdate: true
-    });
+    connection.showLobbyists('gameList', connection.gameListData());
 
     socket.emit('gameCreated', {id: game.id});
   });
