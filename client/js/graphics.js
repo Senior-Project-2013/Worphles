@@ -64,7 +64,7 @@ function update() {
       var tile = intersects[0].object.__tile_data.num;
       if (mouse.lClicked && !mouse.rClicked && tile != lastTile) {
         socket.emit('partialMove', {game:gameId, tile:tile, player:me});
-        colorTile(tile, players[me].color);
+        colorTile(tile, scaledColor(players[me].color, 1.5));
         currentTiles.push(tile);
         updateWordDisplay(currentTiles);
         lastTile = tile;
@@ -243,7 +243,7 @@ function changeTileLetter(tile, letter) {
   tiles[tile].letter = letter;
 }
 
-function colorTile(tile, color) {
+function colorTile(tile, color, partial) {
   if (!color) {
     if (tiles[tile].owner) {
       color = players[tiles[tile].owner].color;
