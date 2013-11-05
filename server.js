@@ -83,7 +83,6 @@ io.sockets.on('connection', function(socket) {
   });
 
   this.deleteGameIfEmpty = function(game) {
-    console.log(game.players);
     if(game && Object.keys(game.players).length === 0) {
       delete games[thisGameId];
     }

@@ -166,7 +166,7 @@ function Game(hostPlayer, settings) {
     } else {
       this.players[player.id] = player;
       this.players[player.id].color = Color.randomColor(Object.keys(this.players).length-1);
-      this.players[player.id].score = 0;
+      this.players[player.id].score = new Score();
       this.showPlayerList();
       return callback();
     }
