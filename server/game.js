@@ -33,6 +33,15 @@ var AWARD_NAMES = {
     title: "Most Tiles",
     description: "The winner and greatest speller in the universe with %d tiles."
   },
+  attempts: {
+    title: "Professional",
+    description: "%d% of their attempts were real words."
+  },
+  worstattempts: {
+    title: "Try Hard",
+    description: "They made up %d% of their words to no avail."
+  },
+  
   acquisitions: {
     title: "Colonialist",
     description: "Modern day Christopher Columbus, explored %d tiles."
@@ -49,11 +58,11 @@ var AWARD_NAMES = {
     title: "Turtle",
     description: "\"I like %d turtles\""
   },
-  bestwords: {
+  words: {
     title: "Most Words",
     description: "Found %d words"
   },
-  words: {
+  worstwords: {
     title: "Least Words",
     description: "Found %d words"
   },
