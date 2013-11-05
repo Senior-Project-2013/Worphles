@@ -64,7 +64,7 @@ io.sockets.on('connection', function(socket) {
   socket.on('gameList', function(data) {
     socket.emit('gameList', {
       gameList: connection.gameListData(),
-      autoUpdate: data.autoUpdate || data.autoUpdate === false ? false : true
+      autoUpdate: false
     });
   });
 
