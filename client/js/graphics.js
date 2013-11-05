@@ -343,7 +343,7 @@ function createParticleSystems() {
       color: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
       size: 0.04*WS/2,
       map: THREE.ImageUtils.loadTexture(
-        "client/resources/starImages/star-white.png"
+        "client/resources/worphleImages/lookup.png"
       ),
       blending: THREE.AdditiveBlending,
       transparent: true,
@@ -388,12 +388,12 @@ function createParticleSystems() {
   scene.add(starSystem);
   particleSystems.push(starSystem);
 
-  $('#graphics').mousedown(function() {
+  /*$('#graphics').mousedown(function() {
     spreadParticles();
   });
   $('#graphics').mouseup(function() {
     gatherParticles();
-  });
+  });*/
   
   renderParticles();
 }

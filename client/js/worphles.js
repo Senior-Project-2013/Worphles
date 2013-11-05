@@ -93,8 +93,9 @@ function setupUI() {
   $('#createGameButton').click(createGame);
 
   $('#joinGameModalShow').click(function() {
-    socket.emit('gameList');
-    $('#joinGameModal').modal('show');
+    socket.emit('gameList', {
+      autoUpdate: false
+    });
   });
 
   $('#startGameButton').click(function() {

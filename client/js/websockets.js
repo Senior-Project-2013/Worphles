@@ -36,7 +36,13 @@ function initWebsockets() {
   });
 
   socket.on('gameList', function(data) {
-    mainLobby.update(data);
+    mainLobby.update(data.gameList);
+
+    if(!data.autoUpdate && data.gameList.length > 0) {
+      $('#joinGameModal').modal('show');
+    } else if(!data.autoUpdate && data.gameList.length === 0) {
+      alert("There are no games to join, please create one!");
+    }
   });
 
   socket.on('joinedGame', function(data) {
@@ -52,10 +58,17 @@ function initWebsockets() {
     alert("Couldn't join game: " + data);
   });
 
-  socket.on('players', function(thePlayers) {
+  socket.on('lobbyists', function(data) {
+    console.log(data);
+  });
+
+  socket.on('players', function(data) {
     me = socket.socket.sessionid;
-    players = thePlayers;
-    scoreboard.update(thePlayers);
+    scoreboard.update(data);
+
+    if(data.host === me) {
+      $('#startGameButton').fadeIn();
+    }
   });
 
   socket.on('start', function(game) {

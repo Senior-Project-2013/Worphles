@@ -41,6 +41,9 @@ io.sockets.on('connection', function(socket) {
     }
   });
 
+  socket.on('lobbyists', function() {
+    socket.emit('lobbyists', Object.keys(lobbyists));
+  });
 
   this.gameListData = function() {
     var gameList = [];
@@ -58,8 +61,11 @@ io.sockets.on('connection', function(socket) {
     });
   };
 
-  socket.on('gameList', function() {
-    socket.emit('gameList', connection.gameListData());
+  socket.on('gameList', function(data) {
+    socket.emit('gameList', {
+      gameList: connection.gameListData(),
+      autoUpdate: data.autoUpdate || data.autoUpdate === false ? false : true
+    });
   });
 
   socket.on('joinGame', function(data) {
@@ -68,25 +74,24 @@ io.sockets.on('connection', function(socket) {
     thisGameId = gameId;
     if (gameId && games[gameId]) {
       games[gameId].addPlayer(thisPlayer, password, function(error) {
-	if (error) {
-	  socket.emit('deniedGame', error);
-	} else {
-	  delete lobbyists[thisPlayer.id];
+        if (error) {
+          socket.emit('deniedGame', error);
+        } else {
+          delete lobbyists[thisPlayer.id];
           socket.emit('joinedGame', data);
-          connection.showLobbyists('gameList', connection.gameListData());
-	}
+          connection.showLobbyists('gameList', {
+            gameList: connection.gameListData(),
+            autoUpdate: true
+          });
+        }
       });
     }
   });
 
   this.deleteGameIfEmpty = function(game) {
-    console.log(game);
     console.log(game.players);
     if(game && Object.keys(game.players).length === 0) {
-      console.log("Imma deletin'");
-      console.log(""); // remove me later, this is some sketchy crapo
       delete games[thisGameId];
-      console.log(""); // remove me later, this is some sketchy crap
     }
   };
 
@@ -95,7 +100,11 @@ io.sockets.on('connection', function(socket) {
     if (game && thisPlayer) {
       game.removePlayer(thisPlayer);
       connection.deleteGameIfEmpty(game);
-      connection.showLobbyists('gameList', connection.gameListData());
+      connection.showLobbyists('gameList', {
+        gameList: connection.gameListData(),
+        autoUpdate: true
+      });
+
       delete lobbyists[thisPlayer.id];
     }
   });
@@ -105,7 +114,11 @@ io.sockets.on('connection', function(socket) {
     if (game && thisPlayer) {
       game.removePlayer(thisPlayer);
       connection.deleteGameIfEmpty(game);
-      connection.showLobbyists('gameList', connection.gameListData());
+      connection.showLobbyists('gameList', {
+        gameList: connection.gameListData(),
+        autoUpdate: true
+      });
+
       lobbyists[thisPlayer.id] = thisPlayer;
     }
   });
@@ -130,7 +143,11 @@ io.sockets.on('connection', function(socket) {
     games[game.id] = game;
     delete lobbyists[thisPlayer.id];
     thisGameId = game.id;
-    connection.showLobbyists('gameList', connection.gameListData());
+    connection.showLobbyists('gameList', {
+      gameList: connection.gameListData(),
+      autoUpdate: true
+    });
+
     socket.emit('gameCreated', {id: game.id});
   });
 
@@ -147,7 +164,6 @@ io.sockets.on('connection', function(socket) {
       }
     }
   });
-
 
   socket.on('moveComplete', function(data) { games[data.game].validateWord(socket.id, data.tiles); });
   socket.on('partialMove', function(data) { games[data.game].showPartialMove(data); });

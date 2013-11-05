@@ -126,21 +126,25 @@ function Game(hostPlayer, settings) {
       this.startTime = new Date();
       var i = 0;
       _.each(this.players, function(player) {
-	player.color = Color.randomColor(i);
-	i++;
+        player.color = Color.randomColor(i);
+        i++;
       });
+
       this.showEveryone('start', this.safeCopy());
+
       var thisAlias = this;
       this.intervalId = setInterval(function() {
-	var currentTime = new Date();
-	if ((currentTime - thisAlias.startTime) >= thisAlias.settings.roundTime) {
+        var currentTime = new Date();
+        if ((currentTime - thisAlias.startTime) >= thisAlias.settings.roundTime) {
           thisAlias.showEveryone('gameOver', {
-	    scores: thisAlias.getPlayerScores(),
-	    awards: thisAlias.getEndingAwards()
-	  });
+            scores: thisAlias.getPlayerScores(),
+            awards: thisAlias.getEndingAwards()
+          });
+
           clearInterval(thisAlias.intervalId);
-	}
+        }
       }, 1000);
+
       return true;
     }
   };
@@ -162,6 +166,7 @@ function Game(hostPlayer, settings) {
     } else {
       this.players[player.id] = player;
       this.players[player.id].color = Color.randomColor(Object.keys(this.players).length-1);
+      this.players[player.id].score = 0;
       this.showPlayerList();
       return callback();
     }
@@ -170,7 +175,7 @@ function Game(hostPlayer, settings) {
   this.removePlayer = function(player) {
     delete this.players[player.id];
     if (player.id === this.hostId && this.players.length !== 0) {
-      this.hostId = this.players[0];
+      this.hostId = Object.keys(this.players)[0];
     }
     this.showPlayerList();
   };
@@ -302,6 +307,7 @@ function Game(hostPlayer, settings) {
       host: this.hostId,
       players: this.getPlayersCopy()
     };
+
     this.showEveryone('players', data);
   };
 

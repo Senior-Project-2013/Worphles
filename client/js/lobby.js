@@ -2,16 +2,12 @@ function MainLobby() {
 
   this.update = function(data) {
     var gameListDiv = $('#gameListBody').empty();
-    if (data.length === 0) {
-      alert("There are no games to join, please create one!");
-    } else {
-      var self = this;
-      $.each(data, function(i, game) {
-	self.createLobbyRow(game);
-      });
-    }
+    
+    var self = this;
+    $.each(data, function(i, game) {
+      self.createLobbyRow(game);
+    });
   };
-
 
   /* creates a lobby row */
   //id    Name    4x4    2/6 players
