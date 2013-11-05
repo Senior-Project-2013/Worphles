@@ -115,6 +115,10 @@ body {
   direction: rtl;
 }
 
-#awardName {
-  padding-right: 1em;
+.awardName {
+  padding-right: 2em;
+}
+
+.awardPlayer {
+  font-weight: bold;
 }

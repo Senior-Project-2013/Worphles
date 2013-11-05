@@ -29,18 +29,54 @@ var COLORS = {
 };
 
 var AWARD_NAMES = {
-  tiles: "Most Tiles",
-  acquisitions: "Colonialist",
-  steals: "Thief",
-  losses: "Loser",
-  reinforcements : "Hermit",
-  longestWord: "Longfellow",
-  worsttiles: "Least Tiles",
-  worstacquisitions: "Dora the Explorer",
-  worststeals: "Cop",
-  worstlosses: "Pacifist",
-  worstreinforcements : "Traitor",
-  worstlongestWord: "Shorty"
+  tiles: {
+    title: "Most Tiles",
+    description: "The winner and greatest speller in the universe."
+  },
+  acquisitions: {
+    title: "Colonialist",
+    description: "Modern day Christopher Columbus, except with tiles."
+  },
+  steals: {
+    title: "Thief",
+    description: "Took the most tiles."
+  },
+  losses: {
+    title: "Loser",
+    description: "Had the most tiles stolen :("
+  },
+  reinforcements: {
+    title: "Hermit",
+    description: "Likes to use what they own." 
+  },
+  longestWord: {
+    title: "Longfellow",
+    description: "The walking dictionary."
+  },
+  worsttiles: {
+    title: "Least Tiles",
+    description: "Gave it their best try and failed."
+  },
+  worstacquisitions: {
+    title: "Dora the Explorer",
+    description: "Doesn't explore the board well."
+  },
+  worststeals: {
+    title: "Cop",
+    description: "Doesn't steal from others."
+  },
+  worstlosses: {
+    title: "Pacifist",
+    description: "No one messes with this person's tiles."
+  },
+  worstreinforcements: {
+    title: "Traitor",
+    description: "Doesn't re-use their own tiles."
+  },
+  worstlongestWord: {
+    title: "Shorty",
+    description: "Can't spell long words."
+  }
 };
 
 function Color(r,g,b) {
@@ -230,7 +266,8 @@ function Game(hostPlayer, settings) {
       });
     });
     _.each(awards, function(award, key) {
-      award.name = AWARD_NAMES[key];
+      award.name = AWARD_NAMES[key].title;
+      award.description = AWARD_NAMES[key].description
     });
     return awards;
   };

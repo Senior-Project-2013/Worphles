@@ -87,6 +87,7 @@ function initWebsockets() {
 
       $('<tr/>', {
         id: key,
+        title: award.description,
         class: 'awardRow'
       }).appendTo(awardsBody);
       var thisAward = $('#'+key);
