@@ -1,16 +1,17 @@
-var scene;              // the threejs scene
-var camera;             // the threejs camera
-var renderer;           // the threejs renderer
-var projector;          // the threejs projector
-var clock;              // the threejs clock
-var controls;           // the threejs controls
-var mouse;              // our handy mouse state object
-var cube;               // our cube world mesh
-var tiles;              // the list of tile meshes and data about them
-var targetList = [];    // the list of tile hit targets for intersecting with mouse
-var letterList = [];    // the list of letter meshes so we can remove them later
-var currentTiles = [];  // the currently selected tiles
-var lastTile;           // the last tile that was selected
+var scene;               // the threejs scene
+var camera;              // the threejs camera
+var renderer;            // the threejs renderer
+var projector;           // the threejs projector
+var clock;               // the threejs clock
+var controls;            // the threejs controls
+var mouse;               // our handy mouse state object
+var cube;                // our cube world mesh
+var tiles;               // the list of tile meshes and data about them
+var targetList = [];     // the list of tile hit targets for intersecting with mouse
+var letterList = [];     // the list of letter meshes so we can remove them later
+var currentTiles = [];   // the currently selected tiles
+var currentTilesMap = {};// the currently selected tiles in a map
+var lastTile;            // the last tile that was selected
 
 function initGraphics()  {
   var GAME_WIDTH = window.innerWidth/2;
@@ -62,11 +63,12 @@ function update() {
     var intersects = ray.intersectObjects( targetList );
     if ( intersects.length > 0) {
       var tile = intersects[0].object.__tile_data.num;
-      if (mouse.lClicked && !mouse.rClicked && tile != lastTile) {
+      if (mouse.lClicked && !mouse.rClicked && tile != lastTile && !currentTilesMap[tile]) {
         socket.emit('partialMove', {game:gameId, tile:tile, player:me});
         colorTile(tile, scaledColor(players[me].color, 1.5));
-        $('#bloop').play();
+        $('#bloop').trigger('play');
         currentTiles.push(tile);
+        currentTilesMap[tile] = true;
         updateWordDisplay(currentTiles);
         lastTile = tile;
       }
@@ -216,6 +218,7 @@ function mouseUp(event) {
     socket.emit('moveComplete', {game:gameId, tiles:currentTiles});
   }
   currentTiles = [];
+  currentTilesMap = {};
   lastTile = null;
 
   $('#currentWord').text('');
