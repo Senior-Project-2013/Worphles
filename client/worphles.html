@@ -46,7 +46,7 @@
         <h1>Worphles</h1>
         <form id="nameForm" role="form" onsubmit="return chooseName();">
           <div class="form-group">
-            <input type="text" class="form-control" id="nameInput" placeholder="Enter a Name">
+            <input type="text" class="form-control" id="nameInput" maxlength="12" placeholder="Enter a Name">
           </div>
           <button type="submit" id="nameButton" class="btn btn-primary" disabled="disabled"><i class="fa fa-check"></i> Get Started</button>
         </form>
@@ -94,7 +94,7 @@
               <form id="createGameForm" role="form" onsubmit="return createGame();">
                 <div class="form-group">
                   <label for="gameNameInput">Name</label>
-                  <input type="text" class="form-control" id="gameNameInput" placeholder="Awesome Worphle Game">
+                  <input type="text" class="form-control" id="gameNameInput" maxlength="20" placeholder="Enter a Game Name">
                   <label for="gamePasswordInput">Password</label>
                   <input type="password" class="form-control" id="gamePasswordInput" placeholder="Optional">
                   <label for="gameBoardSizeInput">Board Size</label>
