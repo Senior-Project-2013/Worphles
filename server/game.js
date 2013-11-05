@@ -31,59 +31,59 @@ var COLORS = {
 var AWARD_NAMES = {
   tiles: {
     title: "Most Tiles",
-    description: "The winner and greatest speller in the universe with {0} tiles."
+    description: "The winner and greatest speller in the universe with %d tiles."
   },
   acquisitions: {
     title: "Colonialist",
-    description: "Modern day Christopher Columbus, explored {0} tiles."
+    description: "Modern day Christopher Columbus, explored %d tiles."
   },
   steals: {
     title: "Smooth Criminal",
-    description: "Stole {0} tiles away from other players"
+    description: "Stole %d tiles away from other players"
   },
   losses: {
     title: "Clueless Victim",
-    description: "Had {0}  tiles stolen away from them"
+    description: "Had %d  tiles stolen away from them"
   },
   reinforcements: {
     title: "Turtle",
-    description: "\"I like {0} turtles\""
+    description: "\"I like %d turtles\""
   },
   bestwords: {
     title: "Most Words",
-    description: "Found {0} words"
+    description: "Found %d words"
   },
   words: {
     title: "Least Words",
-    description: "Found {0} words"
+    description: "Found %d words"
   },
   longestWord: {
     title: "Longfellow",
-    description: "The walking dictionary who found a {0} letter word."
+    description: "The walking dictionary who found a %d letter word."
   },
   worsttiles: {
     title: "Participant",
-    description: "They tried so hard to get their measly {0} tiles."
+    description: "They tried so hard to get their measly %d tiles."
   },
   worstacquisitions: {
     title: "Dora the Explorer",
-    description: "Literally the worst expolorer ever, only explored {0} tiles"
+    description: "Literally the worst expolorer ever, only explored %d tiles"
   },
   worststeals: {
     title: "Pacifist",
-    description: "Just let players walk all over them and steal {0} tiles."
+    description: "Just let players walk all over them and steal %d tiles."
   },
   worstlosses: {
     title: "Untouchable",
-    description: "Nobody dares steal their tiles; they only lost {0} tiles to others."
+    description: "Nobody dares steal their tiles; they only lost %d tiles to others."
   },
   worstreinforcements: {
     title: "Berserker",
-    description: "Who needs reinforcements anyway; They only reinforced {0} tiles."
+    description: "Who needs reinforcements anyway; They only reinforced %d tiles."
   },
   worstlongestWord: {
     title: "Shorty",
-    description: "Their longest word was only an embarassing {0} characters"
+    description: "Their longest word was only an embarassing %d characters"
   }
 };
 
@@ -96,13 +96,15 @@ Color.randomColor = function(i) {
   return COLORS[Object.keys(COLORS)[i%Object.keys(COLORS).length]];
 };
 
-function Score(tiles, acquisitions, steals, losses, reinforcements, longestWord) {
+function Score(tiles, acquisitions, steals, losses, reinforcements, longestWord, words, attempts) {
   this.tiles = tiles || 0;
   this.acquisitions = acquisitions || 0;
   this.steals = steals || 0;
   this.losses = losses || 0;
   this.reinforcements = reinforcements || 0;
   this.longestWord = longestWord || -1;
+  this.words = words || 0;
+  this.attempts = attempts || 0;
 };
 
 function Player(id, socket, name, color, score, safe) {
@@ -258,6 +260,9 @@ function Game(hostPlayer, settings) {
   this.getEndingAwards = function() {
     var awards = {};
     _.each(this.players, function(player) {
+      
+      player.score.attempts = player.score.words / player.score.attempts;
+      
       _.each(player.score, function(value, key) {
         if (!awards[key]) {
           awards[key] = {player: player.id, value: value};
@@ -275,7 +280,7 @@ function Game(hostPlayer, settings) {
     });
     _.each(awards, function(award, key) {
       award.name = AWARD_NAMES[key].title;
-      award.description = AWARD_NAMES[key].description
+      award.description = AWARD_NAMES[key].description;
     });
     return awards;
   };
@@ -330,7 +335,9 @@ function Game(hostPlayer, settings) {
       word += this.tiles[tile].letter;
     }, this);
 
+    this.players[player].score.attempts++;
     if (dictionary.isAWord(word) && pathValidator.isAPath(inputTiles, this.settings.gridSize)) {
+      this.players[player].score.words++;
       this.showEveryone('successfulMove', this.tileUpdate(player, inputTiles));
       this.showEveryone('scoreboardUpdate', {
         player: {
