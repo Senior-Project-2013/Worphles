@@ -250,4 +250,5 @@ function hideAllDivs() {
   $('#startGameButton').fadeOut();
   $('#leaveGameButton').fadeOut();
   $('#chatBar').fadeOut();
+  $('#chat > #messages').empty();
 }

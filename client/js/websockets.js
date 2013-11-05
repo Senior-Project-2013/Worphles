@@ -57,6 +57,8 @@ function initWebsockets() {
   });
 
   socket.on('players', function(data) {
+    players = data.players;
+
     me = socket.socket.sessionid;
     scoreboard.update(data);
 
@@ -125,7 +127,6 @@ function initWebsockets() {
   });
 
   socket.on('chat', function(data) {
-    console.log('got chat');
     showChat(data.player, data.message);
   });
 

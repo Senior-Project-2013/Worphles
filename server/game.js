@@ -165,11 +165,24 @@ function Game(hostPlayer, settings) {
       return callback(error);
     } else {
       this.players[player.id] = player;
-      this.players[player.id].color = Color.randomColor(Object.keys(this.players).length-1);
+      //this.players[player.id].color = Color.randomColor(Object.keys(this.players).length-1);
+      this.recolorPlayers();
       this.players[player.id].score = new Score();
+
       this.showPlayerList();
+      this.showEveryone('chat', {player: player.id, message: 'has joined the game.'});
+
       return callback();
     }
+  };
+
+  this.recolorPlayers = function() {
+    var i = 0;
+
+    _.each(this.players, function(player) {
+      player.color = Color.randomColor(i);
+      i++;
+    });
   };
 
   this.removePlayer = function(player) {
@@ -177,6 +190,7 @@ function Game(hostPlayer, settings) {
     if (player.id === this.hostId && this.players.length !== 0) {
       this.hostId = Object.keys(this.players)[0];
     }
+    this.showEveryone('chat', {player: player.id, message: 'has left the game.'});
     this.showPlayerList();
   };
 
