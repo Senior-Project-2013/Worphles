@@ -66,6 +66,16 @@ function setupUI() {
       return false;
   });
 
+  $('body').keypress(function(e) {
+    if(e.which === 13) { //enter key
+      if($('#createGameModal').is(":visible")) {
+        $('#createGameForm').submit();
+      } else if($('#nameForm').is(":visible")) {
+        $('#nameForm').submit();
+      }
+    }
+  });
+
   var nameButton = $('#nameButton');
   var nameInput = $('#nameInput');
   nameInput.keyup(function() {
