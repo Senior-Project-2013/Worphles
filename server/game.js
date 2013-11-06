@@ -377,6 +377,9 @@ function Game(hostPlayer, settings) {
 
   this.chat = function(player, message) {
     this.showEveryone('chat', {player: player, message: message});
+    if (message.indexOf('worph') !== -1) {
+      this.showEveryone('chat', {player: player, safe: true, message: '<img src="/client/images/worph.png"></img>'});
+    }
     if (message.indexOf('nyan') !== -1) {
       this.showEveryone('chat', {player: player, safe: true, message: '<img src="/client/images/nyan.gif"></img>'});
     }
