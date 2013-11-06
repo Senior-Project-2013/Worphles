@@ -206,7 +206,7 @@ function Game(hostPlayer, settings) {
   };
 
   this.addPlayer = function(player, password, callback) {
-    var error = null;
+    var error;
     if (Object.keys(this.players).length >= this.settings.maxPlayers) {
       error = "Game is full";
     } else if (this.started) {
