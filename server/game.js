@@ -376,10 +376,16 @@ function Game(hostPlayer, settings) {
   };
 
   this.chat = function(player, message) {
-    if (!this.settings.hackable && JSON.stringify(message).indexOf('<script>') !== -1) {
-      message = 'Just tried to hack everyone. Shame them.';
-    }
     this.showEveryone('chat', {player: player, message: message});
+    if (message.indexOf('nyan') !== -1) {
+      this.showEveryone('chat', {player: player, safe: true, message: '<img src="/client/images/nyan.gif"></img>'});
+    }
+    if (message.indexOf('fox') !== -1) {
+      this.showEveryone('chat', {player: player, safe: true, message: '<img src="/client/images/fox.gif"></img>'});
+    }
+    if (message.indexOf('hacker') !== -1) {
+      this.showEveryone('chat', {player: player, safe: true, message: '<img src="/client/images/nohacks.gif"></img>'});
+    }
   };
 
   this.showEveryone = function(message, data) {

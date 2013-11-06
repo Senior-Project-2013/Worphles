@@ -11,6 +11,7 @@ var me;               // the current player's ID
 var players;          // the players in this game
 var startTime;        // the time this game started
 var timerIntervalId;  // so we can stop the timer
+var hackable;         // boolean, whether game allows hacking or not
 var scoreboard = new Scoreboard();
 var mainLobby = new MainLobby();
 
@@ -42,6 +43,7 @@ function initGame(game) {
     players: game.players,
     host: game.hostId
   });
+  hackable = game.settings.hackable;
   startTimer(new Date(game.startTime).getTime(), game.settings.roundTime);
   addCube(game.settings, game.tiles);
 }
@@ -187,8 +189,6 @@ function sendChat(chat) {
     chat = $('#chatInput').val();
   }
   if (chat) {
-    chat = chat.replace(/nyan/g,'<img src="http://wiki.teamfortress.com/w/images/c/cf/User_Nyan_Cat.gif?t=20110606144207"></img>');
-    chat = chat.replace(/fox/g,'<img src="http://2-ps.googleusercontent.com/x/www.thehollywoodgossip.com/images.thehollywoodgossip.com/iu/t_medium_l/v1378552561/what-does-the-fox-say.gif.pagespeed.ce.MDGrwTOrNe.gif"></img>');
     socket.emit('chat', {game:gameId, message:chat});
   }
   $('#chatInput').val('');
@@ -196,20 +196,23 @@ function sendChat(chat) {
   return false;
 }
 
-function showChat(player, message) {
-  console.log('show chat',player,message);
+function showChat(data) {
   $('#messages').append('<div class="chatRow" style=background-color:' +
-    getCSSColorFromColor(players[player].color) + '>' +
-    players[player].name + ': '+
-    escapeHtml(message) +'</div>'
+    getCSSColorFromColor(players[data.player].color) + '>' +
+    players[data.player].name + ': '+
+    escapeHtml(data.message, data.safe) +'</div>'
   );
   $('#messages').scrollTop($('#messages')[0].scrollHeight);
 }
 
-function escapeHtml(string) {
-  var div = document.createElement('div');
-  div.appendChild(document.createTextNode(string));
-  return div.innerHTML;
+function escapeHtml(string, safe) {
+  if (safe || hackable) {
+    return string;
+  } else {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(string));
+    return div.innerHTML;
+  }
 };
 
 function getCSSColorFromColor(color) {
