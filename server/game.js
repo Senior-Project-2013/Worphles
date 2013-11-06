@@ -153,6 +153,7 @@ function Settings(roundTime, maxPlayers, gridSize, name, password, hackable) {
 };
 
 function Game(hostPlayer, settings) {
+  var thisGame = this; // for any scoping issues, just use this
   this.hostId = hostPlayer.id;
   this.started = false;
   this.startTime = null;
@@ -162,17 +163,6 @@ function Game(hostPlayer, settings) {
   for (var i = 0; i < this.settings.gridSize * this.settings.gridSize * 6; i++) {
     this.tiles.push(new Tile(Tile.randomLetter()));
   }
-
-  this.players = {};
-  this.players[hostPlayer.id] = hostPlayer;
-  this.players[hostPlayer.id].color = Color.randomColor(0);
-  var initialPlayer = {};
-  initialPlayer[hostPlayer.id] = hostPlayer.safeCopy();
-
-  this.players[hostPlayer.id].socket.emit('players', {
-    host: this.hostId,
-    players: initialPlayer
-  });
 
   this.start = function(playerId) {
     if (playerId !== this.hostId) {
@@ -221,9 +211,9 @@ function Game(hostPlayer, settings) {
       return callback(error);
     } else {
       this.players[player.id] = player;
-      //this.players[player.id].color = Color.randomColor(Object.keys(this.players).length-1);
       this.recolorPlayers();
       this.players[player.id].score = new Score();
+      this.registerSocketListeners(player);
 
       this.showPlayerList();
       this.showEveryone('chat', {player: player.id, message: 'has joined the game.'});
@@ -241,7 +231,26 @@ function Game(hostPlayer, settings) {
     });
   };
 
+  this.registerSocketListeners = function(player) {
+    player.socket.on('moveComplete', function(data) {
+      thisGame.validateWord(player.socket.id, data.tiles);
+    });
+    player.socket.on('partialMove', function(data) {
+      thisGame.showPartialMove(data);
+    });
+    player.socket.on('chat', function(data) {
+      thisGame.chat(player.socket.id, data.message);
+    });
+  }
+
+  this.removeSocketListeners = function(player) {
+    player.socket.removeAllListeners('moveComplete');
+    player.socket.removeAllListeners('partialMove');
+    player.socket.removeAllListeners('chat');
+  }
+
   this.removePlayer = function(player) {
+    this.removeSocketListeners(player);
     delete this.players[player.id];
     if (player.id === this.hostId && this.players.length !== 0) {
       this.hostId = Object.keys(this.players)[0];
@@ -399,6 +408,18 @@ function Game(hostPlayer, settings) {
     info.roundTime = this.settings.roundTime;
     return info;
   };
+
+  this.players = {};
+  this.players[hostPlayer.id] = hostPlayer;
+  this.players[hostPlayer.id].color = Color.randomColor(0);
+  this.registerSocketListeners(hostPlayer);
+  var initialPlayer = {};
+  initialPlayer[hostPlayer.id] = hostPlayer.safeCopy();
+
+  this.players[hostPlayer.id].socket.emit('players', {
+    host: this.hostId,
+    players: initialPlayer
+  });
 };
 
 /**
