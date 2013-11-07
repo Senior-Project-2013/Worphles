@@ -11,13 +11,9 @@ io.configure(function () {
   io.set('log level', 1);
 });
 
-// serve all webui contents statically
-app.use('/webui', express.static(__dirname + '/webui'));
+// serve all client contents statically
 app.use('/client', express.static(__dirname + '/client'));
-
-// serve the main game html file
 app.get('/', function(req, res) { res.sendfile(__dirname+'/client/worphles.html'); });
-app.get('/play', function(req, res) { res.sendfile(__dirname+'/webui/Home.html'); });
 
 var games = {};
 var lobbyists = {};
@@ -145,19 +141,13 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('startGame', function(data) {
     if (!(thisPlayer && thisPlayer.id)) {
-      socket.emit('fail');
-      return;
+      return socket.emit('fail');
     }
     if (data.gameId && games[data.gameId]) {
       games[data.gameId].start(data.playerId);
       if (!games[data.gameId].started) {
-	socket.emit('startFail', {message: 'Could not start the game.'});
-	return;
+        return socket.emit('startFail', {message: 'Could not start the game.'});
       }
     }
   });
-
-  socket.on('moveComplete', function(data) { games[data.game].validateWord(socket.id, data.tiles); });
-  socket.on('partialMove', function(data) { games[data.game].showPartialMove(data); });
-  socket.on('chat', function(data) { games[data.game].chat(socket.id, data.message); });
 });

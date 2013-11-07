@@ -3,6 +3,7 @@ var pathValidator = require('./path_validator.js');
 var cubeGrid = require('./cube_grid').getGrid();
 var _ = require('underscore');
 var uuid = require('node-uuid');
+var util = require('util');
 
 // all time is in milliseconds
 var MS_PER_SEC = 1000;
@@ -29,18 +30,71 @@ var COLORS = {
 };
 
 var AWARD_NAMES = {
-  tiles: "Most Tiles",
-  acquisitions: "Colonialist",
-  steals: "Thief",
-  losses: "Loser",
-  reinforcements : "Hermit",
-  longestWord: "Longfellow",
-  worsttiles: "Least Tiles",
-  worstacquisitions: "Dora the Explorer",
-  worststeals: "Cop",
-  worstlosses: "Pacifist",
-  worstreinforcements : "Traitor",
-  worstlongestWord: "Shorty"
+  tiles: {
+    title: "Most Tiles",
+    description: "The winner and greatest speller in the universe with %d tiles."
+  },
+  attempts: {
+    title: "Professional",
+    description: "%d% of their attempts were real words."
+  },
+  worstattempts: {
+    title: "Try Hard",
+    description: "Only %d% of their submitted words were real."
+  },
+  
+  acquisitions: {
+    title: "Colonialist",
+    description: "Modern day Christopher Columbus, explored %d tiles."
+  },
+  steals: {
+    title: "Smooth Criminal",
+    description: "Stole %d tiles away from other players"
+  },
+  losses: {
+    title: "Clueless Victim",
+    description: "Had %d  tiles stolen away from them"
+  },
+  reinforcements: {
+    title: "Turtle",
+    description: "\"I like %d turtles\""
+  },
+  words: {
+    title: "Most Words",
+    description: "Found %d words"
+  },
+  worstwords: {
+    title: "Least Words",
+    description: "Found %d words"
+  },
+  longestWord: {
+    title: "Longfellow",
+    description: "The walking dictionary who found a %d letter word."
+  },
+  worsttiles: {
+    title: "Participant",
+    description: "They tried so hard to get their measly %d tiles."
+  },
+  worstacquisitions: {
+    title: "Dora the Explorer",
+    description: "Literally the worst expolorer ever, only explored %d tiles"
+  },
+  worststeals: {
+    title: "Pacifist",
+    description: "Just let players walk all over them and steal %d tiles."
+  },
+  worstlosses: {
+    title: "Untouchable",
+    description: "Nobody dares steal their tiles; they only lost %d tiles to others."
+  },
+  worstreinforcements: {
+    title: "Berserker",
+    description: "Who needs reinforcements anyway; They only reinforced %d tiles."
+  },
+  worstlongestWord: {
+    title: "Shorty",
+    description: "Their longest word was only an embarassing %d characters"
+  }
 };
 
 function Color(r,g,b) {
@@ -52,13 +106,15 @@ Color.randomColor = function(i) {
   return COLORS[Object.keys(COLORS)[i%Object.keys(COLORS).length]];
 };
 
-function Score(tiles, acquisitions, steals, losses, reinforcements, longestWord) {
+function Score(tiles, acquisitions, steals, losses, reinforcements, longestWord, words, attempts) {
   this.tiles = tiles || 0;
   this.acquisitions = acquisitions || 0;
   this.steals = steals || 0;
   this.losses = losses || 0;
   this.reinforcements = reinforcements || 0;
   this.longestWord = longestWord || -1;
+  this.words = words || 0;
+  this.attempts = attempts || 0;
 };
 
 function Player(id, socket, name, color, score, safe) {
@@ -97,6 +153,7 @@ function Settings(roundTime, maxPlayers, gridSize, name, password, hackable) {
 };
 
 function Game(hostPlayer, settings) {
+  var thisGame = this; // for any scoping issues, just use this
   this.hostId = hostPlayer.id;
   this.started = false;
   this.startTime = null;
@@ -106,17 +163,6 @@ function Game(hostPlayer, settings) {
   for (var i = 0; i < this.settings.gridSize * this.settings.gridSize * 6; i++) {
     this.tiles.push(new Tile(Tile.randomLetter()));
   }
-
-  this.players = {};
-  this.players[hostPlayer.id] = hostPlayer;
-  this.players[hostPlayer.id].color = Color.randomColor(0);
-  var initialPlayer = {};
-  initialPlayer[hostPlayer.id] = hostPlayer.safeCopy();
-
-  this.players[hostPlayer.id].socket.emit('players', {
-    host: this.hostId,
-    players: initialPlayer
-  });
 
   this.start = function(playerId) {
     if (playerId !== this.hostId) {
@@ -150,7 +196,7 @@ function Game(hostPlayer, settings) {
   };
 
   this.addPlayer = function(player, password, callback) {
-    var error = null;
+    var error;
     if (Object.keys(this.players).length >= this.settings.maxPlayers) {
       error = "Game is full";
     } else if (this.started) {
@@ -165,9 +211,9 @@ function Game(hostPlayer, settings) {
       return callback(error);
     } else {
       this.players[player.id] = player;
-      //this.players[player.id].color = Color.randomColor(Object.keys(this.players).length-1);
       this.recolorPlayers();
       this.players[player.id].score = new Score();
+      this.registerSocketListeners(player);
 
       this.showPlayerList();
       this.showEveryone('chat', {player: player.id, message: 'has joined the game.'});
@@ -185,7 +231,26 @@ function Game(hostPlayer, settings) {
     });
   };
 
+  this.registerSocketListeners = function(player) {
+    player.socket.on('moveComplete', function(data) {
+      thisGame.validateWord(player.socket.id, data.tiles);
+    });
+    player.socket.on('partialMove', function(data) {
+      thisGame.showPartialMove(data);
+    });
+    player.socket.on('chat', function(data) {
+      thisGame.chat(player.socket.id, data.message);
+    });
+  }
+
+  this.removeSocketListeners = function(player) {
+    player.socket.removeAllListeners('moveComplete');
+    player.socket.removeAllListeners('partialMove');
+    player.socket.removeAllListeners('chat');
+  }
+
   this.removePlayer = function(player) {
+    this.removeSocketListeners(player);
     delete this.players[player.id];
     if (player.id === this.hostId && this.players.length !== 0) {
       this.hostId = Object.keys(this.players)[0];
@@ -214,6 +279,9 @@ function Game(hostPlayer, settings) {
   this.getEndingAwards = function() {
     var awards = {};
     _.each(this.players, function(player) {
+      
+      player.score.attempts = Math.round(player.score.words / player.score.attempts * 100);
+      
       _.each(player.score, function(value, key) {
         if (!awards[key]) {
           awards[key] = {player: player.id, value: value};
@@ -230,7 +298,9 @@ function Game(hostPlayer, settings) {
       });
     });
     _.each(awards, function(award, key) {
-      award.name = AWARD_NAMES[key];
+      award.name = AWARD_NAMES[key].title;
+      award.description = util.format(AWARD_NAMES[key].description, award.value);
+				      
     });
     return awards;
   };
@@ -285,7 +355,9 @@ function Game(hostPlayer, settings) {
       word += this.tiles[tile].letter;
     }, this);
 
+    this.players[player].score.attempts++;
     if (dictionary.isAWord(word) && pathValidator.isAPath(inputTiles, this.settings.gridSize)) {
+      this.players[player].score.words++;
       this.showEveryone('successfulMove', this.tileUpdate(player, inputTiles));
       this.showEveryone('scoreboardUpdate', {
         player: {
@@ -304,10 +376,19 @@ function Game(hostPlayer, settings) {
   };
 
   this.chat = function(player, message) {
-    if (!this.settings.hackable && JSON.stringify(message).indexOf('<script>') !== -1) {
-      message = 'Just tried to hack everyone. Shame them.';
-    }
     this.showEveryone('chat', {player: player, message: message});
+    if (message.indexOf('worph') !== -1) {
+      this.showEveryone('chat', {player: player, safe: true, message: '<img src="/client/images/worph.png"></img>'});
+    }
+    if (message.indexOf('nyan') !== -1) {
+      this.showEveryone('chat', {player: player, safe: true, message: '<img src="/client/images/nyan.gif"></img>'});
+    }
+    if (message.indexOf('fox') !== -1) {
+      this.showEveryone('chat', {player: player, safe: true, message: '<img src="/client/images/fox.gif"></img>'});
+    }
+    if (message.indexOf('hacker') !== -1) {
+      this.showEveryone('chat', {player: player, safe: true, message: '<img src="/client/images/nohacks.gif"></img>'});
+    }
   };
 
   this.showEveryone = function(message, data) {
@@ -336,6 +417,18 @@ function Game(hostPlayer, settings) {
     info.roundTime = this.settings.roundTime;
     return info;
   };
+
+  this.players = {};
+  this.players[hostPlayer.id] = hostPlayer;
+  this.players[hostPlayer.id].color = Color.randomColor(0);
+  this.registerSocketListeners(hostPlayer);
+  var initialPlayer = {};
+  initialPlayer[hostPlayer.id] = hostPlayer.safeCopy();
+
+  this.players[hostPlayer.id].socket.emit('players', {
+    host: this.hostId,
+    players: initialPlayer
+  });
 };
 
 /**

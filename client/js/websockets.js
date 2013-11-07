@@ -87,6 +87,7 @@ function initWebsockets() {
 
       $('<tr/>', {
         id: key,
+        title: award.description,
         class: 'awardRow'
       }).appendTo(awardsBody);
       var thisAward = $('#'+key);
@@ -123,12 +124,10 @@ function initWebsockets() {
   });
 
   socket.on('partialMove', function(data) {
-    colorTile(data.tile, players[data.player].color);
+    colorTile(data.tile, scaledColor(players[data.player].color, 1.5));
   });
 
-  socket.on('chat', function(data) {
-    showChat(data.player, data.message);
-  });
+  socket.on('chat', showChat);
 
   socket.on('scoreboardUpdate', function(update) {
     var player = update.player;
