@@ -88,6 +88,14 @@ io.sockets.on('connection', function(socket) {
     }
   };
 
+  socket.on('deleteEmptyGames', function() { //emit 'deleteEmptyGames' to delete empty games until we figure out this bug
+    _.each(games, function(game) {
+      if(game && Object.keys(game.players).length === 0) {
+        delete games[game.id];
+      }
+    });
+  });
+
   socket.on('disconnect', function() {
     var game = games[thisGameId];
     if (game && thisPlayer) {
