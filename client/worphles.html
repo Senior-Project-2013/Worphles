@@ -7,6 +7,7 @@
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.min.css" rel="stylesheet">
   <link href='http://fonts.googleapis.com/css?family=Chewy' rel='stylesheet' type='text/css'>
+  <link href="/client/css/jquery.flippage.css" type="text/css" rel="stylesheet" />
 
   <!-- Custom CSS -->
   <link href="/client/css/sidebar.css" rel="stylesheet">
@@ -14,7 +15,15 @@
   <link href="/client/css/worphles.css" rel="stylesheet">
 
   <!-- Audio -->
-  <audio id="bloop" src="/client/audio/bloop.mp3" preload="auto"></audio>
+  <audio id="bloop1" src="/client/audio/1.mp3" preload="auto"></audio>
+  <audio id="bloop2" src="/client/audio/2.mp3" preload="auto"></audio>
+  <audio id="bloop3" src="/client/audio/3.mp3" preload="auto"></audio>
+  <audio id="bloop4" src="/client/audio/4.mp3" preload="auto"></audio>
+  <audio id="bloop5" src="/client/audio/5.mp3" preload="auto"></audio>
+  <audio id="bloop6" src="/client/audio/6.mp3" preload="auto"></audio>
+  <audio id="bloop7" src="/client/audio/7.mp3" preload="auto"></audio>
+  <audio id="bloop8" src="/client/audio/8.mp3" preload="auto"></audio>
+  <audio id="bloop9" src="/client/audio/9.mp3" preload="auto"></audio>
 
   <!-- JS Libraries -->
   <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
@@ -29,6 +38,7 @@
   <script type="text/javascript" src="/client/js/lib/tinysort.min.js"></script>
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
   <script type="text/javascript" src="/client/js/lib/jquery.imBookFlip-1.3.js"></script>
+  <script type="text/javascript" src="/client/js/lib/jquery.flippage.js"></script>
 
   <!-- Custom JS -->
   <script type="text/javascript" src="/client/js/lobby.js"></script>
@@ -54,7 +64,7 @@
           <button type="submit" id="nameButton" class="btn btn-primary" disabled="disabled"><i class="fa fa-check"></i> Get Started</button>
         </form>
         <button type="button" id="viewBookBtn" class="btn btn-info"><i class="fa fa-book"></i> Storybook</button>
-        <button type="button" class="btn btn-info"><i class="fa fa-question-circle"></i> Tutorial</button>
+        <button type="button" id="viewTutorialBtn"class="btn btn-info"><i class="fa fa-question-circle"></i> Tutorial</button>
       </div>
 
       <div id="lobbyButtons">
@@ -215,8 +225,39 @@
             <span>FIN</span>
           </div>
         </div>
-        <button id="closeBookBtn" class="btn btn-danger">X</button>
+        <button id="closeBookBtn" class="btn btn-danger">X</button> 
       </div>
+
+      <div id="myTutorialContainer">
+        <div id="myTutorial">
+          <div> </div>
+            <div id="frontPage"class="imTutorialPage titlePage rightPage" href="#" onclick="$('#myTutorial').trigger('next'); return false;">
+              <span>Tutorial</span>
+            </div>
+            <div class="imTutorialPage leftPage" href="#" onclick="$('#myTutorial').trigger('previous'); return false;">
+              <span class="storyText">Left Click and Drag to select words</span>
+              <img class="tutorialImg" src="client/resources/tutorialImages/tutorial1.gif"/>
+            </div>
+
+            <div class="imTutorialPage rightPage" href="#" onclick="javascript:$('#myTutorial').trigger('next'); return false;">
+              <span class="storyText">Right Click and Drag to rotate the World.</span>
+              <img class="tutorialImg" src="client/resources/tutorialImages/tutorial2.gif"/>
+            </div>
+            <div class="imTutorialPage rightPage" href="#" onclick="javascript:$('#myTutorial').trigger('previous'); return false;">
+              <span class="storyText">Right Click and Drag to rotate the World.</span>
+              <img class="tutorialImg" src="client/resources/tutorialImages/tutorial3.gif"/>
+            </div>
+            <div class="imTutorialPage rightPage" href="#" onclick="javascript:$('#myTutorial').trigger('next'); return false;">
+              <span class="storyText">Right Click and Drag to rotate the World.</span>
+            </div>
+            <div class="imTutorialPage finPage leftPage" href="#" onclick="$('#myTutorial').trigger('previous'); return false;">
+              <span>FIN</span>
+            </div>
+          
+        </div>
+        <button id="closeTutorialBtn" class="btn btn-danger">X</button>   
+      </div>
+
       <script>
         var myBook;
 
@@ -226,16 +267,36 @@
         myBook = $("#myBook").imBookFlip({
           page_class: 'imBookPage'    
         });
-
         myBook.create();
 
+        $("#myTutorial").flippage({
+          width:600,
+          height: 480
+        });
+
         $('#closeBookBtn').click(function() {
-          myBook.goToPage(0);
+          // myBook.goToPage(0);
           $('#myBookContainer').fadeOut();
+          $('#myBook').fadeOut();
+        });
+
+        $('#closeTutorialBtn').click(function() {
+          $('#myTutorialContainer').fadeOut();
+          $('#myTutorial').fadeOut();
         });
 
         $('#viewBookBtn').click(function() {
+          $('#myTutorialContainer').fadeOut();
+          $('#myTutorial').fadeOut();
           $('#myBookContainer').fadeIn();
+          $('#myBook').fadeIn();
+        });
+        
+        $('#viewTutorialBtn').click(function() {
+          $('#myBookContainer').fadeOut();
+          $('#myBook').fadeOut();
+          $('#myTutorialContainer').fadeIn();
+          $('#myTutorial').fadeIn();
         });
       </script>
 
