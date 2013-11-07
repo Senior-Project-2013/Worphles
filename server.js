@@ -5,6 +5,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var _ = require('underscore');
 var async = require('async');
+var debug = require('./server/debug');
 
 // websockets configuration
 io.configure(function () {
