@@ -116,6 +116,7 @@ body {
 }
 
 .awardName {
+  padding-left: 0.5em;
   padding-right: 2em;
 }
 

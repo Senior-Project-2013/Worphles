@@ -33,68 +33,83 @@ var COLORS = {
 var AWARD_NAMES = {
   tiles: {
     title: "Most Tiles",
-    description: "The winner and greatest speller in the universe with %d tiles."
+    description: "The winner and greatest speller in the universe with %d tiles.",
+    icon: "fa-trophy"
   },
   attempts: {
-    title: "Professional",
-    description: "%d% of their attempts were real words."
+    title: "Sharpshooter",
+    description: "%d% of their attempts were real words.",
+    icon: "fa-crosshairs"
   },
   worstattempts: {
-    title: "Try Hard",
-    description: "Only %d% of their submitted words were real."
+    title: "\"How I speil?\"",
+    description: "Only %d% of their submitted words were real.",
+    icon: "fa-question"
   },
-  
   acquisitions: {
     title: "Colonialist",
-    description: "Modern day Christopher Columbus, explored %d tiles."
+    description: "Modern day Christopher Columbus, explored %d tiles.",
+    icon: "fa-globe"
   },
   steals: {
     title: "Smooth Criminal",
-    description: "Stole %d tiles away from other players"
+    description: "Stole %d tiles away from other players.",
+    icon: "fa-money"
   },
   losses: {
     title: "Clueless Victim",
-    description: "Had %d  tiles stolen away from them"
+    description: "Had %d  tiles stolen away from them.",
+    icon: "fa-shopping-cart"
   },
   reinforcements: {
     title: "Turtle",
-    description: "\"I like %d turtles\""
+    description: "\"I like %d turtles.\"",
+    icon: "fa-bug"
   },
   words: {
     title: "Most Words",
-    description: "Found %d words"
+    description: "Found a whopping %d words!",
+    icon: "fa-bolt"
   },
   worstwords: {
     title: "Least Words",
-    description: "Found %d words"
+    description: "Found a pathetic %d words.",
+    icon: "fa-fast-backward"
   },
   longestWord: {
-    title: "Longfellow",
-    description: "The walking dictionary who found a %d letter word."
+    title: "High Roller",
+    description: "The walking dictionary who found a %d letter word.",
+    icon: "fa-book"
   },
   worsttiles: {
     title: "Participant",
-    description: "They tried so hard to get their measly %d tiles."
+    description: "They tried so hard to get their measly %d tiles.",
+    icon: "fa-frown-o"
   },
   worstacquisitions: {
     title: "Dora the Explorer",
-    description: "Literally the worst expolorer ever, only explored %d tiles"
+    description: "Literally the worst expolorer ever, only explored %d tiles.",
+    icon: "fa-female"
   },
   worststeals: {
     title: "Pacifist",
-    description: "Just let players walk all over them and steal %d tiles."
+    description: "Just let players walk all over them and steal %d tiles.",
+    icon: "fa-heart"
   },
   worstlosses: {
     title: "Untouchable",
-    description: "Nobody dares steal their tiles; they only lost %d tiles to others."
+    description: "Nobody dares steal their tiles; they only lost %d tiles to others.",
+    icon: "fa-lock"
   },
   worstreinforcements: {
     title: "Berserker",
-    description: "Who needs reinforcements anyway; They only reinforced %d tiles."
+    description: "Who needs reinforcements anyway; They only reinforced %d tiles.",
+    icon: "fa-play"
   },
   worstlongestWord: {
     title: "Shorty",
-    description: "Their longest word was only an embarassing %d characters"
+    description: "Their longest word was only an embarassing %d characters.",
+    icon: "fa-sort-amount-desc"
   }
 };
 
@@ -302,7 +317,7 @@ function Game(hostPlayer, settings) {
     _.each(awards, function(award, key) {
       award.name = AWARD_NAMES[key].title;
       award.description = util.format(AWARD_NAMES[key].description, award.value);
-				      
+			award.icon = AWARD_NAMES[key].icon;
     });
     return awards;
   };
