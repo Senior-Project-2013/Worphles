@@ -91,19 +91,25 @@ function initWebsockets() {
         class: 'awardRow'
       }).appendTo(awardsBody);
       var thisAward = $('#'+key);
-      $('<td/>',{
+
+      $('<i/>', {
+        class: 'fa ' + award.icon
+      }).appendTo(thisAward);
+
+      $('<td/>', {
         text: award.name,
         class: 'awardName'
       }).appendTo(thisAward);
-      // $('<td/>', {
-      //   text: award.value,
-      //   class: 'awardValue'
-      // }).appendTo(thisAward);
+
       $('<td/>', {
         text: players[award.player].name,
         class: 'awardPlayer'
       }).appendTo(thisAward);
     }
+
+    $('.awardRow').tooltip({
+      placement: 'right'
+    });
     $('#endGameModal').modal('show');
   });
 
@@ -143,6 +149,6 @@ function initWebsockets() {
     scoreboard.showPopover(popoverId, player.word);
     setTimeout(function() {
       scoreboard.hidePopover(popoverId);
-    }, 1800);
+    }, 3000);
   });
 }

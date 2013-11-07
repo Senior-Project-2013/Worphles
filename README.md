@@ -1,5 +1,6 @@
 Worphles!
 ============
 
+A wonderful web game of linguistic exploration through noble comradery. 
 
-![Woppy](webui/resources/storyImages/worph1b.png)
+![Woppy](client/resources/storyImages/worph10b.png)
