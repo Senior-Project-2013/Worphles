@@ -130,7 +130,8 @@ io.sockets.on('connection', function(socket) {
     var maxPlayers = data && data.maxPlayers;
     var time = data && data.time;
     var hackable = data && data.hackable;
-    var gameSettings = new Game.Settings(time, maxPlayers, size, name, password, hackable);
+    var hardcore = data && data.hardcore;
+    var gameSettings = new Game.Settings(time, maxPlayers, size, name, password, hackable, hardcore);
     var game = new Game.Game(thisPlayer, gameSettings);
     games[game.id] = game;
     delete lobbyists[thisPlayer.id];
