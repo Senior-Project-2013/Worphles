@@ -39,6 +39,20 @@ body {
   width: 50%;
 }
 
+#muteBtn {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  font-size: 40px;
+  padding: 10px;
+}
+
+#muteBtn:hover {
+  background-color: red;
+  border-radius: 10px;
+  opacity: 0.7;
+}
+
 #startGameButton, #leaveGameButton {
   display: none;
 }

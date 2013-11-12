@@ -4,6 +4,9 @@ var Y_AXIS = new THREE.Vector3(0,1,0);
 var Z_AXIS = new THREE.Vector3(0,0,1);
 var NINETY_DEG = 90*Math.PI/180;
 
+//setting
+var NUM_SONGS = 1;
+
 // game logic and communication
 var socket;           // the socket.io socket for communicating with the server
 var gameId;           // the ID of the current game we're in
@@ -14,6 +17,7 @@ var timerIntervalId;  // so we can stop the timer
 var hackable;         // boolean, whether game allows hacking or not
 var scoreboard = new Scoreboard();
 var mainLobby = new MainLobby();
+var audioMuted = false;
 
 // document ready function
 $(function() {
@@ -26,6 +30,12 @@ $(function() {
     $('body').css('backgroundImage','url(/client/images/failure.jpg)');
     $('#everything').fadeOut();
   }
+
+  playRandomBackgroundSong();
+  var bgMusic = $('#bgMusic')[0];
+
+  bgMusic.volume = 0.1;
+  bgMusic.addEventListener('ended', playRandomBackgroundSong);
 });
 
 function initGame(game) {
@@ -77,6 +87,8 @@ function setupUI() {
       }
     }
   });
+
+  $('#muteBtn').click(toggleAudioMute);
 
   var nameButton = $('#nameButton');
   var nameInput = $('#nameInput');
@@ -275,4 +287,29 @@ function hideAllDivs() {
   $('#leaveGameButton').fadeOut();
   $('#chatBar').fadeOut();
   $('#chat > #messages').empty();
+}
+
+function playRandomBackgroundSong() {
+  var bgMusic = $('#bgMusic')[0];
+  var randomIndex = Math.floor(Math.random() * NUM_SONGS) + 1;
+  bgMusic.src = "/client/audio/background/" + randomIndex + ".m4a";
+  bgMusic.play();
+}
+
+function toggleAudioMute() {
+  var audio = $('audio');
+  var bgMusic = $('#bgMusic')[0];
+  var muteSymbol = $('#muteSymbol');
+
+  audio.attr('muted', !audioMuted);
+
+  audioMuted = !audioMuted;
+
+  if(!audioMuted) {
+    bgMusic.play();
+    muteSymbol.attr('class', 'fa fa-pause');
+  } else {
+    bgMusic.pause();
+    muteSymbol.attr('class', 'fa fa-play');
+  }
 }

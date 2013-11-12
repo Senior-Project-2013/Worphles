@@ -66,7 +66,9 @@ function update() {
       if (mouse.lClicked && !mouse.rClicked && tile != lastTile && !currentTilesMap[tile]) {
         socket.emit('partialMove', {game:gameId, tile:tile, player:me});
         colorTile(tile, scaledColor(players[me].color, 1.5));
-        $('#bloop' + (currentTiles.length >= 8 ? '8' : currentTiles.length.toString())).trigger('play');
+        if(!audioMuted) {
+          $('#bloop' + (currentTiles.length >= 8 ? '8' : currentTiles.length.toString())).trigger('play');
+        }
         currentTiles.push(tile);
         currentTilesMap[tile] = true;
         updateWordDisplay(currentTiles);
