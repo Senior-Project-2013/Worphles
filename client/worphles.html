@@ -37,7 +37,6 @@
   <script type="text/javascript" src="/client/js/lib/Detector.js"></script>
   <script type="text/javascript" src="/client/js/lib/tinysort.min.js"></script>
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-  <script type="text/javascript" src="/client/js/lib/jquery.imBookFlip-1.3.js"></script>
   <script type="text/javascript" src="/client/js/lib/jquery.flippage.js"></script>
 
   <!-- Custom JS -->
@@ -63,7 +62,7 @@
           </div>
           <button type="submit" id="nameButton" class="btn btn-primary" disabled="disabled"><i class="fa fa-check"></i> Get Started</button>
         </form>
-        <button type="button" id="viewBookBtn" class="btn btn-info"><i class="fa fa-book"></i> Storybook</button>
+        <button type="button" id="viewBookBtn" class="btn btn-info"><i class="fa fa-book"></i> The Legend</button>
         <button type="button" id="viewTutorialBtn"class="btn btn-info"><i class="fa fa-question-circle"></i> Tutorial</button>
       </div>
 
@@ -178,46 +177,47 @@
     <div class="col-md-6">
       <div id="myBookContainer">
         <div id="myBook">
-          <div class="imBookPage titlePage rightPage">
+          <div></div>
+          <div class="imBookPage titlePage rightPage" href="#" onclick="$('#myBook').trigger('next'); return false;">
             <span>The Legend of Worph</span>
           </div>
-          <div class="imBookPage leftPage">
+          <div class="imBookPage leftPage" href="#" onclick="$('#myBook').trigger('previous'); return false;">
             <span class="storyText">Long ago, in a galaxy far, far away, a creature named Worph roamed a cube planet.</span>
             <img class="storyImg" src="client/resources/storyImages/worph1b.png"/>
           </div>
-          <div class="imBookPage rightPage">
+          <div class="imBookPage rightPage" href="#" onclick="$('#myBook').trigger('next'); return false;">
             <span class="storyText">Worph was all alone :'( It walked around this planet for centuries. Worph soon became bored.</span>
             <img class="storyImg" src="client/resources/storyImages/worph2b.png"/>
           </div>
-          <div class="imBookPage leftPage">
+          <div class="imBookPage leftPage" href="#" onclick="$('#myBook').trigger('previous'); return false;">
             <span class="storyText">In an attempt to relieve some boredom, Worph spent all its free time learning how to spell. It became the greatest speller in all of the universe.</span>
             <img class="storyImg" src="client/resources/storyImages/worph3b.png"/>
           </div>
-          <div class="imBookPage rightPage">
+          <div class="imBookPage rightPage" href="#" onclick="$('#myBook').trigger('next'); return false;">
             <span class="storyText">One day while brushing its hair, Worph noticed a large tumor growing off the back of its head.</span>
             <img class="storyImg" src="client/resources/storyImages/worph4b.png"/>
           </div>
-          <div class="imBookPage leftPage">
+          <div class="imBookPage leftPage" href="#" onclick="$('#myBook').trigger('previous'); return false;">
             <span class="storyText">It turns out the tumor was actually an exact copy of itself. However, the copy was a terrible speller. Worph was very surprised to learn that it was asexual!</span>
             <img class="storyImg" src="client/resources/storyImages/worph5b.png"/>
           </div>
-          <div class="imBookPage rightPage">
+          <div class="imBookPage rightPage" href="#" onclick="$('#myBook').trigger('next'); return false;">
             <span class="storyText">Soon the cube was inhabited by a plethora of these creatures, now named "Worphles". All these Worphles claimed to be the original Worph!</span>
             <img class="storyImg" src="client/resources/storyImages/worph6b.png"/>
           </div>
-          <div class="imBookPage leftPage">
+          <div class="imBookPage leftPage"href="#" onclick="$('#myBook').trigger('previous'); return false;">
             <span class="storyText">The Worphles became violent. Everyone wanted to be acknowledged as the first Worphle.</span>
             <img class="storyImg" src="client/resources/storyImages/worph7b.png"/>
           </div>
-          <div class="imBookPage rightPage">
+          <div class="imBookPage rightPage" href="#" onclick="$('#myBook').trigger('next'); return false;">
             <span class="storyText">The Worphles realized this bloodshed was unnecessary. They could instead use a vital fact about Worph. Worph was a great speller!</span>
             <img class="storyImg" src="client/resources/storyImages/worph8b.png"/>
           </div>
-          <div class="imBookPage leftPage">
+          <div class="imBookPage leftPage" href="#" onclick="$('#myBook').trigger('previous'); return false;">
             <span class="storyText">A spelling contest was organized. The Worphles made their planet into a playing field for this competition.</span>
             <img class="storyImg" src="client/resources/storyImages/worph9b.png"/>
           </div>
-          <div class="imBookPage rightPage">
+          <div class="imBookPage rightPage" href="#" onclick="$('#myBook').trigger('next'); return false;">
             <span class="storyText">The competition continues even today.  The winner will be crowned Worph, ruler of words and Worphles! ;)</span>
             <img class="storyImg" src="client/resources/storyImages/worph10b.png"/>
           </div>
@@ -259,23 +259,16 @@
       </div>
 
       <script>
-        var myBook;
-
-        var bookWidth = $('.col-md-6').width() * 0.45;
-        $('.imBookPage').css({ width: bookWidth, height: bookWidth * 1.6 });
-
-        myBook = $("#myBook").imBookFlip({
-          page_class: 'imBookPage'    
+        $("#myBook").flippage({
+          width:600,
+          height: 480
         });
-        myBook.create();
-
         $("#myTutorial").flippage({
           width:600,
           height: 480
         });
 
         $('#closeBookBtn').click(function() {
-          // myBook.goToPage(0);
           $('#myBookContainer').fadeOut();
           $('#myBook').fadeOut();
         });
