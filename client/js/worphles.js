@@ -301,8 +301,6 @@ function toggleAudioMute() {
   var bgMusic = $('#bgMusic')[0];
   var muteSymbol = $('#muteSymbol');
 
-  audio.attr('muted', !audioMuted);
-
   audioMuted = !audioMuted;
 
   if(!audioMuted) {
