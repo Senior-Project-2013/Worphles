@@ -43,7 +43,6 @@ function Scoreboard() {
       class: 'pull-left scoreText'
     }).appendTo('#score'+player.id);
 
-    console.log(host);
     if(host === player.id) {
       $('<i/>', {
         class: 'fa fa-star'
