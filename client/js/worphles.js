@@ -15,6 +15,7 @@ var players;          // the players in this game
 var startTime;        // the time this game started
 var timerIntervalId;  // so we can stop the timer
 var hackable;         // boolean, whether game allows hacking or not
+var hardcore;         // true if hardcore mode
 var scoreboard = new Scoreboard();
 var mainLobby = new MainLobby();
 var audioMuted = false;
@@ -54,6 +55,7 @@ function initGame(game) {
     host: game.hostId
   });
   hackable = game.settings.hackable;
+  hardcore = game.settings.hardcore;
   startTimer(new Date(game.startTime).getTime(), game.settings.roundTime);
   addCube(game.settings, game.tiles);
 }
@@ -247,10 +249,13 @@ function scaledColor(color, scale) {
 }
 
 
-function updateTile(tile, letter, owner) {
+function updateTile(tile, letter, owner, strength) {
   updateTileOwner(tile, owner);
   colorTile(tile, players[owner].color);
   changeTileLetter(tile, letter);
+  if (hardcore) {
+    updateTileStrength(tile, strength);
+  }
 }
 
 function updateWordDisplay(tileNums) {

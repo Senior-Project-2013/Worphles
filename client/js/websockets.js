@@ -119,7 +119,7 @@ function initWebsockets() {
 
   socket.on('successfulMove', function(data) {
     for (var i in data) {
-      updateTile(i, data[i].letter, data[i].owner);
+      updateTile(i, data[i].letter, data[i].owner, data[i].strength);
     }
   });
 

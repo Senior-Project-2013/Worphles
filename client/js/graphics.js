@@ -12,6 +12,7 @@ var letterList = [];     // the list of letter meshes so we can remove them late
 var currentTiles = [];   // the currently selected tiles
 var currentTilesMap = {};// the currently selected tiles in a map
 var lastTile;            // the last tile that was selected
+var hardcore;            // true if the game is in hardcore mode
 
 function initGraphics()  {
   var GAME_WIDTH = window.innerWidth/2;
@@ -61,7 +62,7 @@ function update() {
     projector.unprojectVector( vector, camera );
     var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
     var intersects = ray.intersectObjects( targetList );
-    if ( intersects.length > 0) {
+    if ( intersects.length > 0 && intersects[0].object.__tile_data) {
       var tile = intersects[0].object.__tile_data.num;
       if (mouse.lClicked && !mouse.rClicked && tile != lastTile && !currentTilesMap[tile]) {
         socket.emit('partialMove', {game:gameId, tile:tile, player:me});
@@ -86,15 +87,21 @@ function TileGraphicsSettings(tilesPerRow, tileSize) {
   this.tilePadding = tileSize*0.25,
   this.hitBoxSize = tileSize*0.75,
   this.hitBoxStart = 0.5*tileSize*(tilesPerRow%2+1*((tilesPerRow%2)?-1:1)) + Math.floor((tilesPerRow-0.5)/2)*tileSize;
+  this.hardcoreSize = 0.01;
 
   var floorTexture = new THREE.ImageUtils.loadTexture( 'client/images/tile.png' );
   floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
   floorTexture.repeat.set( 1, 1 );
   this.tileMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } );
-  this.floorGeometry = new THREE.PlaneGeometry(this.hitBoxSize,this.hitBoxSize);
+  if (hardcore) {
+    this.hardcoreGeometry = new THREE.CubeGeometry(this.hitBoxSize, this.hitBoxSize, this.hardcoreSize);
+  } else {
+    this.floorGeometry = new THREE.PlaneGeometry(this.hitBoxSize,this.hitBoxSize);
+  }
 }
 
 function addCube(inputSettings, inputTiles) {
+  hardcore = inputSettings.hardcore;
   var cubeSize = 80;
   var tilesPerRow = inputSettings.gridSize;
   var tileSize = cubeSize / tilesPerRow;
@@ -108,6 +115,7 @@ function addCube(inputSettings, inputTiles) {
   cube = new THREE.Mesh(cubeGeometry.clone(), cubeMaterial);
   cube.position.set(0, 0, 0);
   scene.add(cube);
+  targetList.push(cube);
 
   tiles = new Array(gSettings.tilesPerSide*6);
   for (var side = 0; side < 6; side++) {
@@ -151,14 +159,19 @@ function Tile(num, letter, letterResources, color, geometry, material) {
 
 function makeTile(side, axis, x, y, num, letter, gSettings) {
   var rotation_matrix = new THREE.Matrix4().makeRotationAxis(axis, NINETY_DEG*side );
-  var thisGeometry = gSettings.floorGeometry.clone();
   var thisMaterial = gSettings.tileMaterial.clone();
+  var thisGeometry;
+  if (hardcore) {
+    thisGeometry = gSettings.hardcoreGeometry.clone();
+  } else {
+    thisGeometry = gSettings.floorGeometry.clone();
+  }
   var tile = new THREE.Mesh(thisGeometry, thisMaterial);
   var tileCoordX = -gSettings.hitBoxStart + gSettings.tileSize*x;
   var tileCoordY = -gSettings.hitBoxStart + gSettings.tileSize*y;
   tile.position.x = tileCoordX;
   tile.position.y = tileCoordY;
-  tile.position.z = 40;
+  tile.position.z = 40 + gSettings.hardcoreSize/2;
   tile.position.applyMatrix4(rotation_matrix);
   tile.rotateOnAxis( axis, NINETY_DEG*side );
   targetList.push(tile);
@@ -177,13 +190,13 @@ function makeTile(side, axis, x, y, num, letter, gSettings) {
     new THREE.PlaneGeometry(gSettings.hitBoxSize, gSettings.hitBoxSize),
     material
   );
-  letterMesh.position.set(tileCoordX, tileCoordY, 40.01);
+  letterMesh.position.set(tileCoordX, tileCoordY, 40 + gSettings.hardcoreSize);
   letterMesh.position.applyMatrix4(rotation_matrix);
   letterMesh.rotateOnAxis( axis, NINETY_DEG*side);
   letterList.push(letterMesh);
   scene.add(letterMesh);
 
-  var thisTile = new Tile(num, letter, {canvasHeight: canvas.height, canvasWidth: canvas.width, letterContext: context, letterTexture: texture}, null, thisGeometry, thisMaterial);
+  var thisTile = new Tile(num, letter, {canvasHeight: canvas.height, canvasWidth: canvas.width, letterContext: context, letterTexture: texture, letterMesh: letterMesh}, null, thisGeometry, thisMaterial);
   tile.__tile_data = thisTile;
   tiles[num] = thisTile;
 }
@@ -236,6 +249,18 @@ function updateMouse(event) {
   } else {
     mouse.x *= 2;
   }
+}
+
+function updateTileStrength(tile, strength) {
+  tiles[tile].geometry.vertices[1].z = strength * 2;
+  tiles[tile].geometry.vertices[3].z = strength * 2;
+  tiles[tile].geometry.vertices[4].z = strength * 2;
+  tiles[tile].geometry.vertices[6].z = strength * 2;
+  for (var i = 0; i < 4; i++) {
+    tiles[tile].letterResources.letterMesh.geometry.vertices[i].z = strength * 2 + 0.01;
+  }
+  tiles[tile].geometry.verticesNeedUpdate = true;
+  tiles[tile].letterResources.letterMesh.geometry.verticesNeedUpdate = true;
 }
 
 function updateTileOwner(tile, owner) {
