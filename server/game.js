@@ -282,13 +282,13 @@ function Game(hostPlayer, settings) {
     player.socket.on('chat', function(data) {
       thisGame.chat(player.socket.id, data.message);
     });
-  }
+  };
 
   this.removeSocketListeners = function(player) {
     player.socket.removeAllListeners('moveComplete');
     player.socket.removeAllListeners('partialMove');
     player.socket.removeAllListeners('chat');
-  }
+  };
 
   this.removePlayer = function(player) {
     this.removeSocketListeners(player);
