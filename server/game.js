@@ -3,7 +3,31 @@ var pathValidator = require('./path_validator.js');
 var cubeGrid = require('./cube_grid').getGrid();
 var _ = require('underscore');
 var uuid = require('node-uuid');
-var util = require('util');
+var debug = require('./debug');
+
+/**
+ * Replaces matches in string from an object's attributes:
+ * 
+ * "{name} is {age} years old.".formatFromObject({
+ *     name: "Ted",
+ *     age: 20
+ * }); => "Ted is 20 years old."
+ */
+var formatFromObject = function(string ,object) {
+  return string.replace(/{([_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*)}/g,
+			function(entire, inside) {
+                          var value = object[inside];
+			  if (value !== null && value != undefined) {
+			    return value;
+			  }
+			  else {
+			    debug.err("No match found for key: " + entire +
+				      " in object: " + JSON.stringify(object));
+			    return "{oops!}";
+			  }
+			});
+};
+
 
 // all time is in milliseconds
 var MS_PER_SEC = 1000;
@@ -33,82 +57,82 @@ var COLORS = {
 var AWARD_NAMES = {
   tiles: {
     title: "Most Tiles",
-    description: "The winner and greatest speller in the universe with %d tiles.",
+    description: "The winner and greatest speller in the universe with {value} tiles is {player}!.",
     icon: "fa-trophy"
   },
   attempts: {
     title: "Sharpshooter",
-    description: "%d% of their attempts were real words.",
+    description: "{value}% of their attempts were real words.",
     icon: "fa-crosshairs"
   },
   worstattempts: {
     title: "\"How I speil?\"",
-    description: "Only %d% of their submitted words were real.",
+    description: "Only {value}% of their submitted words were real.",
     icon: "fa-question"
   },
   acquisitions: {
     title: "Colonialist",
-    description: "Modern day Christopher Columbus, explored %d tiles.",
+    description: "A Modern day Christopher Columbus! {player} explored {value} tiles.",
     icon: "fa-globe"
   },
   steals: {
     title: "Smooth Criminal",
-    description: "Stole %d tiles away from other players.",
+    description: "Stole {value} tiles away from other players.",
     icon: "fa-money"
   },
   losses: {
     title: "Clueless Victim",
-    description: "Had %d  tiles stolen away from them.",
+    description: "Had {value} tiles stolen away from them.",
     icon: "fa-shopping-cart"
   },
   reinforcements: {
     title: "Turtle",
-    description: "\"I like %d turtles.\"",
+    description: "\"I like {value} turtles.\"",
     icon: "fa-bug"
   },
   words: {
     title: "Most Words",
-    description: "Found a whopping %d words!",
+    description: "Found a whopping {value} words!",
     icon: "fa-bolt"
   },
   worstwords: {
     title: "Least Words",
-    description: "Found a pathetic %d words.",
+    description: "Found a pathetic {value} words.",
     icon: "fa-fast-backward"
   },
   longestWord: {
     title: "High Roller",
-    description: "The walking dictionary who found a %d letter word.",
+    description: "The walking dictionary who found a {value} letter word.",
     icon: "fa-book"
   },
   worsttiles: {
     title: "Participant",
-    description: "They tried so hard to get their measly %d tiles.",
+    description: "They tried so hard to get their measly {value} tiles.",
     icon: "fa-frown-o"
   },
   worstacquisitions: {
     title: "Dora the Explorer",
-    description: "Literally the worst expolorer ever, only explored %d tiles.",
+    description: "Literally the worst expolorer ever, {player} only explored {value} tiles.",
     icon: "fa-female"
   },
   worststeals: {
     title: "Pacifist",
-    description: "Just let players walk all over them and steal %d tiles.",
+    description: "Stealing {value} tiles went against {player}'s better judgement.",
     icon: "fa-heart"
   },
   worstlosses: {
     title: "Untouchable",
-    description: "Nobody dares steal their tiles; they only lost %d tiles to others.",
+    description: "Nobody dares steal {player}'s tiles! They only lost {value} tiles to others.",
     icon: "fa-lock"
   },
   worstreinforcements: {
     title: "Berserker",
-    description: "Who needs reinforcements anyway; They only reinforced %d tiles.",
+    description: "Who needs reinforcements anyway? They only reinforced {value} tiles.",
     icon: "fa-play"
   },
   worstlongestWord: {
     title: "Shorty",
-    description: "Their longest word was only an embarassing %d characters.",
+    description: "Their longest word was only an embarassing {value} characters.",
     icon: "fa-sort-amount-desc"
   }
 };
@@ -316,8 +340,13 @@ function Game(hostPlayer, settings) {
     });
     _.each(awards, function(award, key) {
       award.name = AWARD_NAMES[key].title;
-      award.description = util.format(AWARD_NAMES[key].description, award.value);
-			award.icon = AWARD_NAMES[key].icon;
+      
+      award.description = formatFromObject(AWARD_NAMES[key].description, {
+	value: award.value,
+	player: thisGame.players[award.player].name
+      });
+      
+      award.icon = AWARD_NAMES[key].icon;
     });
     return awards;
   };
