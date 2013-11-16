@@ -84,7 +84,7 @@ function update() {
     $.each(tiles, function(i, tile) {
       if(tile.geometry.targetPosition) {
         var zDiff = tile.geometry.targetPosition.z - tile.geometry.vertices[1].z;
-        if(zDiff > .1) {
+        if(Math.abs(zDiff) > .1) {
           var zChange = zDiff / 30;
 
           tile.geometry.vertices[1].z += zChange;
