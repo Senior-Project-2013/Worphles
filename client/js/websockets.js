@@ -62,7 +62,7 @@ function initWebsockets() {
     me = socket.socket.sessionid;
     scoreboard.update(data);
 
-    if(data.host === me) {
+    if(data.host === me && !games[gameId].started) {
       $('#startGameButton').fadeIn();
     }
   });

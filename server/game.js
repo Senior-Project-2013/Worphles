@@ -214,6 +214,7 @@ function Game(hostPlayer, settings) {
       var i = 0;
       _.each(this.players, function(player) {
         player.color = Color.randomColor(i);
+        player.score = new Score();
         i++;
       });
 

@@ -24,10 +24,10 @@ server.listen(process.env.PORT || 3000);
 
 // handle each new player that connects
 io.sockets.on('connection', function(socket) {
-
   var thisPlayer;
   var thisGameId;
   var connection = this;
+
   socket.on('name', function(name) {
     if (name) {
       thisPlayer = new Game.Player(socket.id, socket, name);
