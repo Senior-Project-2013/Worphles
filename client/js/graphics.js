@@ -78,6 +78,30 @@ function update() {
     }
   }
   controls.update();
+
+  //tween tiles in hardcore mode
+  if(hardcore) {
+    $.each(tiles, function(i, tile) {
+      if(tile.geometry.targetPosition) {
+        var zDiff = tile.geometry.targetPosition.z - tile.geometry.vertices[1].z;
+        if(zDiff > .1) {
+          var zChange = zDiff / 30;
+
+          tile.geometry.vertices[1].z += zChange;
+          tile.geometry.vertices[3].z += zChange;
+          tile.geometry.vertices[4].z += zChange;
+          tile.geometry.vertices[6].z += zChange;
+
+          for (var i = 0; i < 4; i++) {
+            tile.letterResources.letterMesh.geometry.vertices[i].z += zChange;
+          }
+
+          tile.geometry.verticesNeedUpdate = true;
+          tile.letterResources.letterMesh.geometry.verticesNeedUpdate = true;
+        }
+      }
+    });
+  }
 }
 
 function TileGraphicsSettings(tilesPerRow, tileSize) {
@@ -252,15 +276,15 @@ function updateMouse(event) {
 }
 
 function updateTileStrength(tile, strength) {
-  tiles[tile].geometry.vertices[1].z = strength * 2;
-  tiles[tile].geometry.vertices[3].z = strength * 2;
-  tiles[tile].geometry.vertices[4].z = strength * 2;
-  tiles[tile].geometry.vertices[6].z = strength * 2;
+  tiles[tile].geometry.targetPosition = {
+    z: strength * 2
+  };
+
   for (var i = 0; i < 4; i++) {
-    tiles[tile].letterResources.letterMesh.geometry.vertices[i].z = strength * 2 + 0.01;
+    tiles[tile].letterResources.letterMesh.geometry.targetPosition = {
+      z: strength * 2 + .01
+    };
   }
-  tiles[tile].geometry.verticesNeedUpdate = true;
-  tiles[tile].letterResources.letterMesh.geometry.verticesNeedUpdate = true;
 }
 
 function updateTileOwner(tile, owner) {
