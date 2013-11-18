@@ -62,7 +62,7 @@ function initWebsockets() {
     me = socket.socket.sessionid;
     scoreboard.update(data);
 
-    if(data.host === me && !games[gameId].started) {
+    if(data.host === me && !gameInProgress) {
       $('#startGameButton').fadeIn();
     }
   });
@@ -72,6 +72,7 @@ function initWebsockets() {
   });
 
   socket.on('gameOver', function(data) {
+    gameInProgress = false;
     $('#timer').fadeOut();
     removeCube();
     for(var i = 0; i < Object.keys(data.scores).length; i++) {

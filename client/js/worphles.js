@@ -10,6 +10,7 @@ var NUM_SONGS = 1;
 // game logic and communication
 var socket;           // the socket.io socket for communicating with the server
 var gameId;           // the ID of the current game we're in
+var gameInProgress;   // the status of whether or not we are playing a game
 var me;               // the current player's ID
 var players;          // the players in this game
 var startTime;        // the time this game started
@@ -47,6 +48,7 @@ function initGame(game) {
   $('#gameStatus').fadeIn();
   $('#myBookContainer').fadeOut();
 
+  gameInProgress = true;
   gameId = game.id;
   me = socket.socket.sessionid;
   players = game.players;
@@ -284,6 +286,7 @@ function stopTimer() {
 }
 
 function hideAllDivs() {
+  $('.popover').fadeOut();
   $('#startingButtons').fadeOut();
   $('#lobbyButtons').fadeOut();
   $('#scoreboard').fadeOut();
