@@ -313,9 +313,9 @@ function toggleAudioMute() {
 
   if(!audioMuted) {
     bgMusic.play();
-    muteSymbol.attr('class', 'fa fa-pause');
+    muteSymbol.attr('class', 'fa fa-volume-off');
   } else {
     bgMusic.pause();
-    muteSymbol.attr('class', 'fa fa-play');
+    muteSymbol.attr('class', 'fa fa-volume-up');
   }
 }
