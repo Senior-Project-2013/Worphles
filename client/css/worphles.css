@@ -43,6 +43,11 @@ body {
   width: 50%;
 }
 
+#mainTitle > img {
+  width: 100%;
+  padding: 10px;
+}
+
 #muteBtn {
   position: absolute;
   right: 20px;
