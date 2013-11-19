@@ -42,11 +42,14 @@ $(function() {
 
 function initGame(game) {
   $('#lobbyButtons').fadeOut();
+  $('#mainTitle').fadeOut();
+  $('#bookButtons').fadeOut();
   $('#startGameButton').fadeOut();
   $('#currentWord').fadeIn();
   $('#chatInput').fadeIn();
   $('#gameStatus').fadeIn();
   $('#myBookContainer').fadeOut();
+  $('#myTutorialContainer').fadeOut();
 
   gameInProgress = true;
   gameId = game.id;
@@ -136,7 +139,10 @@ function setupUI() {
     socket.emit('leaveGame');
     hideAllDivs();
     removeCube();
+    $('#mainTitle').fadeIn();
+    $('#bookButtons').fadeIn();
     $('#lobbyButtons').fadeIn();
+
   });
 
   $('#createLobby').click(function() {
@@ -162,7 +168,7 @@ function setupUI() {
 }
 
 function showButtons() {
-  $('#customGame').fadeIn();
+  $('#customGame').fadeIn()
   $('#joinQueue').fadeIn();
 }
 
@@ -287,7 +293,9 @@ function stopTimer() {
 
 function hideAllDivs() {
   $('.popover').fadeOut();
+  $('#mainTitle').fadeOut();
   $('#startingButtons').fadeOut();
+  $('#bookButtons').fadeOut();
   $('#lobbyButtons').fadeOut();
   $('#scoreboard').fadeOut();
   $('#gameStatus').fadeOut();

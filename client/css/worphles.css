@@ -29,6 +29,10 @@ body {
   display: none;
 }
 
+#bookButtons {
+  padding-bottom: 6px;
+}
+
 #lobbyButtons {
   display: none;
 }
@@ -100,6 +104,13 @@ body {
 }
 
 .storyText {
+  display: block;
+  font-size: 21px;
+  padding: 10px;
+  height: 30%;
+}
+
+.tutorialText {
   display: block;
   font-size: 21px;
   padding: 10px;

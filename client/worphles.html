@@ -54,20 +54,25 @@
     <!-- Left Sidebar -->
     <div class="col-md-3">
 
-      <div id="startingButtons">
+      <div id="mainTitle">
         <h1>Worphles</h1>
+      </div>
+
+      <div id="startingButtons">
         <form id="nameForm" role="form" onsubmit="return chooseName();">
           <div class="form-group">
             <input type="text" class="form-control" id="nameInput" maxlength="12" placeholder="Enter a Name">
           </div>
           <button type="submit" id="nameButton" class="btn btn-primary" disabled="disabled"><i class="fa fa-check"></i> Get Started</button>
         </form>
+      </div>
+
+      <div id="bookButtons">
         <button type="button" id="viewBookBtn" class="btn btn-info"><i class="fa fa-book"></i> The Legend</button>
         <button type="button" id="viewTutorialBtn"class="btn btn-info"><i class="fa fa-question-circle"></i> Tutorial</button>
       </div>
 
       <div id="lobbyButtons">
-        <h1>Get Playing</h1>
         <!-- Trigger Join Game Box -->
         <a class="btn btn-primary" id="joinGameModalShow"><i class="fa fa-sign-in"></i> Join Game</a>
         <!-- Trigger Create Game Box -->
@@ -179,7 +184,7 @@
         <div id="myBook">
           <div></div>
           <div class="imBookPage titlePage rightPage" href="#" onclick="$('#myBook').trigger('next'); return false;">
-            <span>The Legend of Worph</span>
+            <span>The<br>Legend<br>of<br>Worph</span>
           </div>
           <div class="imBookPage leftPage" href="#" onclick="$('#myBook').trigger('previous'); return false;">
             <span class="storyText">Long ago, in a galaxy far, far away, a creature named Worph roamed a cube planet.</span>
@@ -235,20 +240,20 @@
               <span>Tutorial</span>
             </div>
             <div class="imTutorialPage leftPage" href="#" onclick="$('#myTutorial').trigger('previous'); return false;">
-              <span class="storyText">Left Click and Drag to select words</span>
+              <span class="tutorialText"><br>Left Click and Drag to select words</span>
               <img class="tutorialImg" src="client/resources/tutorialImages/tutorial1.gif"/>
             </div>
 
             <div class="imTutorialPage rightPage" href="#" onclick="javascript:$('#myTutorial').trigger('next'); return false;">
-              <span class="storyText">Right Click and Drag to rotate the World.</span>
+              <span class="tutorialText"><br>Right Click and Drag to rotate the World.</span>
               <img class="tutorialImg" src="client/resources/tutorialImages/tutorial2.gif"/>
             </div>
             <div class="imTutorialPage rightPage" href="#" onclick="javascript:$('#myTutorial').trigger('previous'); return false;">
-              <span class="storyText">Right Click and Drag to rotate the World.</span>
+              <span class="tutorialText"><br>You can make words over edges of the cube</span>
               <img class="tutorialImg" src="client/resources/tutorialImages/tutorial3.gif"/>
             </div>
             <div class="imTutorialPage rightPage" href="#" onclick="javascript:$('#myTutorial').trigger('next'); return false;">
-              <span class="storyText">Right Click and Drag to rotate the World.</span>
+              <span class="tutorialText"><b>Goal:</b> <br>Own the most tiles at the end of the game.</span>
             </div>
             <div class="imTutorialPage finPage leftPage" href="#" onclick="$('#myTutorial').trigger('previous'); return false;">
               <span>FIN</span>
