@@ -108,14 +108,7 @@ body {
   height: 60%;
 }
 
-.storyText {
-  display: block;
-  font-size: 21px;
-  padding: 10px;
-  height: 30%;
-}
-
-.tutorialText {
+.tutorialText, .storyText {
   display: block;
   font-size: 21px;
   padding: 10px;
@@ -127,38 +120,20 @@ body {
   font-size: 48px;
 }
 
-#myBookContainer {
+#myTutorialContainer, #myBookContainer {
   position: relative;
   text-align: left;
   display: none;
   z-index: 5;
 }
 
-#myTutorialContainer {
-  position: relative;
-  text-align: left;
-  display: none;
-  z-index: 5;
-}
-
-#myBook {
+#myTutorial, #myBook {
   display: none;
   position: relative;
   width: 100%;
   height: 100%;
   margin: 60px auto 0 auto;
   background-color: transparent;
-  font-family: 'Libre Baskerville', serif;
-}
-
-#myTutorial {
-  display: none;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  margin: 60px auto 0 auto;
-  background-color: transparent;
-  font-family: 'Libre Baskerville', serif;
 }
 
 #gameStatus {
