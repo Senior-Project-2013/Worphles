@@ -13,6 +13,7 @@ var currentTiles = [];   // the currently selected tiles
 var currentTilesMap = {};// the currently selected tiles in a map
 var lastTile;            // the last tile that was selected
 var hardcore;            // true if the game is in hardcore mode
+var tilesToTween = [];   // the tiles that need to be calculated for tweening
 
 function initGraphics()  {
   var GAME_WIDTH = window.innerWidth/2;
@@ -79,25 +80,28 @@ function update() {
   }
   controls.update();
 
-  //tween tiles in hardcore mode
   if(hardcore) {
-    $.each(tiles, function(i, tile) {
-      if(tile.geometry.targetPosition) {
-        var zDiff = tile.geometry.targetPosition.z - tile.geometry.vertices[1].z;
+    $.each(tilesToTween, function(i, tile) {
+      var tileToTween = tiles[tile];
+
+      if(tileToTween.geometry.targetPosition) {
+        var zDiff = tileToTween.geometry.targetPosition.z - tileToTween.geometry.vertices[1].z;
         if(Math.abs(zDiff) > .1) {
           var zChange = zDiff / 30;
 
-          tile.geometry.vertices[1].z += zChange;
-          tile.geometry.vertices[3].z += zChange;
-          tile.geometry.vertices[4].z += zChange;
-          tile.geometry.vertices[6].z += zChange;
+          tileToTween.geometry.vertices[1].z += zChange;
+          tileToTween.geometry.vertices[3].z += zChange;
+          tileToTween.geometry.vertices[4].z += zChange;
+          tileToTween.geometry.vertices[6].z += zChange;
 
           for (var i = 0; i < 4; i++) {
-            tile.letterResources.letterMesh.geometry.vertices[i].z += zChange;
+            tileToTween.letterResources.letterMesh.geometry.vertices[i].z += zChange;
           }
 
-          tile.geometry.verticesNeedUpdate = true;
-          tile.letterResources.letterMesh.geometry.verticesNeedUpdate = true;
+          tileToTween.geometry.verticesNeedUpdate = true;
+          tileToTween.letterResources.letterMesh.geometry.verticesNeedUpdate = true;
+        } else {
+          tilesToTween.splice(i, 1);
         }
       }
     });
@@ -276,6 +280,10 @@ function updateMouse(event) {
 }
 
 function updateTileStrength(tile, strength) {
+  if($.inArray(tile, tilesToTween) === -1) {
+    tilesToTween.push(tile);
+  }
+
   tiles[tile].geometry.targetPosition = {
     z: strength * 2
   };
