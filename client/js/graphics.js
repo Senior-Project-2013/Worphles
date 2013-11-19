@@ -218,7 +218,7 @@ function makeTile(side, axis, x, y, num, letter, gSettings) {
     new THREE.PlaneGeometry(gSettings.hitBoxSize, gSettings.hitBoxSize),
     material
   );
-  letterMesh.position.set(tileCoordX, tileCoordY, 40 + gSettings.hardcoreSize);
+  letterMesh.position.set(tileCoordX, tileCoordY, 40.05 + gSettings.hardcoreSize);
   letterMesh.position.applyMatrix4(rotation_matrix);
   letterMesh.rotateOnAxis( axis, NINETY_DEG*side);
   letterList.push(letterMesh);
@@ -285,12 +285,12 @@ function updateTileStrength(tile, strength) {
   }
 
   tiles[tile].geometry.targetPosition = {
-    z: strength * 2
+    z: Math.max(strength * 2, 0.01) // can't have a rectangle of height 0!
   };
 
   for (var i = 0; i < 4; i++) {
     tiles[tile].letterResources.letterMesh.geometry.targetPosition = {
-      z: strength * 2 + .01
+      z: strength * 2 + .05
     };
   }
 }
