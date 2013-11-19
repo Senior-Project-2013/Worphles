@@ -357,6 +357,8 @@ function Game(hostPlayer, settings) {
     if (newOwner.score.longestWord < tiles.length) {
       newOwner.score.longestWord = tiles.length;
     }
+    // all words >= 5 letters get extra strength!! woot
+    var strengthToAdd = Math.max(tiles.length - 3, 1);
     var newTiles = {};
     if (thisGame.settings.hardcore) {
       _.each(tiles, function(tileNum) {
@@ -366,14 +368,14 @@ function Game(hostPlayer, settings) {
         if (oldOwner && oldOwner.id) {
           if (oldOwner.id === newOwner.id) {
             // reinforced a tile
-            tile.strength++;
+            tile.strength+=strengthToAdd;
             newOwner.score.reinforcements++;
           } else {
-            tile.strength--;
+            tile.strength-=strengthToAdd;
             if (tile.strength <= 0) {
               // stole a tile
               tile.owner = newOwner.id;
-              tile.strength = 1;
+              tile.strength = -tile.strength + 1
               oldOwner.score.tiles--;
               newOwner.score.tiles++;
               oldOwner.score.losses++;
@@ -383,7 +385,7 @@ function Game(hostPlayer, settings) {
         } else {
           // got an unused tile (or from someone who quit)
           tile.owner = newOwner.id;
-          tile.strength = 1;
+          tile.strength = strengthToAdd;
           newOwner.score.tiles++;
           newOwner.score.acquisitions++;
         }
