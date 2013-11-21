@@ -99,7 +99,11 @@ function setupUI() {
 
   var nameButton = $('#nameButton');
   var nameInput = $('#nameInput');
-  nameInput.val($.cookie("worphlesUsername"));
+  var savedName = $.cookie('worphlesUsername')
+  nameInput.val(savedName);
+  if(savedName.length >= 3) {
+    nameButton.removeAttr('disabled');
+  }
 
   nameInput.keyup(function() {
     if(nameInput.val().length < 3) {
