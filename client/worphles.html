@@ -6,7 +6,6 @@
   <!-- CSS Libraries -->
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.min.css" rel="stylesheet">
-  <link href='http://fonts.googleapis.com/css?family=Chewy' rel='stylesheet' type='text/css'>
   <link href="/client/css/jquery.flippage.css" type="text/css" rel="stylesheet" />
 
   <!-- Custom CSS -->
@@ -28,6 +27,7 @@
   <!-- JS Libraries -->
   <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/client/js/lib/jquery.cookie.js"></script>
   <script type="text/javascript" src="/client/js/lib/three.min.js"></script>
   <script type="text/javascript" src="/client/js/lib/THREEx.KeyboardState.js"></script>
   <script type="text/javascript" src="/client/js/lib/THREEx.FullScreen.js"></script>
@@ -54,20 +54,25 @@
     <!-- Left Sidebar -->
     <div class="col-md-3">
 
+      <div id="mainTitle">
+        <img src="/client/images/logo.png"/>
+      </div>
+
       <div id="startingButtons">
-        <h1>Worphles</h1>
         <form id="nameForm" role="form" onsubmit="return chooseName();">
           <div class="form-group">
             <input type="text" class="form-control" id="nameInput" maxlength="12" placeholder="Enter a Name">
           </div>
           <button type="submit" id="nameButton" class="btn btn-primary" disabled="disabled"><i class="fa fa-check"></i> Get Started</button>
         </form>
+      </div>
+
+      <div id="bookButtons">
         <button type="button" id="viewBookBtn" class="btn btn-info"><i class="fa fa-book"></i> The Legend</button>
         <button type="button" id="viewTutorialBtn"class="btn btn-info"><i class="fa fa-question-circle"></i> Tutorial</button>
       </div>
 
       <div id="lobbyButtons">
-        <h1>Get Playing</h1>
         <!-- Trigger Join Game Box -->
         <a class="btn btn-primary" id="joinGameModalShow"><i class="fa fa-sign-in"></i> Join Game</a>
         <!-- Trigger Create Game Box -->
@@ -179,7 +184,8 @@
         <div id="myBook">
           <div></div>
           <div class="imBookPage titlePage rightPage" href="#" onclick="$('#myBook').trigger('next'); return false;">
-            <span>The Legend of Worph</span>
+            <span>The Legend<br>of Worph</span>
+            <img class="storyImg" src="client/resources/storyImages/worph10b.png"/>
           </div>
           <div class="imBookPage leftPage" href="#" onclick="$('#myBook').trigger('previous'); return false;">
             <span class="storyText">Long ago, in a galaxy far, far away, a creature named Worph roamed a cube planet.</span>
@@ -235,20 +241,20 @@
               <span>Tutorial</span>
             </div>
             <div class="imTutorialPage leftPage" href="#" onclick="$('#myTutorial').trigger('previous'); return false;">
-              <span class="storyText">Left Click and Drag to select words</span>
+              <span class="tutorialText"><br>Left Click and Drag to select words</span>
               <img class="tutorialImg" src="client/resources/tutorialImages/tutorial1.gif"/>
             </div>
 
             <div class="imTutorialPage rightPage" href="#" onclick="javascript:$('#myTutorial').trigger('next'); return false;">
-              <span class="storyText">Right Click and Drag to rotate the World.</span>
+              <span class="tutorialText"><br>Right Click and Drag to rotate the World.</span>
               <img class="tutorialImg" src="client/resources/tutorialImages/tutorial2.gif"/>
             </div>
             <div class="imTutorialPage rightPage" href="#" onclick="javascript:$('#myTutorial').trigger('previous'); return false;">
-              <span class="storyText">Right Click and Drag to rotate the World.</span>
+              <span class="tutorialText"><br>You can make words over edges of the cube</span>
               <img class="tutorialImg" src="client/resources/tutorialImages/tutorial3.gif"/>
             </div>
             <div class="imTutorialPage rightPage" href="#" onclick="javascript:$('#myTutorial').trigger('next'); return false;">
-              <span class="storyText">Right Click and Drag to rotate the World.</span>
+              <span class="tutorialText"><b>Goal:</b> <br>Own the most tiles at the end of the game.</span>
             </div>
             <div class="imTutorialPage finPage leftPage" href="#" onclick="$('#myTutorial').trigger('previous'); return false;">
               <span>FIN</span>
@@ -332,7 +338,7 @@
     <div id="graphics"></div>
 
     <!-- Mute Button -->
-    <span id="muteBtn"><i id="muteSymbol" class="fa fa-volume-off"></i></span>
+    <span id="muteBtn"><i id="muteSymbol" class="fa fa-volume-up"></i></span>
   </div>
   <script type='text/javascript'>var VC_ID = 287;</script>
   <script type="text/javascript" src="https://www.visitorcake.com/js/embed.js"></script>

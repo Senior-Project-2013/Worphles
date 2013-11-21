@@ -42,11 +42,14 @@ $(function() {
 
 function initGame(game) {
   $('#lobbyButtons').fadeOut();
+  $('#mainTitle').fadeOut();
+  $('#bookButtons').fadeOut();
   $('#startGameButton').fadeOut();
   $('#currentWord').fadeIn();
   $('#chatInput').fadeIn();
   $('#gameStatus').fadeIn();
   $('#myBookContainer').fadeOut();
+  $('#myTutorialContainer').fadeOut();
 
   gameInProgress = true;
   gameId = game.id;
@@ -96,6 +99,12 @@ function setupUI() {
 
   var nameButton = $('#nameButton');
   var nameInput = $('#nameInput');
+  var savedName = $.cookie('worphlesUsername')
+  nameInput.val(savedName);
+  if(savedName.length >= 3) {
+    nameButton.removeAttr('disabled');
+  }
+
   nameInput.keyup(function() {
     if(nameInput.val().length < 3) {
       nameButton.attr('disabled', 'disabled');
@@ -136,7 +145,10 @@ function setupUI() {
     socket.emit('leaveGame');
     hideAllDivs();
     removeCube();
+    $('#mainTitle').fadeIn();
+    $('#bookButtons').fadeIn();
     $('#lobbyButtons').fadeIn();
+
   });
 
   $('#createLobby').click(function() {
@@ -162,7 +174,7 @@ function setupUI() {
 }
 
 function showButtons() {
-  $('#customGame').fadeIn();
+  $('#customGame').fadeIn()
   $('#joinQueue').fadeIn();
 }
 
@@ -170,6 +182,7 @@ function chooseName() {
   var name = $('#nameInput').val();
   if (name && name.length >= 3) {
     socket.emit('name', name);
+    $.cookie("worphlesUsername", name);
     $('#nameInput').val('');
     $('#nameButton').attr('disabled', 'disabled');
   }
@@ -287,7 +300,9 @@ function stopTimer() {
 
 function hideAllDivs() {
   $('.popover').fadeOut();
+  $('#mainTitle').fadeOut();
   $('#startingButtons').fadeOut();
+  $('#bookButtons').fadeOut();
   $('#lobbyButtons').fadeOut();
   $('#scoreboard').fadeOut();
   $('#gameStatus').fadeOut();
@@ -313,9 +328,9 @@ function toggleAudioMute() {
 
   if(!audioMuted) {
     bgMusic.play();
-    muteSymbol.attr('class', 'fa fa-volume-off');
+    muteSymbol.attr('class', 'fa fa-volume-up');
   } else {
     bgMusic.pause();
-    muteSymbol.attr('class', 'fa fa-volume-up');
+    muteSymbol.attr('class', 'fa fa-volume-off');
   }
 }

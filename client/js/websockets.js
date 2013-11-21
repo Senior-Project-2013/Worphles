@@ -20,6 +20,8 @@ function initWebsockets() {
   socket.on('gameCreated', function(data) {
     gameId = data && data.id;
     $('#createGameModal').modal('hide');
+    $('#mainTitle').fadeOut();
+    $('#bookButtons').fadeOut();
     $('#lobbyButtons').fadeOut();
     $('#startGameButton').fadeIn();
     $('#leaveGameButton').fadeIn();
@@ -42,6 +44,8 @@ function initWebsockets() {
   socket.on('joinedGame', function(data) {
     gameId = data && data.id;
     $('#joinGameModal').modal('hide');
+    $('#mainTitle').fadeOut();
+    $('#bookButtons').fadeOut();    
     $('#lobbyButtons').fadeOut();
     $('#chatBar').fadeIn();
     $('#scoreboard').fadeIn();
