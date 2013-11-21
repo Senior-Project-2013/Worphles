@@ -99,6 +99,8 @@ function setupUI() {
 
   var nameButton = $('#nameButton');
   var nameInput = $('#nameInput');
+  nameInput.val($.cookie("worphlesUsername"));
+
   nameInput.keyup(function() {
     if(nameInput.val().length < 3) {
       nameButton.attr('disabled', 'disabled');
@@ -176,6 +178,7 @@ function chooseName() {
   var name = $('#nameInput').val();
   if (name && name.length >= 3) {
     socket.emit('name', name);
+    $.cookie("worphlesUsername", name);
     $('#nameInput').val('');
     $('#nameButton').attr('disabled', 'disabled');
   }
