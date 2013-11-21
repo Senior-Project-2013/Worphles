@@ -163,6 +163,20 @@ function Player(id, socket, name, color, score, safe) {
   this.color = color;
   this.name = name;
   this.score = score || new Score();
+  this.words = [];
+
+  this.getSortedWords = function() {
+    this.words.sort(function(a, b) {
+      if (a.length > b.length ? 1 : 0);
+    });
+    return this.words;
+  };
+  
+  this.longestWord = function() {
+    var sorted = this.getSortedWords();
+    return (sorted.length > 0) ? sorted[0] : null;
+  };
+  
   if (!safe) {
     this.safeCopy = function() {
       return new Player(this.id, null, this.name, this.color, this.score, true);
@@ -322,7 +336,7 @@ function Game(hostPlayer, settings) {
   this.getPlayerWords = function() {
     var playerWords = {};
     _.each(this.players, function(player) {
-      playerWords[player.id] = player.words;
+      playerWords[player.id] = player.getSortedWords();
     });
     debug.log(playerWords);
     return playerWords;
@@ -449,7 +463,7 @@ function Game(hostPlayer, settings) {
 
     this.players[player].score.attempts++;
     if (dictionary.isAWord(word) && pathValidator.isAPath(inputTiles, this.settings.gridSize)) {
-      this.players[player].push(word);
+      this.players[player].words.push(word);
       this.players[player].score.words++;
       this.showEveryone('successfulMove', this.tileUpdate(player, inputTiles));
       this.showEveryone('scoreboardUpdate', {
