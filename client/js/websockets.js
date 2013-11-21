@@ -78,6 +78,7 @@ function initWebsockets() {
     for(var i = 0; i < Object.keys(data.scores).length; i++) {
       var playerId = Object.keys(data.scores)[i];
       players[playerId].score = data.scores[playerId];
+      players[playerId].words = data.words[playerId];
       scoreboard.updateScoreDisplay(playerId, data.scores[playerId]);
     };
     var awardsBody = $('#awardsBody');

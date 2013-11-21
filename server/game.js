@@ -226,7 +226,8 @@ function Game(hostPlayer, settings) {
         if ((currentTime - thisAlias.startTime) >= thisAlias.settings.roundTime) {
           thisAlias.showEveryone('gameOver', {
             scores: thisAlias.getPlayerScores(),
-            awards: thisAlias.getEndingAwards()
+            awards: thisAlias.getEndingAwards(),
+	    words: thisAlias.playerWords
           });
 
           clearInterval(thisAlias.intervalId);
@@ -253,6 +254,7 @@ function Game(hostPlayer, settings) {
       return callback(error);
     } else {
       this.players[player.id] = player;
+      this.playerWords[player.id] = [];
       this.recolorPlayers();
       this.players[player.id].score = new Score();
       this.registerSocketListeners(player);
@@ -437,6 +439,7 @@ function Game(hostPlayer, settings) {
 
     this.players[player].score.attempts++;
     if (dictionary.isAWord(word) && pathValidator.isAPath(inputTiles, this.settings.gridSize)) {
+      this.playerWords[player].push(word);
       this.players[player].score.words++;
       this.showEveryone('successfulMove', this.tileUpdate(player, inputTiles));
       this.showEveryone('scoreboardUpdate', {
@@ -498,9 +501,13 @@ function Game(hostPlayer, settings) {
     return info;
   };
 
+  this.playerWords = {};
+  this.playerWords[hostPlayer.id] = [];
+  
   this.players = {};
   this.players[hostPlayer.id] = hostPlayer;
   this.players[hostPlayer.id].color = Color.randomColor(0);
+  
   this.registerSocketListeners(hostPlayer);
   var initialPlayer = {};
   initialPlayer[hostPlayer.id] = hostPlayer.safeCopy();
