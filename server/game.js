@@ -163,7 +163,6 @@ function Player(id, socket, name, color, score, safe) {
   this.color = color;
   this.name = name;
   this.score = score || new Score();
-
   if (!safe) {
     this.safeCopy = function() {
       return new Player(this.id, null, this.name, this.color, this.score, true);
@@ -227,7 +226,7 @@ function Game(hostPlayer, settings) {
           thisAlias.showEveryone('gameOver', {
             scores: thisAlias.getPlayerScores(),
             awards: thisAlias.getEndingAwards(),
-	    words: thisAlias.playerWords
+	    words: thisAlias.getPlayerWords()
           });
 
           clearInterval(thisAlias.intervalId);
@@ -254,7 +253,7 @@ function Game(hostPlayer, settings) {
       return callback(error);
     } else {
       this.players[player.id] = player;
-      this.playerWords[player.id] = [];
+      this.players[player.id].words = [];
       this.recolorPlayers();
       this.players[player.id].score = new Score();
       this.registerSocketListeners(player);
@@ -318,6 +317,15 @@ function Game(hostPlayer, settings) {
       scores[player.id] = player.score;
     });
     return scores;
+  };
+  
+  this.getPlayerWords = function() {
+    var playerWords = {};
+    _.each(this.players, function(player) {
+      playerWords[player.id] = player.words;
+    });
+    debug.log(playerWords);
+    return playerWords;
   };
 
   this.getEndingAwards = function() {
@@ -441,7 +449,7 @@ function Game(hostPlayer, settings) {
 
     this.players[player].score.attempts++;
     if (dictionary.isAWord(word) && pathValidator.isAPath(inputTiles, this.settings.gridSize)) {
-      this.playerWords[player].push(word);
+      this.players[player].push(word);
       this.players[player].score.words++;
       this.showEveryone('successfulMove', this.tileUpdate(player, inputTiles));
       this.showEveryone('scoreboardUpdate', {
@@ -508,6 +516,7 @@ function Game(hostPlayer, settings) {
   
   this.players = {};
   this.players[hostPlayer.id] = hostPlayer;
+  this.players[hostPlayer.id].words = [];
   this.players[hostPlayer.id].color = Color.randomColor(0);
   
   this.registerSocketListeners(hostPlayer);
