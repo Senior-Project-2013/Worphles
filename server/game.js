@@ -268,7 +268,7 @@ function Game(hostPlayer, settings) {
           thisAlias.showEveryone('gameOver', {
             scores: thisAlias.getPlayerScores(),
             awards: thisAlias.getEndingAwards(),
-	    words: thisAlias.getPlayerWords()
+	          words: thisAlias.getPlayerWords()
           });
 
           thisAlias.updateSaveData();
@@ -421,6 +421,10 @@ function Game(hostPlayer, settings) {
   }
 
   this.getWinners = function() {
+    if(this.players === 1) {
+      return [];
+    }
+
     var highScore = 0;
     var winners = [];
 
