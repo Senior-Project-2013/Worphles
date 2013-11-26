@@ -62,20 +62,28 @@ io.sockets.on('connection', function(socket) {
     }
   });
 
-  socket.on('createNewSave', function(name) {
+  socket.on('createNewSave', function() {
     if(redis) {
-      var saveId = uuid.v4();
-      var newSave = new Game.Stats(saveId, name);
-      socket.emit('saveWorphleCookieId', saveId);
-      redis.set(saveId, JSON.stringify(newSave));
-      thisSave = newSave;
+      thisSave = connection.createNewSave(name);
     }
   });
+
+  this.createNewSave = function() {
+    var saveId = uuid.v4();
+    var newSave = new Game.Stats(saveId);
+    socket.emit('saveWorphleCookieId', saveId);
+    redis.set(saveId, JSON.stringify(newSave));
+    return newSave;
+  }
 
   socket.on('loadSave', function(saveId) {
     if(redis && saveId) {
       redis.get(saveId, function(err, reply) {
         thisSave = JSON.parse(reply);
+        if(!thisSave) {
+          thisSave = connection.createNewSave();
+        }
+
         socket.emit('showStats', thisSave);
       });
     }

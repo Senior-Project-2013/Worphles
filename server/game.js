@@ -404,8 +404,8 @@ function Game(hostPlayer, settings) {
       award.icon = AWARD_NAMES[key].icon;
     });
     return awards;
-  };
-
+  }
+  
   this.updateSaveData = function() {
     if(redis) {
       var winners = this.getWinners();
@@ -414,6 +414,12 @@ function Game(hostPlayer, settings) {
       });
 
       _.each(this.players, function(player) {
+        var sortedWords = player.getSortedWords();
+
+        if(player.words && sortedWords[0].length > player.stats.longestWord.length) {
+          player.stats.longestWord = sortedWords[0];
+        }
+
         player.stats.gamesPlayed++;
         redis.set(player.stats.id, JSON.stringify(player.stats));
       });

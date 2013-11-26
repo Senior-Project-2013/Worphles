@@ -24,11 +24,12 @@ function initWebsockets() {
       if(data.name) {
         nameInput.val(data.name);
       }
-      
+
       if(data.name && data.name.length >= 3) {
         nameButton.removeAttr('disabled');
       }
 
+      var muteSymbol = $('#muteSymbol');
       if(data.muted) {
         bgMusic.pause();
         muteSymbol.attr('class', 'fa fa-volume-off');
