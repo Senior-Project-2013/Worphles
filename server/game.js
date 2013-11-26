@@ -416,7 +416,7 @@ function Game(hostPlayer, settings) {
       _.each(this.players, function(player) {
         var sortedWords = player.getSortedWords();
 
-        if(player.words && sortedWords[0].length > player.stats.longestWord.length) {
+        if(player.words && sortedWords.length > 0 && sortedWords[0].length > player.stats.longestWord.length) {
           player.stats.longestWord = sortedWords[0];
         }
 
