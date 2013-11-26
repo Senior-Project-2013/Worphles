@@ -421,7 +421,7 @@ function Game(hostPlayer, settings) {
   }
 
   this.getWinners = function() {
-    if(this.players === 1) {
+    if(this.players.length === 1) {
       return [];
     }
 

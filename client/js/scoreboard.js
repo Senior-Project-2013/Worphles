@@ -27,16 +27,35 @@ function Scoreboard() {
       placement: 'right',
       container: 'body'
     });
+
+    $('.scoreRowWrapper').popover({
+      trigger: 'hover',
+      placement: 'bottom',
+      container: 'body',
+      html: true
+    });
   };
 
   this.createScoreRow = function(num, player, host) {
+    $('<div/>', {
+      id: 'scoreWrap'+player.id,
+      class: 'scoreRowWrapper',
+      'data-toggle': 'popover',
+      'data-content': '<table>' +
+                        '<tr><td class="h3">' + player.name + '</td></tr>' +
+                        '<tr><td>Wins: ' + player.stats.wins + '</td></tr>' +
+                        '<tr><td>Games Played: ' + player.stats.gamesPlayed + '</td></tr>' +
+                        '<tr><td>Longest Word Ever Spelled: \'' + player.stats.longestWord + '\'</td></tr>' +
+                      '</table>'
+    }).appendTo('#scores');
+
     $('<li/>', {
       id: 'score'+player.id,
       class: 'scoreRow',
       score: player.score.tiles,
       'data-toggle': 'popover',
       'data-content': 'hello'
-    }).css('background-color', getCSSColorFromColor(player.color)).appendTo('#scores');
+    }).css('background-color', getCSSColorFromColor(player.color)).appendTo('#scoreWrap'+player.id);
 
     $('<h1/>', {
       text: player.name,

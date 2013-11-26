@@ -76,7 +76,6 @@ io.sockets.on('connection', function(socket) {
     if(redis && saveId) {
       redis.get(saveId, function(err, reply) {
         thisSave = JSON.parse(reply);
-        debug.log(thisSave);
         socket.emit('showStats', thisSave);
       });
     }
@@ -84,8 +83,16 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('updateNameSave', function(name) {
     if(redis && thisSave && thisSave.name !== name) {
-      console.log('name change to ' + name);
+      debug.log('name change to ' + name);
       thisSave.name = name;
+      redis.set(thisSave.id, JSON.stringify(thisSave));
+    }
+  });
+
+  socket.on('updateMuteSave', function(muteStatus) {
+    if(redis && thisSave) {
+      debug.log('mute status change to ' + muteStatus);
+      thisSave.muted = muteStatus;
       redis.set(thisSave.id, JSON.stringify(thisSave));
     }
   });

@@ -18,12 +18,24 @@ function initWebsockets() {
   });
 
   socket.on('showStats', function(data) {
-    console.log(data);
     var nameInput = $('#nameInput');
     var nameButton = $('#nameButton');
-    nameInput.val(data.name);
-    if(data && data.name && data.name.length >= 3) {
-      nameButton.removeAttr('disabled');
+    if(data) {
+      if(data.name) {
+        nameInput.val(data.name);
+      }
+      
+      if(data.name && data.name.length >= 3) {
+        nameButton.removeAttr('disabled');
+      }
+
+      if(data.muted) {
+        bgMusic.pause();
+        muteSymbol.attr('class', 'fa fa-volume-off');
+      } else {
+        bgMusic.play();
+        muteSymbol.attr('class', 'fa fa-volume-up');
+      }
     }
   });
 

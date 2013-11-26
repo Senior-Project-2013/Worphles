@@ -328,6 +328,7 @@ function toggleAudioMute() {
   var muteSymbol = $('#muteSymbol');
 
   audioMuted = !audioMuted;
+  socket.emit('updateMuteSave', audioMuted);
 
   if(!audioMuted) {
     bgMusic.play();
