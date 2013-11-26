@@ -465,7 +465,8 @@ function Game(hostPlayer, settings) {
     if (dictionary.isAWord(word) && pathValidator.isAPath(inputTiles, this.settings.gridSize)) {
       this.players[player].words.push(word);
       this.players[player].score.words++;
-      this.showEveryone('successfulMove', this.tileUpdate(player, inputTiles));
+      var updateInfo = this.tileUpdate(player, inputTiles);
+      this.showEveryone('successfulMove', updateInfo);
       this.showEveryone('scoreboardUpdate', {
         player: {
           id: player,
