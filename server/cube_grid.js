@@ -231,9 +231,9 @@ var CubeGrid = function(size) {
     var available = this.tileNeighbors(path[0]);
     used[path[0]] = true;
     for (var i = 1; i < path.length; i++) {
-      var dir,
-	  index = path[i],
-	  ok = false;
+      var dir;
+      var index = path[i];
+      var ok = false;
       if (used[index] != undefined || index < 0 || index > maxIndex) return false;
       for (dir in available) {
 	if (available[dir] == index) {
