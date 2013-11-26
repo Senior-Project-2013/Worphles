@@ -4,6 +4,24 @@ var cubeGrid = require('./cube_grid').getGrid();
 var _ = require('underscore');
 var uuid = require('node-uuid');
 var debug = require('./debug');
+var redis;
+
+//redis configuration
+if (process.env.REDISTOGO_URL) {
+    var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+    redis = require("redis").createClient(rtg.port, rtg.hostname);
+
+    redis.auth(rtg.auth.split(":")[1]);
+} else {
+    redis = require("redis").createClient(null, null, {
+      connect_timeout: 1000
+    });
+}
+
+redis.on("error", function(err) {
+  debug.log('Error ' + err);
+  redis = null;
+});
 
 /**
  * Replaces matches in string from an object's attributes:
@@ -157,8 +175,18 @@ function Score(tiles, acquisitions, steals, losses, reinforcements, longestWord,
   this.attempts = attempts || 0;
 };
 
-function Player(id, socket, name, color, score, safe) {
+function Stats(id, name, wins, gamesPlayed, longestWord, muted) {
+  this.id           = id          || uuid.v4();
+  this.name         = name        || "";
+  this.wins         = wins        || 0;
+  this.gamesPlayed  = gamesPlayed || 0;
+  this.longestWord  = longestWord || "";
+  this.muted        = muted       || false;
+}
+
+function Player(id, stats, socket, name, color, score, safe) {
   this.id = id;
+  this.stats = stats;
   this.socket = socket;
   this.color = color;
   this.name = name;
@@ -179,7 +207,7 @@ function Player(id, socket, name, color, score, safe) {
   
   if (!safe) {
     this.safeCopy = function() {
-      return new Player(this.id, null, this.name, this.color, this.score, true);
+      return new Player(this.id, this.stats, null, this.name, this.color, this.score, true);
     };
   }
 };
@@ -242,6 +270,8 @@ function Game(hostPlayer, settings) {
             awards: thisAlias.getEndingAwards(),
 	    words: thisAlias.getPlayerWords()
           });
+
+          thisAlias.updateSaveData();
 
           clearInterval(thisAlias.intervalId);
         }
@@ -367,14 +397,45 @@ function Game(hostPlayer, settings) {
       award.name = AWARD_NAMES[key].title;
       
       award.description = formatFromObject(AWARD_NAMES[key].description, {
-	value: award.value,
-	player: thisGame.players[award.player].name
+	     value: award.value,
+	     player: thisGame.players[award.player].name
       });
       
       award.icon = AWARD_NAMES[key].icon;
     });
     return awards;
   };
+
+  this.updateSaveData = function() {
+    if(redis) {
+      var winners = this.getWinners();
+      _.each(winners, function(winner) {
+        winner.stats.wins++;
+      });
+
+      _.each(this.players, function(player) {
+        player.stats.gamesPlayed++;
+        redis.set(player.stats.id, JSON.stringify(player.stats));
+      });
+    }
+  }
+
+  this.getWinners = function() {
+    var highScore = 0;
+    var winners = [];
+
+    _.each(this.players, function(player) {
+      if(player.score.tiles > highScore) {
+        winners = [];
+        winners.push(player);
+        highScore = player.score.tiles;
+      } else if(player.score.tiles === highScore) {
+        winners.push(player);
+      }
+    });
+
+    return winners;
+  }
 
   this.tileUpdate = function(id, tiles) {
     var newOwner = this.players[id];
@@ -550,6 +611,7 @@ function Game(hostPlayer, settings) {
 module.exports = {
   Settings: Settings,
   Game: Game,
+  Stats: Stats,
   Player: Player,
   DEFAULTS: DEFAULTS
 };

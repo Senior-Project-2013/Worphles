@@ -17,6 +17,20 @@ function initWebsockets() {
     $('#nameForm').fadeIn();
   });
 
+  socket.on('showStats', function(data) {
+    console.log(data);
+    var nameInput = $('#nameInput');
+    var nameButton = $('#nameButton');
+    nameInput.val(data.name);
+    if(data && data.name && data.name.length >= 3) {
+      nameButton.removeAttr('disabled');
+    }
+  });
+
+  socket.on('saveWorphleCookieId', function(data) {
+    $.cookie('worphleSaveId', data);
+  });
+
   socket.on('gameCreated', function(data) {
     gameId = data && data.id;
     $('#createGameModal').modal('hide');
