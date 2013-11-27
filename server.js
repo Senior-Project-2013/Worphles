@@ -64,7 +64,7 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('createNewSave', function() {
     if(redis) {
-      thisSave = connection.createNewSave(name);
+      thisSave = connection.createNewSave();
     }
   });
 
