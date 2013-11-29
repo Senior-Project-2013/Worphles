@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var cg = require('../server/cube_grid');
-var fatty = require('./fattest.js');
+var fatty = require('fattest');
 var tests = new fatty.Env();
 var cube4 = new cg.CubeGrid(4);
 
