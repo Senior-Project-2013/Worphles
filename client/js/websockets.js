@@ -17,6 +17,33 @@ function initWebsockets() {
     $('#nameForm').fadeIn();
   });
 
+  socket.on('showStats', function(data) {
+    var nameInput = $('#nameInput');
+    var nameButton = $('#nameButton');
+    if(data) {
+      if(data.name) {
+        nameInput.val(data.name);
+      }
+
+      if(data.name && data.name.length >= 3) {
+        nameButton.removeAttr('disabled');
+      }
+
+      var muteSymbol = $('#muteSymbol');
+      if(data.muted) {
+        bgMusic.pause();
+        muteSymbol.attr('class', 'fa fa-volume-off');
+      } else {
+        bgMusic.play();
+        muteSymbol.attr('class', 'fa fa-volume-up');
+      }
+    }
+  });
+
+  socket.on('saveWorphleCookieId', function(data) {
+    $.cookie('worphleSaveId', data);
+  });
+
   socket.on('gameCreated', function(data) {
     gameId = data && data.id;
     $('#createGameModal').modal('hide');

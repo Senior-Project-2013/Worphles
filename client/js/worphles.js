@@ -77,6 +77,14 @@ function joinGame(id, hasPassword) {
 }
 
 function setupUI() {
+  var worphleSaveId = $.cookie('worphleSaveId');
+
+  if(!worphleSaveId) {
+    socket.emit('createNewSave');
+  } else {
+    socket.emit('loadSave', worphleSaveId);
+  }
+
   // disable right click on sidebars and background
   $('body').bind('contextmenu', function(e) {
       return false;
@@ -99,11 +107,6 @@ function setupUI() {
 
   var nameButton = $('#nameButton');
   var nameInput = $('#nameInput');
-  var savedName = $.cookie('worphlesUsername')
-  nameInput.val(savedName);
-  if(savedName && savedName.length >= 3) {
-    nameButton.removeAttr('disabled');
-  }
 
   nameInput.keyup(function() {
     if(nameInput.val().length < 3) {
@@ -182,9 +185,9 @@ function chooseName() {
   var name = $('#nameInput').val();
   if (name && name.length >= 3) {
     socket.emit('name', name);
-    $.cookie("worphlesUsername", name);
     $('#nameInput').val('');
     $('#nameButton').attr('disabled', 'disabled');
+    socket.emit('updateNameSave', name);
   }
   // stops the form from submitting if being called from HTML form
   return false;
@@ -325,6 +328,7 @@ function toggleAudioMute() {
   var muteSymbol = $('#muteSymbol');
 
   audioMuted = !audioMuted;
+  socket.emit('updateMuteSave', audioMuted);
 
   if(!audioMuted) {
     bgMusic.play();
