@@ -242,14 +242,19 @@ function Game(hostPlayer, settings) {
   this.id = uuid.v4();
   this.settings = settings || new Settings();
   this.tiles = [];
-  for (var i = 0; i < this.settings.gridSize * this.settings.gridSize * 6; i++) {
-    this.tiles.push(new Tile(Tile.randomLetter()));
+
+  this.reset = function() {
+    this.tiles = [];
+    for (var i = 0; i < this.settings.gridSize * this.settings.gridSize * 6; i++) {
+      this.tiles.push(new Tile(Tile.randomLetter()));
+    }
   }
 
   this.start = function(playerId) {
     if (playerId !== this.hostId) {
       return false;
     } else {
+      thisGame.reset();
       this.started = true;
       this.startTime = new Date();
       var i = 0;
@@ -272,6 +277,10 @@ function Game(hostPlayer, settings) {
           });
 
           thisAlias.updateSaveData();
+
+          setTimeout(function() {
+            thisAlias.showPlayerList();
+          }, 500);
 
           clearInterval(thisAlias.intervalId);
         }
@@ -514,6 +523,11 @@ function Game(hostPlayer, settings) {
         newTiles[tiles[i]] = {owner: id, letter: newLetter};
       }
     }
+
+    if(!newTiles) {
+      return {};
+    }
+    
     return newTiles;
   };
 

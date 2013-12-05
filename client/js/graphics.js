@@ -81,10 +81,10 @@ function update() {
   controls.update();
 
   if(hardcore) {
-    $.each(tilesToTween, function(i, tile) {
-      var tileToTween = tiles[tile];
+    for(var i = 0; i < tilesToTween.length; i++) {
+      var tileToTween = tiles[tilesToTween[i]];
 
-      if(tileToTween.geometry.targetPosition) {
+      if(tileToTween && tileToTween.geometry && tileToTween.geometry.targetPosition) {
         var zDiff = tileToTween.geometry.targetPosition.z - tileToTween.geometry.vertices[1].z;
         if(Math.abs(zDiff) > .1) {
           var zChange = zDiff / 30;
@@ -94,8 +94,8 @@ function update() {
           tileToTween.geometry.vertices[4].z += zChange;
           tileToTween.geometry.vertices[6].z += zChange;
 
-          for (var i = 0; i < 4; i++) {
-            tileToTween.letterResources.letterMesh.geometry.vertices[i].z += zChange;
+          for (var j = 0; j < 4; j++) {
+            tileToTween.letterResources.letterMesh.geometry.vertices[j].z += zChange;
           }
 
           tileToTween.geometry.verticesNeedUpdate = true;
@@ -104,7 +104,7 @@ function update() {
           tilesToTween.splice(i, 1);
         }
       }
-    });
+    }
   }
 }
 
@@ -280,10 +280,6 @@ function updateMouse(event) {
 }
 
 function updateTileStrength(tile, strength) {
-  if($.inArray(tile, tilesToTween) === -1) {
-    tilesToTween.push(tile);
-  }
-
   tiles[tile].geometry.targetPosition = {
     z: Math.max(strength * 2, 0.01) // can't have a rectangle of height 0!
   };
@@ -292,6 +288,10 @@ function updateTileStrength(tile, strength) {
     tiles[tile].letterResources.letterMesh.geometry.targetPosition = {
       z: strength * 2 + .05
     };
+  }
+
+  if($.inArray(tile, tilesToTween) === -1 && tile) {
+    tilesToTween.push(tile);
   }
 }
 

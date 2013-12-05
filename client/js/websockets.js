@@ -104,7 +104,7 @@ function initWebsockets() {
 
   socket.on('gameOver', function(data) {
     gameInProgress = false;
-    $('#timer').fadeOut();
+    $('#gameStatus').fadeOut();
     removeCube();
     for(var i = 0; i < Object.keys(data.scores).length; i++) {
       var playerId = Object.keys(data.scores)[i];
