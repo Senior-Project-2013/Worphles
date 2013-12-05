@@ -25,7 +25,7 @@ var DIRECTIONS = {
 /**
  * A Tile
  */
-var Tile = function(side, point) {
+var Tile = function Tile(side, point) {
   this.side = side;
   this.pos =  point;	
 };
@@ -33,7 +33,7 @@ var Tile = function(side, point) {
 /**
  * Alternative constructor, initialize from index on a sized cube grid.
  */
-Tile.fromIndex = function(index, size) {
+Tile.fromIndex = function fromIndex(index, size) {
   assert(index >= 0 && index < size * size * SIDES_PER_CUBE);
   var side = Math.floor(index / (size * size));
   var sideIndex = index - side * (size * size);
@@ -44,7 +44,7 @@ Tile.fromIndex = function(index, size) {
 /**
  * Side Relation
  */
-var SideRelation = function(side, rotations) {
+var SideRelation = function SideRelation(side, rotations) {
   this.side =  side;
   this.rotations =  rotations;
 };
@@ -105,7 +105,7 @@ function applyTransform(point, rotations, n) {
 /**
  * The Game Board
  */
-var CubeGrid = function(size) {
+function CubeGrid(size) {
 
   // init the grid
   var grid = [];
@@ -196,7 +196,7 @@ var CubeGrid = function(size) {
    * Returns the corner that the tile at INDEX is on as a Direction,
    * if the tile is not on a corner, null is returned
    */
-  this.tileCorner = function(index) {
+  this.tileCorner = function tileCorner(index) {
     var sizeSqr = this.size*this.size;
     var t = index - (sizeSqr * Math.floor(index / sizeSqr));
     if (t == 0) return DIRECTIONS.downLeft;
@@ -210,7 +210,7 @@ var CubeGrid = function(size) {
   /**
    * Returns the neighboring tiles of tile at INDEX as an object.
    */
-  this.tileNeighbors = function(index) {
+  this.tileNeighbors = function tileNeighbors(index) {
     var result = {};
     for (var dir in DIRECTIONS) {
       var tile = this.nextTile(index, DIRECTIONS[dir]);
@@ -223,7 +223,7 @@ var CubeGrid = function(size) {
   /**
    * Determine if a list of indices make a valid path
    */
-  this.isValidPath = function(path) {
+  this.isValidPath = function isValidPath(path) {
     var maxIndex = this.size * this.size * SIDES_PER_CUBE - 1,
 	used = {};
     if (path[0] < 0 || path[0] > maxIndex) return false;
