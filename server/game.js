@@ -282,6 +282,9 @@ function Game(hostPlayer, settings) {
   };
 
   this.addPlayer = function(player, password, callback) {
+    if (!player) {
+      return callback();
+    }
     var error;
     if (Object.keys(this.players).length >= this.settings.maxPlayers) {
       error = "Game is full";
