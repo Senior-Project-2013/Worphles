@@ -129,6 +129,8 @@ function TileGraphicsSettings(tilesPerRow, tileSize) {
 }
 
 function addCube(inputSettings, inputTiles) {
+  targetList = [];
+  letterList = [];
   hardcore = inputSettings.hardcore;
   var cubeSize = 80;
   var tilesPerRow = inputSettings.gridSize;
@@ -163,16 +165,20 @@ function addCube(inputSettings, inputTiles) {
       }
     }
   }
-}
-function removeCube(){
+};
+
+function removeCube() {
   scene.remove(cube);
+  cube = undefined;
   for (var i = 0; i < targetList.length; i++) {
     scene.remove(targetList[i]);
   };
+  targetList = [];
   for (var i = 0; i < letterList.length; i++) {
     scene.remove(letterList[i]);
   };
-}
+  letterList = [];
+};
 
 function Tile(num, letter, letterResources, color, geometry, material) {
   this.num = num;
