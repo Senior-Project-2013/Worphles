@@ -195,7 +195,7 @@ function Player(id, stats, socket, name, color, score, safe) {
 
   this.getSortedWords = function() {
     this.words.sort(function(a, b) {
-      if (a.length > b.length ? 1 : 0);
+      return a.length > b.length ? -1 : 1;
     });
     return this.words;
   };
@@ -428,7 +428,7 @@ function Game(hostPlayer, settings) {
       _.each(this.players, function(player) {
         var sortedWords = player.getSortedWords();
 
-        if(player.words && sortedWords.length > 0 && sortedWords[0].length > player.stats.longestWord.length) {
+        if(sortedWords && sortedWords.length > 0 && sortedWords[0].length > player.stats.longestWord.length) {
           player.stats.longestWord = sortedWords[0];
         }
 
@@ -439,7 +439,7 @@ function Game(hostPlayer, settings) {
   }
 
   this.getWinners = function() {
-    if(this.players.length === 1) {
+    if(Object.keys(this.players).length === 1) {
       return [];
     }
 
