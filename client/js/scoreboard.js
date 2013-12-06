@@ -29,7 +29,7 @@ function Scoreboard() {
     });
 
     $('.scoreRowWrapper').popover({
-      trigger: 'hover',
+      trigger: 'click',
       placement: 'bottom',
       container: 'body',
       html: true
